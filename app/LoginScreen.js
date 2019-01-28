@@ -27,7 +27,7 @@ export default class LoginScreen extends Component<Props> {
     super(props);
     this.state = { 
       email: 'ethan3@gmail.com',
-      password: 'haha12345',
+      pwd: 'haha12345',
       errorMessage: ''
      };
   }
@@ -45,7 +45,7 @@ export default class LoginScreen extends Component<Props> {
 
   _login = async () => {
     axios.post(baseURL + '/login/', 
-      {email: this.state.email, password: this.state.password})
+      {email: this.state.email, password: this.state.pwd})
     .then(async (response) => {
       if(response.status == 200){
         try {
@@ -71,7 +71,7 @@ export default class LoginScreen extends Component<Props> {
           <TextInput style={styles.textInput} multiline={false}
           value={this.state.email} onChangeText={(email) => this.setState({email})}/>
           <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-          value={this.state.password} onChangeText={(password) => this.setState({password})}/>
+          value={this.state.pwd} onChangeText={(pwd) => this.setState({pwd})}/>
           <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
               <Text style={styles.btnText}>SIGN IN</Text>
           </TouchableOpacity>

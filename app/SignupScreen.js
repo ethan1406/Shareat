@@ -8,7 +8,10 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, AsyncStorage} from 'react-native';
+import axios from 'axios';
+
+import {baseURL} from './Constants';
 
 type Props = {};
 export default class SignupScreen extends Component<Props> {
@@ -31,7 +34,7 @@ export default class SignupScreen extends Component<Props> {
       email: '',
       pwd: '',
       confirmPwd: '',
-      errorMessage: 'error message sign up'
+      errorMessage: ''
      };
   }
 
@@ -44,6 +47,33 @@ export default class SignupScreen extends Component<Props> {
       ),
       headerTransparent: true
     };
+  }
+
+  _signup = async () => {
+    if(this.state.pwd !== this.state.confirmPwd) {
+      this.setState({errorMessage: 'Passwords do not match'});
+      return;
+    }
+ 
+    axios.post(baseURL + '/signup/', 
+      {email: this.state.email, password: this.state.pwd,
+       firstName: this.state.firstName, lastName: this.state.lastName}
+      )
+    .then(async (response) => {
+      if(response.status == 200){
+        try {
+          await AsyncStorage.setItem('email',response.data.email);
+          await AsyncStorage.setItem('userId',response.data.id);
+          await AsyncStorage.setItem('firstName',response.data.firstName);
+          await AsyncStorage.setItem('lastName',response.data.lastName);
+        } catch (err) {
+          console.log(err);
+        }
+          this.props.navigation.navigate('Map');
+      } 
+    }).catch((err) => {
+      this.setState({errorMessage: err.response.data.error});
+    });
   }
 
   render() {
@@ -61,7 +91,7 @@ export default class SignupScreen extends Component<Props> {
           value={this.state.pwd} placeholder='Password' onChangeText={(pwd) => this.setState({pwd})}/>
           <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
           value={this.state.confirmPwd} placeholder='Confirm Password' onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
-          <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Map')} color='#000000'>
+          <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
               <Text style={styles.btnText}>SIGN UP</Text>
           </TouchableOpacity>
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
