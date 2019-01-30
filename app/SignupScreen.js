@@ -16,16 +16,6 @@ import {baseURL} from './Constants';
 type Props = {};
 export default class SignupScreen extends Component<Props> {
 
-  // static navigationOptions = {
-  //   headerLeft:(
-  //       <TouchableOpacity onPress={() => this.props.navigation.navigate('First')} title='sup'>
-  //         <Image source={require('./img/backbtn.png')} />
-  //       </TouchableOpacity>
-  //     )
-
-  // };
-
-
   constructor(props) {
     super(props);
     this.state = { 

@@ -15,14 +15,6 @@ import axios from 'axios';
 type Props = {};
 export default class LoginScreen extends Component<Props> {
 
-  // static navigationOptions = {
-  //   headerLeft:(
-  //       <TouchableOpacity onPress={() => this.props.navigation.navigate('First')} title='sup'>
-  //         <Image source={require('./img/backbtn.png')} />
-  //       </TouchableOpacity>
-  //     )
-
-  // };
   constructor(props) {
     super(props);
     this.state = { 
