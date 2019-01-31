@@ -15,6 +15,7 @@ import SignupScreen from './SignupScreen';
 import MapScreen from './MapScreen';
 import OptionsScreen from './OptionsScreen';
 import QrCodeScreen from './QrCodeScreen';
+import CheckSplitScreen from './CheckSplitScreen';
 import {TouchableOpacity, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -22,7 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const CheckNavigator = createStackNavigator(
   {
-    Check: LoginScreen,
+    Check: CheckSplitScreen, 
     QR: QrCodeScreen,
   },
   {

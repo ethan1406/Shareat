@@ -9,7 +9,8 @@
 
 import React, {Component} from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
@@ -18,14 +19,13 @@ type Props = {};
 
 const LATITUDE_DELTA = 0.00922;
 const LONGITUDE_DELTA = 0.0421;
-let id = 0;
 export default class MapScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
     this.state = {
       region: {
-        latitude: 0 ,
+        latitude:  0,
         longitude: 0,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
@@ -33,8 +33,8 @@ export default class MapScreen extends Component<Props> {
       markers: [],
       errorMessage: null,
     };
-    
   }
+
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
@@ -53,7 +53,7 @@ export default class MapScreen extends Component<Props> {
     );
 
     axios.get(baseURL + '/map/allRestaurants/')
-      .then(async (response) => {
+      .then((response) => {
       if(response.status == 200){
         try {
           var markers = [];
@@ -66,7 +66,6 @@ export default class MapScreen extends Component<Props> {
             markers.push(marker);
           });
           this.setState({markers: markers});
-          this.forceUpdate();
           
         } catch (err) {
           console.log(err);
@@ -96,22 +95,33 @@ export default class MapScreen extends Component<Props> {
     return (
       <View style={styles.container}>
         <MapView
-          style={styles.map} 
-          provider={PROVIDER_GOOGLE}
+          style={styles.map}
           region={this.state.region}
+          provider={PROVIDER_GOOGLE}
           >
           {this.state.markers.map((marker, index) => (
             <Marker
               key={index}
+              title={marker.title}
+              description={'test description'}
               coordinate={marker.coordinate}
-              pinColor={'red'}
+              pinColor={'#F3A545'}
             />
           ))}
         </MapView>
+        <View style={styles.buttonContainer}>
+          <TextInput
+            style={styles.bubble}
+            placeholder='search for restaurants'
+          />
+        </View>
+        
       </View>
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   map: {
@@ -121,5 +131,21 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  }
+  },
+  searchBar: {
+    flexDirection: 'row',
+    marginVertical: 100,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginBottom: 600,
+    backgroundColor: 'white',
+    width: '80%'
+  },
+  bubble: {
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 20,
+  },
 });
