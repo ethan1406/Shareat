@@ -10,26 +10,10 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
+import OrderListItem from './components/OrderListItem';
 import axios from 'axios';
 
 type Props = {};
-
-class MyListItem extends React.PureComponent {
-  _onPress = () => {
-    this.props.onPressItem(this.props.id);
-  };
-
-  render() {
-    const textColor = this.props.selected ? 'red' : 'black';
-    return (
-      <TouchableOpacity onPress={this._onPress}>
-        <View>
-          <Text style={{color: textColor}}>{this.props.title}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
 
 export default class CheckSplitScreen extends Component<Props> {
 
@@ -39,57 +23,58 @@ export default class CheckSplitScreen extends Component<Props> {
     this.state = {
       loading: false,
       data: [],
+      restaurantName: '',
+      orderTotal: 0,
       error: null,
       refreshing: false,
       selectedIndex: 0,
-      selected: (new Map(): Map<string, boolean>)
     };
   }
-
-  _handleIndexChange = index => {
-    this.setState({
-      ...this.state,
-      selectedIndex: index
-    });
-  };
 
   componentDidMount() {
     this.setState({ loading: true });
     axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6')
     .then(response => {
-      this.setState({data: response.data.orders, loading: false});
+      this.setState({data: response.data.orders, 
+        restaurantName: response.data.restaurantName,
+        orderTotal: response.data.orderTotal,
+        loading: false});
     }).catch(err => {
       this.setState({ err, loading: false });
     });
   }
 
+  _keyExtractor = (item) => item._id;
 
-  _keyExtractor = (item, index) => item._id;
-
-  _onPressItem = (id: string) => {
-    // updater functions are preferred for transactional updates
-    this.setState((state) => {
-      // copy the map rather than modifying state.
-      const selected = new Map(state.selected);
-      selected.set(id, !selected.get(id)); // toggle
-      return {selected};
+  _handleIndexChange = (index) => {
+    this.setState({
+      ...this.state,
+      selectedIndex: index,
     });
-  };
+  }
 
   _renderItem = ({item}) => (
-    <MyListItem
+    <OrderListItem
       id={item._id}
-      onPressItem={this._onPressItem}
-      selected={!!this.state.selected.get(item.id)}
       title={item.name}
+      price={item.price}
+      buyers={item.buyers}
     />
   );
+
+  _renderHeader = () => {
+    return  <View style={styles.headerContainer}>
+              <Text style={{color: 'gray'}}>Item</Text>
+              <Text style={{color: 'gray'}}>Price</Text>
+            </View>;
+  }
 
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
+        <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
         <SegmentedControlTab
-          values={['First', 'Second']}
+          values={['Group Orders', 'My Orders']}
           tabStyle={styles.tabStyle}
           activeTabStyle={styles.activeTabStyle}
           tabTextStyle={styles.tabTextStyle}
@@ -97,11 +82,21 @@ export default class CheckSplitScreen extends Component<Props> {
           onTabPress={this._handleIndexChange}
         />
         <FlatList
+          style={{marginTop: 15}}
           data={this.state.data}
           extraData={this.state}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
+          ListHeaderComponent={this._renderHeader}
         />
+        <View style={styles.orderTotalContainer}>
+          <Text style={{color: 'gray'}}>Your Total: </Text>
+          <Text> ${this.state.orderTotal/100} </Text>
+        </View>
+        <Text style={{color: 'gray'}}>Double Tap the Dishes You've Shared!</Text>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+            <Text style={styles.btnText}>Check out</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -112,17 +107,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 50,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  orderTotalContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginBottom: 60
+  },
+  headerContainer: {
+    flexDirection:'row',
+    justifyContent: 'space-between'
   },
   activeTabStyle: {
     backgroundColor: '#F3A545'
   },
   tabStyle: {
     borderColor:'#F3A545',
+    borderWidth: 0
   },
   tabTextStyle: {
     color: '#F3A545'
+  },
+  restaurantText: {
+    alignSelf: 'flex-start',
+    fontSize: 18,
+    marginVertical: 10,
+    color: 'black'
+  },
+  signupBtn: {
+    marginTop: 10,
+    marginBottom: 0,
+    width: '100%',
+    height: 30,
+    backgroundColor: '#F3A545',
+    borderRadius: 2,
+    alignItems: 'center',
+    marginRight:20,
+    marginLeft:20
+  },
+  btnText: {
+    color:'white',
+    textAlign:'center',
+    paddingTop: 7
   }
 });
