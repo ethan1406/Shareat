@@ -23,8 +23,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const CheckNavigator = createStackNavigator(
   {
-    Check: CheckSplitScreen, 
     QR: QrCodeScreen,
+    Check: CheckSplitScreen, 
   },
   {
     defaultNavigationOptions: {

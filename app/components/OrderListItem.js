@@ -2,9 +2,10 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import axios from 'axios';
 
 type Props = {};
-export default class OrderListItem extends React.PureComponent {
+export default class OrderListItem extends Component<Props> {
   
   lastTap = null;
 
@@ -12,17 +13,21 @@ export default class OrderListItem extends React.PureComponent {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
     if (this.lastTap && (now - this.lastTap) < DOUBLE_PRESS_DELAY) {
-      console.log('double tap');
+      this._splitOrder();
     } else {
       this.lastTap = now;
     }
+  }
+
+  _splitOrder = () => {
+    axios.post('https://www.shareatpay.com/order/split', {partyId: this.props.partyId, orderId: this.props.id});
   }
 
   render() {
     return (
       <TouchableOpacity onPress={this._handleDoubleTap}>
         <View style={styles.cellContainer}>
-          <Text style={{color: 'black', width: '40%'}} numberOfLines={2}>{this.props.title}</Text>
+          <Text style={{color: 'black', width: '40%'}} numberOfLines={3}>{this.props.title}</Text>
           <View style={styles.sharedByContainer}>
             {this.props.buyers.map((buyer, index) => (
               <View style={styles.bubble} key={index}>

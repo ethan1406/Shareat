@@ -17,14 +17,21 @@ export default class QrCodeScreen extends Component<Props> {
      };
   }
 
-  onSuccess(e) {
-    axios.get(e.data).then((response) => {
-      console.log(response);
-      console.log(response.data);
-      this.props.navigation.navigate('Check');
+  componentDidMount() {
+    axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
+      this.props.navigation.navigate('Check', {
+        data: response.data.orders, 
+        restaurantName: response.data.restaurantName,
+        orderTotal: response.data.orderTotal,
+        partyId: response.data._id,
+      });
     }).catch((err) => {
       console.log(err);
     });
+  }
+
+  onSuccess(e) {
+    //e.data
   }
 
 
@@ -38,6 +45,7 @@ export default class QrCodeScreen extends Component<Props> {
           </Text>
         }
         showMarker={true}
+        cameraProps={{captureAudio: false}}
       />
     );
   }

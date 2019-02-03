@@ -8,7 +8,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, KeyboardAvoidingView, AsyncStorage} from 'react-native';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
@@ -68,7 +68,7 @@ export default class SignupScreen extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.container} resizeMode='contain'>
+      <KeyboardAvoidingView style={styles.container} behavior='padding' resizeMode='contain'>
         <Text style={styles.loginMessage}>SIGN UP WITH EMAIL</Text>
         <View style={[styles.stack, {marginTop: 60}]} resizeMode='contain'>
           <TextInput style={styles.textInput} multiline={false}
@@ -90,7 +90,7 @@ export default class SignupScreen extends Component<Props> {
             <Text style={styles.welcome}>Already have an account? </Text>
             <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

@@ -8,10 +8,13 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import OrderListItem from './components/OrderListItem';
 import axios from 'axios';
+import Pusher from 'pusher-js/react-native';
+
+import OrderListItem from './components/OrderListItem';
+
 
 type Props = {};
 
@@ -20,29 +23,71 @@ export default class CheckSplitScreen extends Component<Props> {
   constructor(props) {
     super(props);
 
+    this.pusher = null;
+    this.splittingChannel = null;
+
+    var params = this.props.navigation.state.params;
+
     this.state = {
       loading: false,
-      data: [],
-      restaurantName: '',
-      orderTotal: 0,
+      data: params.data,
+      restaurantName: params.restaurantName,
+      orderTotal: params.orderTotal,
       error: null,
       refreshing: false,
       selectedIndex: 0,
+      partyId: params.partyId,
+      userId: ''
     };
-  }
 
-  componentDidMount() {
-    this.setState({ loading: true });
-    axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6')
-    .then(response => {
-      this.setState({data: response.data.orders, 
-        restaurantName: response.data.restaurantName,
-        orderTotal: response.data.orderTotal,
-        loading: false});
-    }).catch(err => {
-      this.setState({ err, loading: false });
+    this.pusher = new Pusher('96771d53b6966f07b9f3', {
+        //authEndpoint: 'YOUR PUSHER AUTH SERVER ENDPOINT',
+        cluster: 'us2',
+        encrypted: true
+    });
+
+    this.splittingChannel = this.pusher.subscribe(params.partyId); // subscribe to the party channel
+
+    this.splittingChannel.bind('splitting', (data) => {
+      if(data.add) {
+        const updatedOrders = this.state.data.slice();
+        const index = updatedOrders.findIndex(order=> order._id == data.orderId);
+        updatedOrders[index].buyers.push({firstName: data.firstName, lastName: data.lastName, userId: data.userId});
+        
+        this.setState({data: updatedOrders, refresh: !this.state.refresh});
+      } else {
+        const updatedOrders = this.state.data.slice();
+        const index = updatedOrders.findIndex(order=> order._id == data.orderId);
+        console.log(index);
+        updatedOrders[index].buyers = updatedOrders[index].buyers.filter(buyer => buyer.userId != data.userId);
+
+        this.setState({data: updatedOrders, refresh: !this.state.refresh});
+      }
     });
   }
+
+  async componentDidMount() {  
+    // this.setState({ loading: true });
+    // axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6')
+    // .then(response => {
+    //   this.setState({data: response.data.orders, 
+    //     restaurantName: response.data.restaurantName,
+    //     orderTotal: response.data.orderTotal,
+    //     partyId: response.data.partyId,
+    //     loading: false});
+    // }).catch(err => {
+    //   this.setState({ err, loading: false });
+    // });
+
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      this.setState({userId});
+    } catch (err) {
+      console.log(err);
+    }
+    
+  }
+
 
   _keyExtractor = (item) => item._id;
 
@@ -59,14 +104,24 @@ export default class CheckSplitScreen extends Component<Props> {
       title={item.name}
       price={item.price}
       buyers={item.buyers}
+      partyId={this.state.partyId}
     />
   );
 
   _renderHeader = () => {
+
+    if(this.state.selectedIndex == 1 && 
+      this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)).length == 0) {
+      return null;
+    }
     return  <View style={styles.headerContainer}>
               <Text style={{color: 'gray'}}>Item</Text>
               <Text style={{color: 'gray'}}>Price</Text>
             </View>;
+  }
+
+  _splitOrder = () => {
+    axios.post('https://www.shareatpay.com/order/split', {partyId: this.state.partyId, orderId: '5b7485ea3cb45c9524de9064'});
   }
 
   render() {
@@ -83,8 +138,10 @@ export default class CheckSplitScreen extends Component<Props> {
         />
         <FlatList
           style={{marginTop: 15}}
-          data={this.state.data}
-          extraData={this.state}
+          data={this.state.selectedIndex ? 
+            this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
+            this.state.data}
+          extraData={this.state.refresh}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
           ListHeaderComponent={this._renderHeader}
@@ -94,7 +151,7 @@ export default class CheckSplitScreen extends Component<Props> {
           <Text> ${this.state.orderTotal/100} </Text>
         </View>
         <Text style={{color: 'gray'}}>Double Tap the Dishes You've Shared!</Text>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> this._splitOrder()} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>
         </TouchableOpacity>
       </View>
@@ -134,7 +191,7 @@ const styles = StyleSheet.create({
   restaurantText: {
     alignSelf: 'flex-start',
     fontSize: 18,
-    marginVertical: 10,
+    marginVertical: 15,
     color: 'black'
   },
   signupBtn: {
