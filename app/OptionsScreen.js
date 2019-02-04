@@ -23,11 +23,14 @@ export default class OptionsScreen extends Component<Props> {
     return (
       <ScrollView style={styles.container} resizeMode='contain' 
       contentContainerStyle={{flex:1, justifyContent: 'space-around', alignItems: 'center'}}>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
-            <Text style={styles.btnText}>SIGN IN</Text>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+            <Text style={styles.btnText}>Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
-            <Text style={styles.btnText}>SIGN IN</Text>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+            <Text style={styles.btnText}>Receipts</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
+            <Text style={styles.btnText}>Payment Methods</Text>
         </TouchableOpacity>
       </ScrollView>
     );
@@ -37,7 +40,7 @@ export default class OptionsScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    backgroundColor: '#B4D8ED',
+    backgroundColor: 'white',
   },
   signupBtn: {
     marginTop: 10,

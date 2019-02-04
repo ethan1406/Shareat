@@ -48,6 +48,7 @@
 		72B037A46F894824A66F9D48 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62C2EB184B2B43A986D20A30 /* Feather.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9C61B1FBA3674043A8A4C902 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 997FCFF1D9EE444AA2FE46E3 /* Octicons.ttf */; };
+		A21B5A7F2207F023004701CE /* TPSStripe in Resources */ = {isa = PBXBuildFile; fileRef = A21B5A582207F023004701CE /* TPSStripe */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		AEFC400EC9F949D2954489C5 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3CDB260AA54646999E4F9F9E /* EvilIcons.ttf */; };
 		C4494E0299644B60A2DD18CC /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78CCB917CBB843D2BF45FD70 /* Ionicons.ttf */; };
@@ -381,6 +382,7 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		916957A70C2E4581891608FC /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		997FCFF1D9EE444AA2FE46E3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		A21B5A582207F023004701CE /* TPSStripe */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TPSStripe; path = Shareat/TPSStripe; sourceTree = "<group>"; };
 		A42C0E35C6DE151A88E42CD1 /* Pods-Shareat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shareat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shareat/Pods-Shareat.debug.xcconfig"; sourceTree = "<group>"; };
 		A99129E9C07B48C9BE077E81 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 		13B07FAE1A68108700A75B9A /* Shareat */ = {
 			isa = PBXGroup;
 			children = (
+				A21B5A582207F023004701CE /* TPSStripe */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1183,6 +1186,7 @@
 				41FE133C30F2497CBEE33714 /* Foundation.ttf in Resources */,
 				C4494E0299644B60A2DD18CC /* Ionicons.ttf in Resources */,
 				2C991437A5204A95842D7D24 /* MaterialCommunityIcons.ttf in Resources */,
+				A21B5A7F2207F023004701CE /* TPSStripe in Resources */,
 				271C40E16CAA422399D0DC12 /* MaterialIcons.ttf in Resources */,
 				9C61B1FBA3674043A8A4C902 /* Octicons.ttf in Resources */,
 				2BA6E6809CE5456BA452FBDB /* SimpleLineIcons.ttf in Resources */,
@@ -1277,6 +1281,7 @@
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Stripe/Stripe.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1296,6 +1301,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Stripe.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

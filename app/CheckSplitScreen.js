@@ -40,6 +40,7 @@ export default class CheckSplitScreen extends Component<Props> {
       userId: ''
     };
 
+    //set up pusher to asynchronously update who are splitting the dishes
     this.pusher = new Pusher('96771d53b6966f07b9f3', {
         //authEndpoint: 'YOUR PUSHER AUTH SERVER ENDPOINT',
         cluster: 'us2',
@@ -58,7 +59,6 @@ export default class CheckSplitScreen extends Component<Props> {
       } else {
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
-        console.log(index);
         updatedOrders[index].buyers = updatedOrders[index].buyers.filter(buyer => buyer.userId != data.userId);
 
         this.setState({data: updatedOrders, refresh: !this.state.refresh});
@@ -102,7 +102,7 @@ export default class CheckSplitScreen extends Component<Props> {
     <OrderListItem
       id={item._id}
       title={item.name}
-      price={item.price}
+      price={this.state.selectedIndex? item.price/item.buyers.length : item.price}
       buyers={item.buyers}
       partyId={this.state.partyId}
     />
@@ -110,18 +110,28 @@ export default class CheckSplitScreen extends Component<Props> {
 
   _renderHeader = () => {
 
-    if(this.state.selectedIndex == 1 && 
-      this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)).length == 0) {
-      return null;
+    var priceTag = 'Price';
+    if(this.state.selectedIndex == 1) {
+      if(this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)).length == 0) {
+        return null;
+      } else {
+        priceTag = 'Price for You';
+      }
     }
     return  <View style={styles.headerContainer}>
               <Text style={{color: 'gray'}}>Item</Text>
-              <Text style={{color: 'gray'}}>Price</Text>
+              <Text style={{color: 'gray'}}>{priceTag}</Text>
             </View>;
   }
 
   _splitOrder = () => {
     axios.post('https://www.shareatpay.com/order/split', {partyId: this.state.partyId, orderId: '5b7485ea3cb45c9524de9064'});
+  }
+
+  _getindividualTotal = () => {
+    const individualOrders = this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId));
+    const individualPrice = individualOrders.reduce((total, order) => ( total + order.price/order.buyers.length), 0);
+    return (individualPrice/100).toFixed(2);
   }
 
   render() {
@@ -147,8 +157,8 @@ export default class CheckSplitScreen extends Component<Props> {
           ListHeaderComponent={this._renderHeader}
         />
         <View style={styles.orderTotalContainer}>
-          <Text style={{color: 'gray'}}>Your Total: </Text>
-          <Text> ${this.state.orderTotal/100} </Text>
+          <Text style={{color: 'gray'}}>{this.state.selectedIndex ? 'Your Total: ' : 'Group Total: '} </Text>
+          <Text> {this.state.selectedIndex ? `$${this._getindividualTotal()}`: `$${(this.state.orderTotal/100).toFixed(2)}`} </Text>
         </View>
         <Text style={{color: 'gray'}}>Double Tap the Dishes You've Shared!</Text>
         <TouchableOpacity style={styles.signupBtn} onPress={()=> this._splitOrder()} color='#000000'>

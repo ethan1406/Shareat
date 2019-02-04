@@ -16,6 +16,7 @@ import MapScreen from './MapScreen';
 import OptionsScreen from './OptionsScreen';
 import QrCodeScreen from './QrCodeScreen';
 import CheckSplitScreen from './CheckSplitScreen';
+import PaymentMethodsScreen from './PaymentMethodsScreen';
 import {TouchableOpacity, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -25,6 +26,18 @@ const CheckNavigator = createStackNavigator(
   {
     QR: QrCodeScreen,
     Check: CheckSplitScreen, 
+  },
+  {
+    defaultNavigationOptions: {
+      header: null,
+    }
+  }
+);
+
+const OptionNavigator = createStackNavigator(
+  {
+    Options: OptionsScreen,
+    PaymentMethods: PaymentMethodsScreen
   },
   {
     defaultNavigationOptions: {
@@ -60,7 +73,7 @@ const main = createBottomTabNavigator({
         },
       },
       Options: {
-        screen: OptionsScreen,
+        screen: OptionNavigator,
         navigationOptions: {
           tabBarLabel: '',
           tabBarIcon: ({ tintColor, focused }) => (

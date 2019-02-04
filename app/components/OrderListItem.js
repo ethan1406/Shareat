@@ -35,7 +35,7 @@ export default class OrderListItem extends Component<Props> {
               </View>
             ))}
           </View>
-          <Text style={{color: 'black'}}>${this.props.price/100}</Text>
+          <Text style={{color: 'black'}}>${(this.props.price/100).toFixed(2)}</Text>
         </View>
       </TouchableOpacity>
     );

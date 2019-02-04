@@ -2,6 +2,7 @@
 # platform :ios, '9.0'
 
 target 'Shareat' do
+  pod 'Stripe', '~> 14.0.0'
   rn_path = '../node_modules/react-native'
   rn_maps_path = '../node_modules/react-native-maps'
 
@@ -42,6 +43,8 @@ target 'Shareat' do
   pod 'react-native-camera', path: '../node_modules/react-native-camera'
 
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
 
 end
 
