@@ -19,7 +19,7 @@ export default class FirstScreen extends Component<Props> {
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
-        <Image style={styles.coverImage} source={require('./img/orange.png')}/>
+        <Image style={styles.coverImage} source={require('./img/shareat_logo3.png')}/>
         <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Signup')} color='#000000'>
             <Text style={styles.btnText}>SIGN UP</Text>
         </TouchableOpacity>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#B4D8ED',
+    backgroundColor: 'white',
   },
   loginContainer: {
     flex: 1,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     textAlign: 'center',
-    color: 'white',
+    color: 'gray',
     margin: 10,
   },
   instructions: {

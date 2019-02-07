@@ -32,6 +32,9 @@ export default class OptionsScreen extends Component<Props> {
         <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
             <Text style={styles.btnText}>Payment Methods</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
+            <Text style={styles.btnText}>Rewards</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }

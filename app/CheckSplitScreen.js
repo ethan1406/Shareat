@@ -8,7 +8,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage, Image} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Pusher from 'pusher-js/react-native';
@@ -88,6 +88,16 @@ export default class CheckSplitScreen extends Component<Props> {
     
   }
 
+  static navigationOptions = ({navigation}) => {
+    return{
+      headerLeft:( 
+        <TouchableOpacity onPress={() => navigation.navigate('QR')}>
+           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+        </TouchableOpacity>
+      ),
+      headerTransparent: true
+    };
+  }
 
   _keyExtractor = (item) => item._id;
 
@@ -124,9 +134,6 @@ export default class CheckSplitScreen extends Component<Props> {
             </View>;
   }
 
-  _splitOrder = () => {
-    axios.post('https://www.shareatpay.com/order/split', {partyId: this.state.partyId, orderId: '5b7485ea3cb45c9524de9064'});
-  }
 
   _getindividualTotal = () => {
     const individualOrders = this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId));
@@ -161,7 +168,12 @@ export default class CheckSplitScreen extends Component<Props> {
           <Text> {this.state.selectedIndex ? `$${this._getindividualTotal()}`: `$${(this.state.orderTotal/100).toFixed(2)}`} </Text>
         </View>
         <Text style={{color: 'gray'}}>Double Tap the Dishes You've Shared!</Text>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> this._splitOrder()} color='#000000'>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Confirmation', {
+              data: this.state.data, 
+              restaurantName: this.state.restaurantName,
+              orderTotal: this.state.orderTotal,
+              userId: this.state.userId
+            })} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>
         </TouchableOpacity>
       </View>
@@ -182,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-end',
     marginRight: 10,
-    marginBottom: 60
+    marginBottom: 60,
   },
   headerContainer: {
     flexDirection:'row',
@@ -201,7 +213,9 @@ const styles = StyleSheet.create({
   restaurantText: {
     alignSelf: 'flex-start',
     fontSize: 18,
-    marginVertical: 15,
+    marginTop: 40,
+    marginLeft: 15,
+    marginBottom: 15,
     color: 'black'
   },
   signupBtn: {

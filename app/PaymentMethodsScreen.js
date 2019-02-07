@@ -32,36 +32,42 @@ export default class PaymentMethodsScreen extends Component<Props> {
 
     const theme = {
       primaryBackgroundColor: 'white',
-      secondaryBackgroundColor: '#B4D8ED',
-      primaryForegroundColor: '#F3A545',
-      secondaryForegroundColor: 'orange',
-      accentColor: 'purple',
+      secondaryBackgroundColor: 'white',
+      primaryForegroundColor: 'gray',
+      secondaryForegroundColor: '#F3A545',
+      accentColor: '#F3A545',
       errorColor: 'red'
     };
     const options = {
       smsAutofillDisabled: true,
-      requiredBillingAddressFields: 'zip', // or 'full'
+      requiredBillingAddressFields: 'full', // or 'full'
       theme
     };
     stripe.paymentRequestWithCardForm(options)
       .then(response => {
         // Get the token from the response, and send to your server
+        
+        //axios.post(baseURL + '/user/payment', {tokenId: response.tokenId});
+
+        //this.props.navigation.navigate('OptionsScreen');
       })
       .catch(error => {
         // Handle error
+        console.warn('Payment failed', { error });
+
       });
   }
 
-  static navigationOptions = ({navigation}) => {
-    return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('First')}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      headerTransparent: true
-    };
-  }
+  // static navigationOptions = ({navigation}) => {
+  //   return{
+  //     headerLeft:( 
+  //       <TouchableOpacity onPress={() => navigation.navigate('First')}>
+  //          <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+  //       </TouchableOpacity>
+  //     ),
+  //     headerTransparent: true
+  //   };
+  // }
 
 
   render() {

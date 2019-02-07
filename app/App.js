@@ -17,6 +17,8 @@ import OptionsScreen from './OptionsScreen';
 import QrCodeScreen from './QrCodeScreen';
 import CheckSplitScreen from './CheckSplitScreen';
 import PaymentMethodsScreen from './PaymentMethodsScreen';
+import ConfirmationScreen from './ConfirmationScreen';
+import RewardsScreen from './RewardsScreen';
 import {TouchableOpacity, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -26,23 +28,20 @@ const CheckNavigator = createStackNavigator(
   {
     QR: QrCodeScreen,
     Check: CheckSplitScreen, 
-  },
-  {
-    defaultNavigationOptions: {
-      header: null,
-    }
+    Confirmation: ConfirmationScreen
   }
 );
 
 const OptionNavigator = createStackNavigator(
   {
-    Options: OptionsScreen,
-    PaymentMethods: PaymentMethodsScreen
-  },
-  {
-    defaultNavigationOptions: {
-      header: null,
-    }
+    Options: {
+      screen: OptionsScreen,
+      navigationOptions: {
+        title: 'Profile'
+      }
+    },
+    PaymentMethods: PaymentMethodsScreen,
+    Rewards: RewardsScreen
   }
 );
 

@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#B4D8ED',
+    backgroundColor: 'white',
   },
   stack: {
     width: '100%',

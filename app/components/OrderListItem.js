@@ -25,7 +25,8 @@ export default class OrderListItem extends Component<Props> {
 
   render() {
     return (
-      <TouchableOpacity onPress={this._handleDoubleTap}>
+      this.props.confirmation ?
+      (<View>
         <View style={styles.cellContainer}>
           <Text style={{color: 'black', width: '40%'}} numberOfLines={3}>{this.props.title}</Text>
           <View style={styles.sharedByContainer}>
@@ -37,7 +38,22 @@ export default class OrderListItem extends Component<Props> {
           </View>
           <Text style={{color: 'black'}}>${(this.props.price/100).toFixed(2)}</Text>
         </View>
-      </TouchableOpacity>
+      </View>)
+      :
+    (<TouchableOpacity onPress={this._handleDoubleTap}>
+        <View style={styles.cellContainer}>
+          <Text style={{color: 'black', width: '40%'}} numberOfLines={3}>{this.props.title}</Text>
+          <View style={styles.sharedByContainer}>
+            {this.props.buyers.map((buyer, index) => (
+              <View style={styles.bubble} key={index}>
+                <Text style={{color: 'white'}}>{buyer.firstName[0]}{buyer.lastName[0]}</Text>
+              </View>
+            ))}
+          </View>
+          <Text style={{color: 'black'}}>${(this.props.price/100).toFixed(2)}</Text>
+        </View>
+      </TouchableOpacity>)
+
     );
   }
 }
