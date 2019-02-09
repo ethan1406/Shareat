@@ -35,7 +35,10 @@ export default class RewardsScreen extends Component<Props> {
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
-
+        <View style={[styles.totalContainer]} color='#000000'>
+            <Text style={[styles.btnText]}>Total</Text>
+            <Text style={[styles.rightText]}>ha</Text>
+        </View>
       </View>
     );
   }
@@ -48,5 +51,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
+  },
+  totalContainer: {
+    width: '100%',
+    height: 30,
+    backgroundColor: '#F3A545',
+    borderRadius: 2,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  },
+  btnText: {
+    color:'white',
+    textAlign:'left',
+    marginLeft: 15,
+    paddingTop: 7
+  },
+  rightText: {
+    color:'white',
+    textAlign:'right',
+    marginRight: 15,
+    paddingTop: 7
   }
 });

@@ -12,6 +12,7 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Touchable
   FlatList, Image, KeyboardAvoidingView} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
+import Dialog from 'react-native-dialog';
 import stripe from 'tipsi-stripe';
 
 import OrderListItem from './components/OrderListItem';
@@ -41,10 +42,11 @@ export default class ConfirmationScreen extends Component<Props> {
       individualTotal: individualTotal,
       tax: tax,
       tip: tip,
+      customTip: '',
       tipRate: 0,
       selectedIndex: 0,
       refresh: false,
-      showCustomTip: false
+      dialogVisible: false
     };
   }
 
@@ -106,9 +108,9 @@ export default class ConfirmationScreen extends Component<Props> {
       partyId={this.state.partyId}
       confirmation={true}
     />
-  );
+  )
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item._id
 
   _handleIndexChange = (index) => {
     var tipRate = 0.12;
@@ -121,7 +123,7 @@ export default class ConfirmationScreen extends Component<Props> {
     } else if (index == 3) {
       this.setState({...this.state,
         selectedIndex: index, 
-        showCustomTip: true});
+        dialogVisible: true});
       return;
     }
     var tip = (this.state.individualPrice + this.state.tax) * tipRate;
@@ -130,43 +132,26 @@ export default class ConfirmationScreen extends Component<Props> {
     this.setState({
       ...this.state,
       selectedIndex: index,
-      showCustomTip: false,
       individualTotal,
       tip
     });
   }
 
-  _handleCustomTip = (tipRate) => {
-    var tip = (this.state.individualPrice + this.state.tax) * tipRate/100;
-    var individualTotal = tip + this.state.individualPrice + this.state.tax;
+  _handleCustomTip = () => {
+    var individualTotal = this.state.customTip + this.state.individualPrice + this.state.tax;
 
     this.setState({
       ...this.state,
       individualTotal,
-      tip,
-      tipRate
+      tip: this.state.customTip,
+      dialogVisible: false
     });
-    
-  }
-
-  _renderCustomTipInput = () => {
-    if(this.state.showCustomTip) {
-      return (
-       <KeyboardAvoidingView behavior='padding' style={styles.feeContainer}>
-          <Text>  </Text>
-          <TextInput style={[styles.textInput]} multiline={false} keyboardType='numeric'
-            value={this.state.customRateText} placeholder='Tip Amount %' onChangeText={(tipRate) => this._handleCustomTip(tipRate)}/>
-          <Text style={{marginRight: 25}}>%</Text>
-        </KeyboardAvoidingView>
-      );
-    }
-    return null;
   }
 
 
   render() {
     return (
-      <View style={styles.container} resizeMode='contain'>
+      <View behavior='behavior' style={styles.container} resizeMode='contain'>
         <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
         <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._requestPaymentMethod();}} color='#000000'>
             <Text style={styles.btnText}>Payment Method</Text>
@@ -178,14 +163,15 @@ export default class ConfirmationScreen extends Component<Props> {
         <View style={[styles.signupBtn]} color='#000000'>
             <Text style={[styles.btnText]}>Orders</Text>
         </View>
-        <FlatList
-          data={this.state.data}
-          extraData={this.state.refresh}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-          ListHeaderComponent={this._renderHeader}
-        />
-        
+        <View style={styles.flastListContainer}>
+          <FlatList
+            data={this.state.data}
+            extraData={this.state.refresh}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
+            ListHeaderComponent={this._renderHeader}
+          />
+        </View>
         <View style={styles.tipContainer}>
             <View style={[styles.totalContainer]} color='#000000'>
                 <Text style={[styles.btnText]}>Total</Text>
@@ -214,29 +200,36 @@ export default class ConfirmationScreen extends Component<Props> {
                 onTabPress={this._handleIndexChange}
               />
             </View>
-            {this._renderCustomTipInput()}
         </View>
-        <TouchableOpacity style={[styles.signupBtn, {alignItems: 'center'}]} onPress={()=> {}} color='#000000'>
+        <TouchableOpacity style={[styles.signupBtn, {alignItems: 'center'}]} onPress={()=> {this.showDialog();}} color='#000000'>
             <Text style={[styles.btnText, {marginLeft: 0}]}>Confirm & Pay</Text>
         </TouchableOpacity>
+        <Dialog.Container visible={this.state.dialogVisible}>
+          <Dialog.Title>Custom Tip</Dialog.Title>
+          <Dialog.Description>
+            Please enter the amount of tip you want to give.
+          </Dialog.Description>
+          <Dialog.Input multiline={false} keyboardType='numeric'
+           placeholder='Custom Tip' onChangeText={(customTip) => this.setState({customTip: customTip*100})} />
+          <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
+          <Dialog.Button label="Enter" onPress={()=> {this._handleCustomTip();}} />
+        </Dialog.Container>
       </View>
     );
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 50,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
   },
   tipContainer: {
     flex: 1,
-    marginTop: -25,
-    marginBottom: 150,
+    marginTop: 0,
     width: '100%',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -257,16 +250,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
+  flastListContainer: {
+    height: 200,
+    marginBottom: -40
+  },
   restaurantText: {
     alignSelf: 'flex-start',
     fontSize: 18,
-    marginTop: 40,
+    marginTop: 20,
     marginLeft: 15,
     marginBottom: 15,
     color: 'black'
   },
   signupBtn: {
-    marginTop: 5,
     marginBottom: 0,
     width: '100%',
     height: 30,

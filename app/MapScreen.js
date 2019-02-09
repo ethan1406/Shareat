@@ -32,6 +32,7 @@ export default class MapScreen extends Component<Props> {
       },
       markers: [],
       errorMessage: null,
+      searchString: '',
     };
   }
 
@@ -110,9 +111,9 @@ export default class MapScreen extends Component<Props> {
           ))}
         </MapView>
         <View style={styles.buttonContainer}>
-          <TextInput
-            style={styles.bubble}
-            placeholder='search for restaurants'
+          <TextInput style={styles.textInput}  value={this.state.searchString}  
+            onChangeText={(searchString) => this.setState({searchString})}
+            placeholder='search for restaurants' multiline={false}
           />
         </View>
         
@@ -132,20 +133,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  searchBar: {
-    flexDirection: 'row',
-    marginVertical: 100,
-  },
   buttonContainer: {
     flexDirection: 'row',
-    marginBottom: 600,
+    marginVertical: 480,
     backgroundColor: 'white',
     width: '80%'
   },
-  bubble: {
+  textInput: {
     backgroundColor: 'rgba(255,255,255,0.7)',
+    color: 'black',
     paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 20,
+    height: 50,
+    borderRadius: 20 
   },
 });
