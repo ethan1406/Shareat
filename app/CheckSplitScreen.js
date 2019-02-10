@@ -115,11 +115,11 @@ export default class CheckSplitScreen extends Component<Props> {
       price={this.state.selectedIndex? item.price/item.buyers.length : item.price}
       buyers={item.buyers}
       partyId={this.state.partyId}
+      confirmation={false}
     />
   );
 
   _renderHeader = () => {
-
     var priceTag = 'Price';
     if(this.state.selectedIndex == 1) {
       if(this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)).length == 0) {
@@ -171,7 +171,6 @@ export default class CheckSplitScreen extends Component<Props> {
         <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Confirmation', {
               data: this.state.data, 
               restaurantName: this.state.restaurantName,
-              orderTotal: this.state.orderTotal,
               userId: this.state.userId
             })} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>
@@ -180,7 +179,6 @@ export default class CheckSplitScreen extends Component<Props> {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {

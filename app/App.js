@@ -28,7 +28,8 @@ const CheckNavigator = createStackNavigator(
   {
     QR: QrCodeScreen,
     Check: CheckSplitScreen, 
-    Confirmation: ConfirmationScreen
+    Confirmation: ConfirmationScreen,
+    PaymentMethods: PaymentMethodsScreen
   }
 );
 

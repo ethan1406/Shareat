@@ -56,6 +56,7 @@ export default class SignupScreen extends Component<Props> {
           await AsyncStorage.setItem('userId',response.data.id);
           await AsyncStorage.setItem('firstName',response.data.firstName);
           await AsyncStorage.setItem('lastName',response.data.lastName);
+          await AsyncStorage.setItem('loyaltyPoints', JSON.stringify(response.data.loyaltyPoints));
         } catch (err) {
           console.log(err);
         }
@@ -115,13 +116,13 @@ const styles = StyleSheet.create({
   },
   welcome: {
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     margin: 10,
   },
   loginMessage: {
     textAlign: 'center',
     fontSize: 18,
-    color: 'white'
+    color: 'black'
   },
   errorMessage: {
     textAlign: 'center',

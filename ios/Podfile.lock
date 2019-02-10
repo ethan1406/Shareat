@@ -43,6 +43,8 @@ PODS:
     - React
   - react-native-maps (0.23.0):
     - React
+  - React/ART (0.58.0):
+    - React/Core
   - React/Core (0.58.0):
     - yoga (= 0.58.0.React)
   - React/CxxBridge (0.58.0):
@@ -109,6 +111,7 @@ DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - React/ART (from `../node_modules/react-native`)
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
@@ -176,6 +179,6 @@ SPEC CHECKSUMS:
   tipsi-stripe: 237cab79699eb7d354bfc09238b3284e3b8dad84
   yoga: 0885622311729a02c2bc02dca97167787a51488b
 
-PODFILE CHECKSUM: 60f781b1dc416f7d582f98b5bdb60acc0d4b9886
+PODFILE CHECKSUM: 5d36389b82ed98f970c79442dbcb41b6ddfb51a5
 
 COCOAPODS: 1.5.3

@@ -9,6 +9,7 @@ target 'Shareat' do
   # See http://facebook.github.io/react-native/docs/integration-with-existing-apps.html#configuring-cocoapods-dependencies
   pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
   pod 'React', path: rn_path, subspecs: [
+    'ART',
     'Core',
     'CxxBridge',
     'DevSupport',
@@ -45,6 +46,8 @@ target 'Shareat' do
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
 
   pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
+
+  pod 'RNAwesomeCardIO', :path => '../node_modules/react-native-awesome-card-io'
 
 end
 

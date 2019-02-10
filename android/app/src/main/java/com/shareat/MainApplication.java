@@ -3,6 +3,7 @@ package com.shareat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.cardio.RNCardIOPackage;
 import com.gettipsi.stripe.StripeReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCardIOPackage(),
             new StripeReactPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()

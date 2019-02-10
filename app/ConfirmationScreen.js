@@ -9,12 +9,12 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableHighlight, 
-  FlatList, Image, KeyboardAvoidingView} from 'react-native';
+  FlatList, Image} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Dialog from 'react-native-dialog';
-import stripe from 'tipsi-stripe';
 
+import {baseURL} from './Constants';
 import OrderListItem from './components/OrderListItem';
 
 
@@ -46,47 +46,11 @@ export default class ConfirmationScreen extends Component<Props> {
       tipRate: 0,
       selectedIndex: 0,
       refresh: false,
-      dialogVisible: false
+      dialogVisible: false,
+      card: {brand: ''}
     };
   }
 
-  componentDidMount() {  
-    stripe.setOptions({
-      publishableKey: 'pk_test_x9efkreYwQ5wlmqXXc2paByL',
-    });
-
-  }
-
-  _requestPaymentMethod = () => {
-    const theme = {
-      primaryBackgroundColor: 'white',
-      secondaryBackgroundColor: 'white',
-      primaryForegroundColor: 'gray',
-      secondaryForegroundColor: '#F3A545',
-      accentColor: '#F3A545',
-      errorColor: 'red'
-    };
-    const options = {
-      smsAutofillDisabled: true,
-      requiredBillingAddressFields: 'full', // or 'full'
-      theme
-    };
-
-    stripe.paymentRequestWithCardForm(options)
-      .then(response => {
-        // Get the token from the response, and send to your server
-        
-        //axios.post(baseURL + '/user/payment', {tokenId: response.tokenId});
-
-        //this.props.navigation.navigate('OptionsScreen');
-      })
-      .catch(error => {
-        // Handle error
-        console.log('Payment failed', { error });
-
-      });
-  }
-  
   static navigationOptions = ({navigation}) => {
     return{
       headerLeft:( 
@@ -97,6 +61,47 @@ export default class ConfirmationScreen extends Component<Props> {
       title: 'Confirmation',
       headerTransparent: true
     };
+  }
+
+   async componentDidMount() {
+    try {
+      const response = await axios.get(baseURL + '/user/listCards');
+      this.setState({card: response.data.data[0]});
+    } catch (err) {
+      this.setState({errorMessage: err.response.data.error});
+    }
+  }
+
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    async payload => {
+        try {
+        const response = await axios.get(baseURL + '/user/listCards');
+        this.setState({card: response.data.data[0]});
+      } catch (err) {
+        this.setState({errorMessage: err.response.data.error});
+      }
+    }
+  );
+
+  _getCardImage = (brandName, tintColor) => {
+    const brandLower = brandName.toLowerCase();
+    if (brandLower === 'visa') {
+      return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_visa.png')} />);
+    } else if (brandLower === 'mastercard') {
+      return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_mastercard.png')} />);
+    } else if (brandLower === 'american express') {
+      return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_amex.png')} />);
+    } else if (brandLower === 'apple pay') {
+      return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_applepay.png')} />);
+    } else if (brandLower === 'discover') {
+      return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_discover.png')} />);
+    }
+    return (<View />);
+  }
+
+  onSelect = data => {
+    this.setState(data);
   }
 
   _renderItem = ({item}) => (
@@ -151,14 +156,18 @@ export default class ConfirmationScreen extends Component<Props> {
 
   render() {
     return (
-      <View behavior='behavior' style={styles.container} resizeMode='contain'>
+      <View style={styles.container} resizeMode='contain'>
         <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._requestPaymentMethod();}} color='#000000'>
+        <TouchableOpacity style={styles.totalContainer} 
+          onPress={()=> {this.props.navigation.navigate('PaymentMethods', {onSelect: this.onSelect.bind(this)});}} 
+          color='#000000'>
             <Text style={styles.btnText}>Payment Method</Text>
+            <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
-
-        <View style={[styles.signupBtn, {backgroundColor: 'white'}]} onPress={()=> {this._requestPaymentMethod();}} color='#000000'>
-            <Text style={[styles.btnText, {color: 'black'}]}>MasterCard</Text>
+        <View style={[styles.signupBtn, {backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', height: 45}]} 
+          color='#000000'>
+            {this._getCardImage(this.state.card.brand, '#F3A545')}
+            <Text>{`${this.state.card.brand} Ending in ${this.state.card.last4}`}</Text>
         </View>
         <View style={[styles.signupBtn]} color='#000000'>
             <Text style={[styles.btnText]}>Orders</Text>

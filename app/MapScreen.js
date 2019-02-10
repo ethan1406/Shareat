@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginVertical: 480,
+    position: 'absolute',
+    top: 80,
     backgroundColor: 'white',
     width: '80%'
   },
