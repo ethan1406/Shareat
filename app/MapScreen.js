@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableHighlight} from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import axios from 'axios';
 
@@ -36,6 +36,11 @@ export default class MapScreen extends Component<Props> {
     };
   }
 
+  static navigationOptions = ({navigation}) => {
+    return{
+      headerTransparent: true
+    };
+  }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
@@ -64,6 +69,8 @@ export default class MapScreen extends Component<Props> {
             marker['coordinate']['latitude'] = merchant.location.latitude;
             marker['coordinate']['longitude'] = merchant.location.longitude;
             marker['title'] = merchant.name;
+            marker['description'] = merchant.description;
+            marker['_id'] = merchant._id;
             markers.push(marker);
           });
           this.setState({markers: markers});
@@ -91,6 +98,11 @@ export default class MapScreen extends Component<Props> {
 //               />
 //             );
 //           }})}
+  _lookupRestaurant = (restaurantId) => {
+    console.log(restaurantId);
+    this.props.navigation.navigate('Restaurant');
+  }
+
 
   render() {
     return (
@@ -104,10 +116,16 @@ export default class MapScreen extends Component<Props> {
             <Marker
               key={index}
               title={marker.title}
-              description={'test description'}
+              description={marker.description}
               coordinate={marker.coordinate}
               pinColor={'#F3A545'}
-            />
+            >
+                  <MapView.Callout tooltip={true} onPress={() => {this._lookupRestaurant(marker._id);}}>
+                        <View style={styles.calloutText}>
+                            <Text>{marker.title}{'\n'}{marker.description}</Text>
+                        </View>
+                  </MapView.Callout>
+            </Marker>
           ))}
         </MapView>
         <View style={styles.buttonContainer}>
@@ -132,6 +150,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
+  },
+  calloutText: {
+    // backgroundColor: 'white',
+    // marginHorizontal: 5
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -19,6 +19,7 @@ import CheckSplitScreen from './CheckSplitScreen';
 import PaymentMethodsScreen from './PaymentMethodsScreen';
 import ConfirmationScreen from './ConfirmationScreen';
 import RewardsScreen from './RewardsScreen';
+import RestaurantScreen from './RestaurantScreen';
 import {TouchableOpacity, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -30,6 +31,14 @@ const CheckNavigator = createStackNavigator(
     Check: CheckSplitScreen, 
     Confirmation: ConfirmationScreen,
     PaymentMethods: PaymentMethodsScreen
+  }
+);
+
+
+const mapNavigator = createStackNavigator(
+  {
+    Map: MapScreen,
+    Restaurant: RestaurantScreen
   }
 );
 
@@ -49,7 +58,7 @@ const OptionNavigator = createStackNavigator(
 
 const main = createBottomTabNavigator({
       Map: {
-        screen: MapScreen,
+        screen: mapNavigator,
         navigationOptions: {
           tabBarIcon: ({ tintColor, focused }) => (
             <Ionicons

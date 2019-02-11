@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableHighlight, 
-  FlatList, Image} from 'react-native';
+  FlatList, Image, ScrollView, Dimensions} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Dialog from 'react-native-dialog';
@@ -21,6 +21,8 @@ import OrderListItem from './components/OrderListItem';
 type Props = {};
 
 const taxRate = 0.095;
+const screenHeight = Dimensions.get('window').height;
+const screenWidth= Dimensions.get('window').width;
 
 export default class ConfirmationScreen extends Component<Props> {
 
@@ -235,6 +237,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
+    height: screenHeight,
+    width: screenWidth
   },
   tipContainer: {
     flex: 1,
