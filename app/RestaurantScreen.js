@@ -17,9 +17,23 @@ export default class RestaurantScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
+
+    //var params = this.props.navigation.state.params;
+
     this.state = { 
 
-     };
+    };
+  }
+
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerLeft:( 
+        <TouchableOpacity onPress={() => navigation.navigate('Map')}>
+           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+        </TouchableOpacity>
+      ),
+      title: navigation.state.params.restaurantName
+    };
   }
 
 

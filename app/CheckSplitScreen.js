@@ -32,6 +32,7 @@ export default class CheckSplitScreen extends Component<Props> {
       loading: false,
       data: params.data,
       restaurantName: params.restaurantName,
+      restaurantId: params.restaurantId,
       orderTotal: params.orderTotal,
       error: null,
       refreshing: false,
@@ -171,6 +172,7 @@ export default class CheckSplitScreen extends Component<Props> {
         <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Confirmation', {
               data: this.state.data, 
               restaurantName: this.state.restaurantName,
+              restaurantId: this.state.restaurantId,
               userId: this.state.userId
             })} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>

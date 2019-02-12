@@ -35,11 +35,14 @@ export default class ConfirmationScreen extends Component<Props> {
     var individualPrice = myOrders.reduce((total, order) => ( total + order.price/order.buyers.length), 0);
     var tax = individualPrice * taxRate;
     var tip = (tax + individualPrice) * 0.12;
-    var individualTotal = individualPrice + tax + tip;
+    var individualTotal = parseInt(individualPrice + tax + tip, 10);
+
+    console.log(params.restaurantId);
 
     this.state = {
       data: myOrders,
       restaurantName: params.restaurantName,
+      restaurantId: params.restaurantId,
       individualPrice: individualPrice,
       individualTotal: individualTotal,
       tax: tax,
@@ -134,7 +137,7 @@ export default class ConfirmationScreen extends Component<Props> {
       return;
     }
     var tip = (this.state.individualPrice + this.state.tax) * tipRate;
-    var individualTotal = tip + this.state.individualPrice + this.state.tax;
+    var individualTotal = parseInt(tip + this.state.individualPrice + this.state.tax, 10);
     
     this.setState({
       ...this.state,
@@ -145,7 +148,7 @@ export default class ConfirmationScreen extends Component<Props> {
   }
 
   _handleCustomTip = () => {
-    var individualTotal = this.state.customTip + this.state.individualPrice + this.state.tax;
+    var individualTotal = parseInt(this.state.customTip + this.state.individualPrice + this.state.tax, 10);
 
     this.setState({
       ...this.state,
@@ -153,6 +156,17 @@ export default class ConfirmationScreen extends Component<Props> {
       tip: this.state.customTip,
       dialogVisible: false
     });
+  }
+
+  _confirmAndPay = async () => {
+    try {
+      await axios.post(baseURL + '/user/makePayment/', 
+        {amount: this.state.individualTotal, restaurantId: this.state.restaurantId});
+    } catch (err) {
+      console.log(err);
+    }
+
+    this.props.navigation.navigate('QR');
   }
 
 
@@ -212,7 +226,7 @@ export default class ConfirmationScreen extends Component<Props> {
               />
             </View>
         </View>
-        <TouchableOpacity style={[styles.signupBtn, {alignItems: 'center'}]} onPress={()=> {this.showDialog();}} color='#000000'>
+        <TouchableOpacity style={[styles.signupBtn, {alignItems: 'center'}]} onPress={()=> {this._confirmAndPay();}} color='#000000'>
             <Text style={[styles.btnText, {marginLeft: 0}]}>Confirm & Pay</Text>
         </TouchableOpacity>
         <Dialog.Container visible={this.state.dialogVisible}>

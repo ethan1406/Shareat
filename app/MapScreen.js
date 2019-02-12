@@ -98,9 +98,11 @@ export default class MapScreen extends Component<Props> {
 //               />
 //             );
 //           }})}
-  _lookupRestaurant = (restaurantId) => {
+  _lookupRestaurant = (restaurantId, restaurantName) => {
     console.log(restaurantId);
-    this.props.navigation.navigate('Restaurant');
+    this.props.navigation.navigate('Restaurant', {
+      restaurantName, restaurantId
+    });
   }
 
 
@@ -120,9 +122,10 @@ export default class MapScreen extends Component<Props> {
               coordinate={marker.coordinate}
               pinColor={'#F3A545'}
             >
-                  <MapView.Callout tooltip={true} onPress={() => {this._lookupRestaurant(marker._id);}}>
+                  <MapView.Callout tooltip={true} onPress={() => {this._lookupRestaurant(marker._id, marker.title);}}>
                         <View style={styles.calloutText}>
-                            <Text>{marker.title}{'\n'}{marker.description}</Text>
+                            <Text style={{fontSize:14}}>{marker.title}</Text>
+                            <Text style={{fontSize:11, color: 'gray'}}>{marker.description}</Text>
                         </View>
                   </MapView.Callout>
             </Marker>
@@ -152,8 +155,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   calloutText: {
-    // backgroundColor: 'white',
-    // marginHorizontal: 5
+    backgroundColor: 'white',
+    padding: 8
   },
   buttonContainer: {
     flexDirection: 'row',

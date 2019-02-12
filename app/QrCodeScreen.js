@@ -24,6 +24,7 @@ export default class QrCodeScreen extends Component<Props> {
         restaurantName: response.data.restaurantName,
         orderTotal: response.data.orderTotal,
         partyId: response.data._id,
+        restaurantId: response.data.restaurantId
       });
     }).catch((err) => {
       console.log(err);
