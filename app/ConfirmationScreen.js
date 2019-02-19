@@ -19,10 +19,9 @@ import OrderListItem from './components/OrderListItem';
 
 
 type Props = {};
-
-const taxRate = 0.095;
 const screenHeight = Dimensions.get('window').height;
 const screenWidth= Dimensions.get('window').width;
+const taxRate = 0.095;
 
 export default class ConfirmationScreen extends Component<Props> {
 
@@ -37,10 +36,9 @@ export default class ConfirmationScreen extends Component<Props> {
     var tip = (tax + individualPrice) * 0.12;
     var individualTotal = parseInt(individualPrice + tax + tip, 10);
 
-    console.log(params.restaurantId);
-
     this.state = {
       data: myOrders,
+      colorMap: params.colorMap,
       restaurantName: params.restaurantName,
       restaurantId: params.restaurantId,
       individualPrice: individualPrice,
@@ -116,9 +114,17 @@ export default class ConfirmationScreen extends Component<Props> {
       price={item.price/item.buyers.length}
       buyers={item.buyers}
       partyId={this.state.partyId}
+      colorMap={this.state.colorMap}
       confirmation={true}
     />
   )
+
+  _renderHeader = () => {
+    return  <View style={styles.headerContainer}>
+              <Text style={{color: 'gray'}}>Item</Text>
+              <Text style={{color: 'gray'}}>Price for you</Text>
+            </View>;
+  }
 
   _keyExtractor = (item) => item._id
 
@@ -173,60 +179,62 @@ export default class ConfirmationScreen extends Component<Props> {
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
+      <ScrollView style={{height:screenHeight, width:screenWidth}} showsVerticalScrollIndicator={false}>
         <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
-        <TouchableOpacity style={styles.totalContainer} 
-          onPress={()=> {this.props.navigation.navigate('PaymentMethods', {onSelect: this.onSelect.bind(this)});}} 
-          color='#000000'>
-            <Text style={styles.btnText}>Payment Method</Text>
-            <Text style={styles.rightText}> > </Text>
-        </TouchableOpacity>
-        <View style={[styles.signupBtn, {backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', height: 45}]} 
-          color='#000000'>
-            {this._getCardImage(this.state.card.brand, '#F3A545')}
-            <Text>{`${this.state.card.brand} Ending in ${this.state.card.last4}`}</Text>
-        </View>
-        <View style={[styles.signupBtn]} color='#000000'>
-            <Text style={[styles.btnText]}>Orders</Text>
-        </View>
-        <View style={styles.flastListContainer}>
-          <FlatList
-            data={this.state.data}
-            extraData={this.state.refresh}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
-            ListHeaderComponent={this._renderHeader}
-          />
-        </View>
-        <View style={styles.tipContainer}>
-            <View style={[styles.totalContainer]} color='#000000'>
-                <Text style={[styles.btnText]}>Total</Text>
-                <Text style={[styles.rightText]}> {`$${(this.state.individualTotal/100).toFixed(2)}`}</Text>
-            </View>
-            <View style={[styles.feeContainer]}>
-              <Text style={{marginLeft: 15}}>Subtotal </Text>
-              <Text style={{marginRight: 15}}>{`$${(this.state.individualPrice/100).toFixed(2)}`}</Text>
-            </View>
-            <View style={styles.feeContainer}>
-              <Text style={{marginLeft: 15}}>Tax & Fees </Text>
-              <Text style={{marginRight: 15}}>{`$${(this.state.tax/100).toFixed(2)}`}</Text>
-            </View>
-            <View style={styles.feeContainer}>
-              <Text style={{marginLeft: 15}}>Tip </Text>
-              <Text style={{marginRight: 15}}>{`$${(this.state.tip/100).toFixed(2)}`}</Text>
-            </View>
-            <View style={styles.feeContainer}>
-              <SegmentedControlTab
-                values={['12%', '15%', '18%', 'Custom']}
-                tabsContainerStyle={styles.tabsContainerStyle}
-                tabStyle={styles.tabStyle}
-                activeTabStyle={styles.activeTabStyle}
-                tabTextStyle={styles.tabTextStyle}
-                selectedIndex={this.state.selectedIndex}
-                onTabPress={this._handleIndexChange}
-              />
-            </View>
-        </View>
-        <TouchableOpacity style={[styles.signupBtn, {alignItems: 'center'}]} onPress={()=> {this._confirmAndPay();}} color='#000000'>
+          <TouchableOpacity style={styles.totalContainer} 
+            onPress={()=> {this.props.navigation.navigate('PaymentMethods', {onSelect: this.onSelect.bind(this)});}} 
+            color='#000000'>
+              <Text style={styles.btnText}>Payment Method</Text>
+              <Text style={styles.rightText}> > </Text>
+          </TouchableOpacity>
+          <View style={[styles.signupBtn, {backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', height: 45}]} 
+            color='#000000'>
+              {this._getCardImage(this.state.card.brand, '#F3A545')}
+              <Text>{`${this.state.card.brand} Ending in ${this.state.card.last4}`}</Text>
+          </View>
+          <View style={[styles.signupBtn]} color='#000000'>
+              <Text style={[styles.btnText]}>Orders</Text>
+          </View>
+          <View style={styles.flastListContainer}>
+            <FlatList
+              data={this.state.data}
+              extraData={this.state.refresh}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+              ListHeaderComponent={this._renderHeader}
+            />
+          </View>
+          <View style={styles.tipContainer}>
+              <View style={[styles.totalContainer]} color='#000000'>
+                  <Text style={[styles.btnText]}>Total</Text>
+                  <Text style={[styles.rightText]}> {`$${(this.state.individualTotal/100).toFixed(2)}`}</Text>
+              </View>
+              <View style={[styles.feeContainer]}>
+                <Text style={{marginLeft: 15}}>Subtotal </Text>
+                <Text style={{marginRight: 15}}>{`$${(this.state.individualPrice/100).toFixed(2)}`}</Text>
+              </View>
+              <View style={styles.feeContainer}>
+                <Text style={{marginLeft: 15}}>Tax & Fees </Text>
+                <Text style={{marginRight: 15}}>{`$${(this.state.tax/100).toFixed(2)}`}</Text>
+              </View>
+              <View style={styles.feeContainer}>
+                <Text style={{marginLeft: 15}}>Tip </Text>
+                <Text style={{marginRight: 15}}>{`$${(this.state.tip/100).toFixed(2)}`}</Text>
+              </View>
+              <View style={styles.feeContainer}>
+                <SegmentedControlTab
+                  values={['12%', '15%', '18%', 'Custom']}
+                  tabsContainerStyle={styles.tabsContainerStyle}
+                  tabStyle={styles.tabStyle}
+                  activeTabStyle={styles.activeTabStyle}
+                  tabTextStyle={styles.tabTextStyle}
+                  selectedIndex={this.state.selectedIndex}
+                  onTabPress={this._handleIndexChange}
+                />
+              </View>
+          </View>
+        </ScrollView>
+        <TouchableOpacity style={[styles.confirmBtn]} onPress={()=> {this._confirmAndPay();}} color='#000000'>
             <Text style={[styles.btnText, {marginLeft: 0}]}>Confirm & Pay</Text>
         </TouchableOpacity>
         <Dialog.Container visible={this.state.dialogVisible}>
@@ -248,11 +256,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 50,
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     flexDirection: 'column',
-    alignItems: 'center',
-    height: screenHeight,
-    width: screenWidth
+    alignItems: 'center'
   },
   tipContainer: {
     flex: 1,
@@ -261,6 +267,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
+  },
+  headerContainer: {
+    flexDirection:'row',
+    justifyContent: 'space-between'
   },
   feeContainer: {
     flexDirection: 'row',
@@ -278,8 +288,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   flastListContainer: {
-    height: 200,
-    marginBottom: -40
+    marginHorizontal: 10,
+    marginVertical: 10
   },
   restaurantText: {
     alignSelf: 'flex-start',
@@ -296,6 +306,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3A545',
     borderRadius: 2,
     alignItems: 'flex-start',
+  },
+  confirmBtn: {
+    marginBottom: 0,
+    marginTop: 20,
+    width: '80%',
+    height: 30,
+    backgroundColor: '#2c313a',
+    borderRadius: 20,
+    alignItems: 'center',
     marginRight:20,
     marginLeft:20
   },

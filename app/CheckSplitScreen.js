@@ -8,7 +8,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage, Image} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage, Image, ScrollView} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Pusher from 'pusher-js/react-native';
@@ -17,7 +17,8 @@ import OrderListItem from './components/OrderListItem';
 
 
 type Props = {};
-
+const colors = ['#F3A545', '#f85457','pink', '#8c62ca','#009cff'];
+var colorIndex = 0;
 export default class CheckSplitScreen extends Component<Props> {
 
   constructor(props) {
@@ -28,6 +29,13 @@ export default class CheckSplitScreen extends Component<Props> {
 
     var params = this.props.navigation.state.params;
 
+    var colorMap = {};
+    params.members.forEach((member) => {
+        colorMap[member.userId] = colors[colorIndex % 5];
+        colorIndex ++; 
+    });
+
+    //5bf14f828a45424e801f938b
     this.state = {
       loading: false,
       data: params.data,
@@ -38,6 +46,7 @@ export default class CheckSplitScreen extends Component<Props> {
       refreshing: false,
       selectedIndex: 0,
       partyId: params.partyId,
+      colorMap: colorMap,
       userId: ''
     };
 
@@ -54,13 +63,25 @@ export default class CheckSplitScreen extends Component<Props> {
       if(data.add) {
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
-        updatedOrders[index].buyers.push({firstName: data.firstName, lastName: data.lastName, userId: data.userId});
+        updatedOrders[index].buyers.push({firstName: data.firstName, 
+            lastName: data.lastName, userId: data.userId});
+        var updatedColorMap = JSON.parse(JSON.stringify(this.state.colorMap));
+
+        if(!data.isMember) {
+          updatedColorMap[data.userId] = colors[colorIndex % 5];
+          colorIndex++;
+        }
+        //var joined = this.state.members.concat(data.userId);
         
-        this.setState({data: updatedOrders, refresh: !this.state.refresh});
+        this.setState({data: updatedOrders,
+          colorMap: updatedColorMap, refresh: !this.state.refresh});
       } else {
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
         updatedOrders[index].buyers = updatedOrders[index].buyers.filter(buyer => buyer.userId != data.userId);
+
+        // const indexToRemove = this.state.members.indexOf(data.userId);
+        // const updatedMembers = this.state.members.slice(indexToRemove, 1);
 
         this.setState({data: updatedOrders, refresh: !this.state.refresh});
       }
@@ -68,18 +89,7 @@ export default class CheckSplitScreen extends Component<Props> {
   }
 
   async componentDidMount() {  
-    // this.setState({ loading: true });
-    // axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6')
-    // .then(response => {
-    //   this.setState({data: response.data.orders, 
-    //     restaurantName: response.data.restaurantName,
-    //     orderTotal: response.data.orderTotal,
-    //     partyId: response.data.partyId,
-    //     loading: false});
-    // }).catch(err => {
-    //   this.setState({ err, loading: false });
-    // });
-
+    
     try {
       const userId = await AsyncStorage.getItem('userId');
       this.setState({userId});
@@ -116,9 +126,10 @@ export default class CheckSplitScreen extends Component<Props> {
       price={this.state.selectedIndex? item.price/item.buyers.length : item.price}
       buyers={item.buyers}
       partyId={this.state.partyId}
+      colorMap={this.state.colorMap}
       confirmation={false}
     />
-  );
+  )
 
   _renderHeader = () => {
     var priceTag = 'Price';
@@ -145,35 +156,38 @@ export default class CheckSplitScreen extends Component<Props> {
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
-        <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
-        <SegmentedControlTab
-          values={['Group Orders', 'My Orders']}
-          tabStyle={styles.tabStyle}
-          activeTabStyle={styles.activeTabStyle}
-          tabTextStyle={styles.tabTextStyle}
-          selectedIndex={this.state.selectedIndex}
-          onTabPress={this._handleIndexChange}
-        />
-        <FlatList
-          style={{marginTop: 15}}
-          data={this.state.selectedIndex ? 
-            this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
-            this.state.data}
-          extraData={this.state.refresh}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-          ListHeaderComponent={this._renderHeader}
-        />
-        <View style={styles.orderTotalContainer}>
-          <Text style={{color: 'gray'}}>{this.state.selectedIndex ? 'Your Total: ' : 'Group Total: '} </Text>
-          <Text> {this.state.selectedIndex ? `$${this._getindividualTotal()}`: `$${(this.state.orderTotal/100).toFixed(2)}`} </Text>
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
+          <SegmentedControlTab
+            values={['Group Orders', 'My Orders']}
+            tabStyle={styles.tabStyle}
+            activeTabStyle={styles.activeTabStyle}
+            tabTextStyle={styles.tabTextStyle}
+            selectedIndex={this.state.selectedIndex}
+            onTabPress={this._handleIndexChange}
+          />
+          <FlatList
+            style={{marginTop: 15}}
+            data={this.state.selectedIndex ? 
+              this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
+              this.state.data}
+            extraData={this.state.refresh}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
+            ListHeaderComponent={this._renderHeader}
+          />
+          <View style={styles.orderTotalContainer}>
+            <Text style={{color: 'gray'}}>{this.state.selectedIndex ? 'Your Total: ' : 'Group Total: '} </Text>
+            <Text> {this.state.selectedIndex ? `$${this._getindividualTotal()}`: `$${(this.state.orderTotal/100).toFixed(2)}`} </Text>
+          </View>
+        </ScrollView>
         <Text style={{color: 'gray'}}>Double Tap the Dishes You've Shared!</Text>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Confirmation', {
+        <TouchableOpacity style={styles.confirmBtn} onPress={()=> this.props.navigation.navigate('Confirmation', {
               data: this.state.data, 
               restaurantName: this.state.restaurantName,
               restaurantId: this.state.restaurantId,
-              userId: this.state.userId
+              userId: this.state.userId,
+              colorMap: this.state.colorMap
             })} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>
         </TouchableOpacity>
@@ -194,7 +208,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-end',
     marginRight: 10,
-    marginBottom: 60,
+    marginTop: 20,
+    marginBottom: 50,
   },
   headerContainer: {
     flexDirection:'row',
@@ -218,13 +233,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     color: 'black'
   },
-  signupBtn: {
-    marginTop: 10,
+  confirmBtn: {
     marginBottom: 0,
-    width: '100%',
+    width: '80%',
     height: 30,
-    backgroundColor: '#F3A545',
-    borderRadius: 2,
+    backgroundColor: '#2c313a',
+    borderRadius: 20,
     alignItems: 'center',
     marginRight:20,
     marginLeft:20

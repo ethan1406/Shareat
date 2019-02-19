@@ -8,7 +8,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Image, ScrollView, AsyncStorage} from 'react-native';
 import * as Progress from 'react-native-progress';
 
 
@@ -27,7 +27,6 @@ export default class RewardsScreen extends Component<Props> {
     try {
       const loyaltyPointsString = await AsyncStorage.getItem('loyaltyPoints');
       const loyaltyPoints = JSON.parse(loyaltyPointsString);
-      console.log(loyaltyPointsString);
       this.setState({loyaltyPoints});
     } catch (err) {
       console.log(err);
@@ -48,30 +47,27 @@ export default class RewardsScreen extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.container} resizeMode='contain'>
+      <ScrollView style={styles.container} 
+        contentContainerStyle={{flex:1, justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'column'}}
+        resizeMode='contain'>
         <Text style={styles.placeholderText}> </Text>
         <View style={[styles.headerContainer]} color='#000000'>
             <Text style={[styles.btnText]}>Saved Loyalty Points</Text>
         </View>
         {this.state.loyaltyPoints.map((reward, index) => (
           <TouchableOpacity style={styles.rewardContainer} key={index}>
-            <Text>{reward.restaurantName} </Text>
-            <Text>{reward.points} </Text>
-            <Progress.Circle showsText={true} animated={true}
-              progress={reward.points/100} size={90} color='#F3A545'/>
+            <Text style={{fontSize: 16, marginTop: 15, marginBottom: 10}}>{reward.restaurantName} </Text>
+            <Text>{`You have accumulated ${reward.points} points`} </Text>
+            
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
     backgroundColor: 'white',
   },
   headerContainer: {

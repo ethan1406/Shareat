@@ -23,6 +23,7 @@ export default class QrCodeScreen extends Component<Props> {
         data: response.data.orders, 
         restaurantName: response.data.restaurantName,
         orderTotal: response.data.orderTotal,
+        members: response.data.members,
         partyId: response.data._id,
         restaurantId: response.data.restaurantId
       });

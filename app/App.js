@@ -116,7 +116,8 @@ const AppNavigator = createStackNavigator(
   },
   {
     defaultNavigationOptions: {
-      header: null,
+      gesturesEnabled: false,
+      header: null
     },
     mode: 'modal',
   }

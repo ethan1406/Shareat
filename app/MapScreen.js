@@ -11,6 +11,7 @@ import React, {Component} from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableHighlight} from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import Dialog from 'react-native-dialog';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
@@ -32,6 +33,7 @@ export default class MapScreen extends Component<Props> {
       },
       markers: [],
       errorMessage: null,
+      dialogVisible: false,
       searchString: '',
     };
   }
@@ -65,10 +67,10 @@ export default class MapScreen extends Component<Props> {
           var markers = [];
           response.data.forEach((merchant) => {
             var marker = {};
-            marker['coordinate'] = {};   
-            marker['coordinate']['latitude'] = merchant.location.latitude;
-            marker['coordinate']['longitude'] = merchant.location.longitude;
-            marker['title'] = merchant.name;
+            marker['location'] = {};   
+            marker['location']['latitude'] = merchant.location.latitude;
+            marker['location']['longitude'] = merchant.location.longitude;
+            marker['name'] = merchant.name;
             marker['description'] = merchant.description;
             marker['_id'] = merchant._id;
             markers.push(marker);
@@ -85,24 +87,24 @@ export default class MapScreen extends Component<Props> {
 
   }
 
-
-// {this.state.markers.map((marker, index) => {
-//           if(typeof marker.location !== 'undefined') {
-//             console.log(marker.location.latitude);
-//             const latlng = {latitude: marker.location.latitude, longitude: marker.location.longitude};
-//             return (
-//               <Marker
-//                 coordinate={latlng}
-//                 title={marker.name}
-//                 key={index}
-//               />
-//             );
-//           }})}
   _lookupRestaurant = (restaurantId, restaurantName) => {
-    console.log(restaurantId);
     this.props.navigation.navigate('Restaurant', {
       restaurantName, restaurantId
     });
+  }
+
+  _searchRestaurant = async () => {
+    try {
+      const response = await axios.get(baseURL + '/map/find?name=' + this.state.searchString);
+      if(response.data.length == 0) {
+        this.setState({dialogVisible:true});
+      } else {
+        this.setState({markers: response.data});
+      }
+
+    } catch (err) {
+      this.setState({errorMessage: err.message});
+    }
   }
 
 
@@ -117,14 +119,14 @@ export default class MapScreen extends Component<Props> {
           {this.state.markers.map((marker, index) => (
             <Marker
               key={index}
-              title={marker.title}
+              title={marker.name}
               description={marker.description}
-              coordinate={marker.coordinate}
+              coordinate={marker.location}
               pinColor={'#F3A545'}
             >
-                  <MapView.Callout tooltip={true} onPress={() => {this._lookupRestaurant(marker._id, marker.title);}}>
+                  <MapView.Callout tooltip={true} onPress={() => {this._lookupRestaurant(marker._id, marker.name);}}>
                         <View style={styles.calloutText}>
-                            <Text style={{fontSize:14}}>{marker.title}</Text>
+                            <Text style={{fontSize:14}}>{marker.name}</Text>
                             <Text style={{fontSize:11, color: 'gray'}}>{marker.description}</Text>
                         </View>
                   </MapView.Callout>
@@ -133,11 +135,16 @@ export default class MapScreen extends Component<Props> {
         </MapView>
         <View style={styles.buttonContainer}>
           <TextInput style={styles.textInput}  value={this.state.searchString}  
-            onChangeText={(searchString) => this.setState({searchString})}
+            onChangeText={(searchString) => this.setState({searchString})} onSubmitEditing={()=>this._searchRestaurant()}
             placeholder='search for restaurants' multiline={false}
           />
         </View>
-        
+        <Dialog.Container visible={this.state.dialogVisible}>
+          <Dialog.Description>
+            {`No results for ${this.state.searchString} in the map`}
+          </Dialog.Description>
+          <Dialog.Button label="Ok" onPress={()=> {this.setState({dialogVisible: false});}} />
+        </Dialog.Container>
       </View>
     );
   }
@@ -162,13 +169,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     top: 80,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.7)',
     width: '80%'
   },
   textInput: {
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: 'white',
     color: 'black',
-    paddingHorizontal: 18,
+    width: '100%',
+    paddingHorizontal: 25,
     height: 50,
     borderRadius: 20 
   },
