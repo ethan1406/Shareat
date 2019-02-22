@@ -97,9 +97,16 @@ export default class MapScreen extends Component<Props> {
     try {
       const response = await axios.get(baseURL + '/map/find?name=' + this.state.searchString);
       if(response.data.length == 0) {
-        this.setState({dialogVisible:true});
+        this.setState({dialogVisible : true});
       } else {
-        this.setState({markers: response.data});
+        this.setState({markers: []});
+        this.setState({markers: response.data,
+                       region: {
+                          latitude: response.data[0].location.latitude,
+                          longitude: response.data[0].location.longitude,
+                          latitudeDelta: LATITUDE_DELTA,
+                          longitudeDelta: LONGITUDE_DELTA,
+                        }});
       }
 
     } catch (err) {
@@ -107,6 +114,16 @@ export default class MapScreen extends Component<Props> {
     }
   }
 
+  _searchArea = async () => {
+    try {
+      const response = await axios.get(baseURL + '/map/allRestaurants/');
+      this.setState({markers: []});
+      this.setState({markers: response.data});
+
+    } catch (err) {
+      this.setState({errorMessage: err.message});
+    }
+  }
 
   render() {
     return (
@@ -138,6 +155,11 @@ export default class MapScreen extends Component<Props> {
             onChangeText={(searchString) => this.setState({searchString})} onSubmitEditing={()=>this._searchRestaurant()}
             placeholder='search for restaurants' multiline={false}
           />
+          <TouchableOpacity style={{marginTop: 10}} onPress={()=>this._searchArea()}>
+            <View style={styles.searchAreaBtn}>
+              <Text style={{color: 'gray'}}>Search this area</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Description>
@@ -166,11 +188,17 @@ const styles = StyleSheet.create({
     padding: 8
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     position: 'absolute',
+    alignItems: 'center',
     top: 80,
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    //backgroundColor: 'rgba(255,255,255,0.7)',
     width: '80%'
+  },
+  searchAreaBtn: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
   },
   textInput: {
     backgroundColor: 'white',

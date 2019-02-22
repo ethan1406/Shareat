@@ -45,7 +45,8 @@ export default class ConfirmationScreen extends Component<Props> {
       individualTotal: individualTotal,
       tax: tax,
       tip: tip,
-      customTip: '',
+      customTipString: '',
+      customTip: 0,
       tipRate: 0,
       selectedIndex: 0,
       refresh: false,
@@ -58,7 +59,7 @@ export default class ConfirmationScreen extends Component<Props> {
     return{
       headerLeft:( 
         <TouchableOpacity onPress={() => navigation.navigate('Check')}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
       title: 'Confirmation',
@@ -153,7 +154,21 @@ export default class ConfirmationScreen extends Component<Props> {
     });
   }
 
-  _handleCustomTip = () => {
+  _handleCustomTip = (customTipString) => {
+    var numOfPeriod = 0;
+    for(const char of customTipString) {
+      if(char == '.') {
+        numOfPeriod++;
+      }
+    }
+    if(numOfPeriod > 1) {
+      customTipString = customTipString.slice(0, -1);
+    }
+
+    this.setState({customTip: parseFloat(customTipString)*100, customTipString});
+  }
+
+  _enterCustomTip = () => {
     var individualTotal = parseInt(this.state.customTip + this.state.individualPrice + this.state.tax, 10);
 
     this.setState({
@@ -242,10 +257,10 @@ export default class ConfirmationScreen extends Component<Props> {
           <Dialog.Description>
             Please enter the amount of tip you want to give.
           </Dialog.Description>
-          <Dialog.Input multiline={false} keyboardType='numeric'
-           placeholder='Custom Tip' onChangeText={(customTip) => this.setState({customTip: customTip*100})} />
+          <Dialog.Input multiline={false} keyboardType='numeric' value={this.state.customTipString}
+           placeholder='Custom Tip' onChangeText={(customTipString) => this._handleCustomTip(customTipString)} />
           <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
-          <Dialog.Button label="Enter" onPress={()=> {this._handleCustomTip();}} />
+          <Dialog.Button label="Enter" onPress={()=> {this._enterCustomTip();}} />
         </Dialog.Container>
       </View>
     );
@@ -294,7 +309,7 @@ const styles = StyleSheet.create({
   restaurantText: {
     alignSelf: 'flex-start',
     fontSize: 18,
-    marginTop: 20,
+    marginTop: 40,
     marginLeft: 15,
     marginBottom: 15,
     color: 'black'

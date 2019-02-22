@@ -32,7 +32,7 @@ export default class SignupScreen extends Component<Props> {
     return{
       headerLeft:( 
         <TouchableOpacity onPress={() => navigation.navigate('First')}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
       headerTransparent: true

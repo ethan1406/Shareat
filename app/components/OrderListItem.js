@@ -62,7 +62,9 @@ const styles = StyleSheet.create({
   cellContainer : {
     flex: 1,
     marginTop: 5,
-    height: 40,
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',

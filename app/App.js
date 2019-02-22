@@ -51,7 +51,8 @@ const OptionNavigator = createStackNavigator(
       }
     },
     PaymentMethods: PaymentMethodsScreen,
-    Rewards: RewardsScreen
+    Rewards: RewardsScreen,
+    Restaurant: RestaurantScreen
   }
 );
 

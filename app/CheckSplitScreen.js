@@ -8,7 +8,8 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, AsyncStorage, Image, ScrollView} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions,
+  AsyncStorage, Image, ScrollView} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Pusher from 'pusher-js/react-native';
@@ -18,6 +19,8 @@ import OrderListItem from './components/OrderListItem';
 
 type Props = {};
 const colors = ['#F3A545', '#f85457','pink', '#8c62ca','#009cff'];
+const screenWidth= Dimensions.get('window').width;
+
 var colorIndex = 0;
 export default class CheckSplitScreen extends Component<Props> {
 
@@ -88,8 +91,7 @@ export default class CheckSplitScreen extends Component<Props> {
     });
   }
 
-  async componentDidMount() {  
-    
+  async componentDidMount() {    
     try {
       const userId = await AsyncStorage.getItem('userId');
       this.setState({userId});
@@ -103,7 +105,7 @@ export default class CheckSplitScreen extends Component<Props> {
     return{
       headerLeft:( 
         <TouchableOpacity onPress={() => navigation.navigate('QR')}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
       headerTransparent: true
@@ -161,13 +163,14 @@ export default class CheckSplitScreen extends Component<Props> {
           <SegmentedControlTab
             values={['Group Orders', 'My Orders']}
             tabStyle={styles.tabStyle}
+            tabsContainerStyle={{width: screenWidth}}
             activeTabStyle={styles.activeTabStyle}
             tabTextStyle={styles.tabTextStyle}
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
           />
           <FlatList
-            style={{marginTop: 15}}
+            style={{marginTop: 15, marginHorizontal: 10}}
             data={this.state.selectedIndex ? 
               this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
               this.state.data}
@@ -229,19 +232,20 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     fontSize: 18,
     marginTop: 40,
-    marginLeft: 15,
     marginBottom: 15,
+    marginLeft: 10,
     color: 'black'
   },
   confirmBtn: {
-    marginBottom: 0,
     width: '80%',
     height: 30,
     backgroundColor: '#2c313a',
     borderRadius: 20,
     alignItems: 'center',
     marginRight:20,
-    marginLeft:20
+    marginLeft:20,
+    marginTop: 15,
+    marginBottom: 0
   },
   btnText: {
     color:'white',

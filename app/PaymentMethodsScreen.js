@@ -44,7 +44,7 @@ export default class PaymentMethodsScreen extends Component<Props> {
     return{
       headerLeft:( 
         <TouchableOpacity onPress={() => navigation.goBack()}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
       title: 'Payment Method'

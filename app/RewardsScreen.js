@@ -37,12 +37,17 @@ export default class RewardsScreen extends Component<Props> {
     return {
       headerLeft:( 
         <TouchableOpacity onPress={() => navigation.navigate('Options')}>
-           <Image style={{height: 40, width: 40, marginLeft: 20}} source={require('./img/backbtn.png')} />
+           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
       title: 'Rewards',
-      headerTransparent: true
     };
+  }
+
+  _lookupRestaurant = (restaurantId, restaurantName) => {
+    this.props.navigation.navigate('Restaurant', {
+      restaurantName, restaurantId
+    });
   }
 
   render() {
@@ -55,12 +60,15 @@ export default class RewardsScreen extends Component<Props> {
             <Text style={[styles.btnText]}>Saved Loyalty Points</Text>
         </View>
         {this.state.loyaltyPoints.map((reward, index) => (
-          <TouchableOpacity style={styles.rewardContainer} key={index}>
-            <Text style={{fontSize: 16, marginTop: 15, marginBottom: 10}}>{reward.restaurantName} </Text>
-            <Text>{`You have accumulated ${reward.points} points`} </Text>
-            
+          <TouchableOpacity style={styles.rewardContainer} key={index} 
+                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
+            <Text style={{fontSize: 16, marginTop: 15, marginBottom: 3, fontWeight: 'bold'}}>{reward.restaurantName} </Text>
+            <Text style={{color: 'gray', marginBottom: 3}}>{reward.description} </Text>
+            <Text style={{color: 'gray', marginBottom: 10}}>{reward.address} </Text>
+            <Text style={{}}>{`You have accumulated ${reward.points} points`} </Text>
           </TouchableOpacity>
         ))}
+
       </ScrollView>
     );
   }
@@ -81,13 +89,6 @@ const styles = StyleSheet.create({
   rewardContainer: {
     marginTop: 15,
     marginLeft: 15
-  },
-  placeholderText: {
-    fontSize: 18,
-    marginTop: 30,
-    marginLeft: 15,
-    marginBottom: 15,
-    color: 'black'
   },
   btnText: {
     color:'white',
