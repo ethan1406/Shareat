@@ -49,6 +49,7 @@ export default class ConfirmationScreen extends Component<Props> {
       customTip: 0,
       tipRate: 0,
       selectedIndex: 0,
+      partyId: params.partyId,
       refresh: false,
       dialogVisible: false,
       card: {brand: ''}
@@ -62,12 +63,11 @@ export default class ConfirmationScreen extends Component<Props> {
            <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
-      title: 'Confirmation',
-      headerTransparent: true
+      title: 'Confirmation'
     };
   }
 
-   async componentDidMount() {
+  async componentDidMount() {
     try {
       const response = await axios.get(baseURL + '/user/listCards');
       this.setState({card: response.data.data[0]});
@@ -117,6 +117,7 @@ export default class ConfirmationScreen extends Component<Props> {
       partyId={this.state.partyId}
       colorMap={this.state.colorMap}
       confirmation={true}
+      navigation={this.props.navigation}
     />
   )
 
@@ -180,14 +181,24 @@ export default class ConfirmationScreen extends Component<Props> {
   }
 
   _confirmAndPay = async () => {
-    try {
-      await axios.post(baseURL + '/user/makePayment/', 
-        {amount: this.state.individualTotal, restaurantId: this.state.restaurantId});
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   await axios.post(baseURL + '/user/makePayment/', 
+    //     {amount: this.state.individualTotal, 
+    //      tax: this.state.tax,
+    //      tip: this.state.tip,
+    //      points: Math.floor(this.state.individualPrice),  
+    //      restaurantId: this.state.restaurantId,
+    //      partyId: this.state.partyId
+    //     });
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
-    this.props.navigation.navigate('QR');
+    this.props.navigation.navigate('RewardAccumulation', {
+      individualPrice: this.state.individualPrice, 
+      restaurantName: this.state.restaurantName,
+      restaurantId: this.state.restaurantId
+    });
   }
 
 
@@ -210,14 +221,16 @@ export default class ConfirmationScreen extends Component<Props> {
           <View style={[styles.signupBtn]} color='#000000'>
               <Text style={[styles.btnText]}>Orders</Text>
           </View>
-          <View style={styles.flastListContainer}>
-            <FlatList
-              data={this.state.data}
-              extraData={this.state.refresh}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-              ListHeaderComponent={this._renderHeader}
-            />
+          <View style={{backgroundColor: 'white'}}>
+            <View style={styles.flastListContainer}>
+              <FlatList
+                data={this.state.data}
+                extraData={this.state.refresh}
+                keyExtractor={this._keyExtractor}
+                renderItem={this._renderItem}
+                ListHeaderComponent={this._renderHeader}
+              />
+            </View>
           </View>
           <View style={styles.tipContainer}>
               <View style={[styles.totalContainer]} color='#000000'>
@@ -236,7 +249,7 @@ export default class ConfirmationScreen extends Component<Props> {
                 <Text style={{marginLeft: 15}}>Tip </Text>
                 <Text style={{marginRight: 15}}>{`$${(this.state.tip/100).toFixed(2)}`}</Text>
               </View>
-              <View style={styles.feeContainer}>
+              <View style={[styles.feeContainer, {justifyContent: 'center'}]}>
                 <SegmentedControlTab
                   values={['12%', '15%', '18%', 'Custom']}
                   tabsContainerStyle={styles.tabsContainerStyle}
@@ -270,10 +283,10 @@ export default class ConfirmationScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
     justifyContent: 'flex-end',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#ededed'
   },
   tipContainer: {
     flex: 1,
@@ -282,6 +295,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
+
   },
   headerContainer: {
     flexDirection:'row',
@@ -303,14 +317,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   flastListContainer: {
-    marginHorizontal: 10,
+    marginHorizontal: 15,
     marginVertical: 10
   },
   restaurantText: {
     alignSelf: 'flex-start',
-    fontSize: 18,
-    marginTop: 40,
-    marginLeft: 15,
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: 20,
+    marginLeft: 20,
     marginBottom: 15,
     color: 'black'
   },
@@ -325,10 +340,10 @@ const styles = StyleSheet.create({
   confirmBtn: {
     marginBottom: 0,
     marginTop: 20,
-    width: '80%',
+    width: '100%',
     height: 30,
-    backgroundColor: '#2c313a',
-    borderRadius: 20,
+    backgroundColor: '#F3A545',
+    borderRadius: 0,
     alignItems: 'center',
     marginRight:20,
     marginLeft:20
@@ -347,7 +362,7 @@ const styles = StyleSheet.create({
   },
   tabsContainerStyle:{
     marginLeft: 15,
-    width: '60%'
+    width: '85%'
   },
   activeTabStyle: {
     backgroundColor: '#F3A545'

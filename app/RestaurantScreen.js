@@ -73,7 +73,7 @@ export default class RestaurantScreen extends Component<Props> {
           <Text style={{color: 'gray', marginVertical: 5, marginHorizontal: 15}}> Earn 1pt for every dollar spent </Text>
           <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false}>
             {this.state.merchant.rewards.map((reward, index) => (
-              <TouchableOpacity style={styles.rewardContainer} key={index}>
+              <View style={styles.rewardContainer} key={index}>
                 <Text>{reward.reward} </Text>
                 <Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 
                   {this.state.pointAccumulated} / {reward.pointsRequired} pts
@@ -83,7 +83,7 @@ export default class RestaurantScreen extends Component<Props> {
                 <Text style={{color:'gray', marginTop: 10}}> 
                   {reward.pointsRequired - this.state.pointAccumulated} pts left
                 </Text>
-              </TouchableOpacity>
+              </View>
             ))}
           </ScrollView>
         <View style={styles.lineSeparator} />

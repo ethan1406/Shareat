@@ -20,6 +20,10 @@ import PaymentMethodsScreen from './PaymentMethodsScreen';
 import ConfirmationScreen from './ConfirmationScreen';
 import RewardsScreen from './RewardsScreen';
 import RestaurantScreen from './RestaurantScreen';
+import RecentOrderScreen from './RecentOrderScreen';
+import ReceiptScreen from './ReceiptScreen';
+import OrderBuyerScreen from './OrderBuyerScreen';
+import RewardAccumulationScreen from './RewardAccumulationScreen';
 import {TouchableOpacity, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -30,7 +34,23 @@ const CheckNavigator = createStackNavigator(
     QR: QrCodeScreen,
     Check: CheckSplitScreen, 
     Confirmation: ConfirmationScreen,
-    PaymentMethods: PaymentMethodsScreen
+    PaymentMethods: PaymentMethodsScreen,
+    RewardAccumulation:  RewardAccumulationScreen
+  }
+);
+
+const CheckModalNavigator = createStackNavigator(
+  {
+    CheckNavigator: {
+      screen: CheckNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    OrderBuyer: OrderBuyerScreen
+  }, 
+  {
+    mode: 'modal'
   }
 );
 
@@ -52,7 +72,24 @@ const OptionNavigator = createStackNavigator(
     },
     PaymentMethods: PaymentMethodsScreen,
     Rewards: RewardsScreen,
-    Restaurant: RestaurantScreen
+    Restaurant: RestaurantScreen,
+    RecentOrder: RecentOrderScreen,
+    Receipt: ReceiptScreen
+  }
+);
+
+const OptionModalNavigator = createStackNavigator(
+  {
+    OptionNavigator: {
+      screen : OptionNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    OrderBuyer: OrderBuyerScreen
+  }, 
+  {
+    mode: 'modal'
   }
 );
 
@@ -71,7 +108,7 @@ const main = createBottomTabNavigator({
         },
       },
       QR: {
-        screen: CheckNavigator,
+        screen: CheckModalNavigator,
         navigationOptions: {
           tabBarIcon: ({ tintColor, focused }) => (
             <AntDesign
@@ -83,7 +120,7 @@ const main = createBottomTabNavigator({
         },
       },
       Options: {
-        screen: OptionNavigator,
+        screen: OptionModalNavigator,
         navigationOptions: {
           tabBarLabel: '',
           tabBarIcon: ({ tintColor, focused }) => (

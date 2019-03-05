@@ -48,8 +48,11 @@ export default class OptionsScreen extends Component<Props> {
         <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
             <Text style={styles.btnText}> Edit Profile </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+            <Text style={styles.btnText}> Sign Out </Text>
+        </TouchableOpacity>
         <View style={{marginVertical: 50}}></View>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {}} color='#000000'>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
           <Image style={styles.optionImage} source={require('./img/receipt.png')} />
           <Text> Receipts </Text>
           <Text style={styles.rightText}> > </Text>
@@ -62,6 +65,11 @@ export default class OptionsScreen extends Component<Props> {
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
           <Image style={[styles.optionImage, {height: 20}]} source={require('./img/loyalty.png')} />
           <Text> Rewards </Text>
+          <Text style={styles.rightText}> > </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
+          <Image style={[styles.optionImage, {height: 25}]} source={require('./img/about.png')} />
+          <Text> About </Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
       </ScrollView>

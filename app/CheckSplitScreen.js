@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions,
-  AsyncStorage, Image, ScrollView} from 'react-native';
+  AsyncStorage, Image, ScrollView, StatusBar, SafeAreaView} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Pusher from 'pusher-js/react-native';
@@ -108,7 +108,12 @@ export default class CheckSplitScreen extends Component<Props> {
            <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
-      headerTransparent: true
+      title: 'Check',
+      headerStyle: {
+        backgroundColor: 'white',
+        elevation: 0,       //remove shadow on Android
+        shadowOpacity: 0,   //remove shadow on iOS
+      }
     };
   }
 
@@ -130,6 +135,7 @@ export default class CheckSplitScreen extends Component<Props> {
       partyId={this.state.partyId}
       colorMap={this.state.colorMap}
       confirmation={false}
+      navigation={this.props.navigation}
     />
   )
 
@@ -157,7 +163,12 @@ export default class CheckSplitScreen extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.container} resizeMode='contain'>
+      <View style={[styles.container]} resizeMode='contain'>
+        <StatusBar
+          barStyle='dark-content'
+          backgroundColor='blue'
+          translucent={false}
+        />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
           <SegmentedControlTab
@@ -169,16 +180,18 @@ export default class CheckSplitScreen extends Component<Props> {
             selectedIndex={this.state.selectedIndex}
             onTabPress={this._handleIndexChange}
           />
-          <FlatList
-            style={{marginTop: 15, marginHorizontal: 10}}
-            data={this.state.selectedIndex ? 
-              this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
-              this.state.data}
-            extraData={this.state.refresh}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
-            ListHeaderComponent={this._renderHeader}
-          />
+          <View style={{marginTop: 20, backgroundColor: 'white'}}>
+            <FlatList
+              style={{marginHorizontal: 20, backgroundColor: 'white'}}
+              data={this.state.selectedIndex ? 
+                this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
+                this.state.data}
+              extraData={this.state.refresh}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+              ListHeaderComponent={this._renderHeader}
+            />
+          </View>
           <View style={styles.orderTotalContainer}>
             <Text style={{color: 'gray'}}>{this.state.selectedIndex ? 'Your Total: ' : 'Group Total: '} </Text>
             <Text> {this.state.selectedIndex ? `$${this._getindividualTotal()}`: `$${(this.state.orderTotal/100).toFixed(2)}`} </Text>
@@ -190,6 +203,7 @@ export default class CheckSplitScreen extends Component<Props> {
               restaurantName: this.state.restaurantName,
               restaurantId: this.state.restaurantId,
               userId: this.state.userId,
+              partyId: this.state.partyId,
               colorMap: this.state.colorMap
             })} color='#000000'>
             <Text style={styles.btnText}>Check out</Text>
@@ -202,17 +216,19 @@ export default class CheckSplitScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
     justifyContent: 'flex-end',
     flexDirection: 'column',
     alignItems: 'center',
+    backgroundColor: '#ededed',
   },
   orderTotalContainer: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
     marginRight: 10,
     marginTop: 20,
+    padding: 5,
     marginBottom: 50,
+    backgroundColor: 'white'
   },
   headerContainer: {
     flexDirection:'row',
@@ -230,17 +246,18 @@ const styles = StyleSheet.create({
   },
   restaurantText: {
     alignSelf: 'flex-start',
-    fontSize: 18,
-    marginTop: 40,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 20,
     marginBottom: 15,
-    marginLeft: 10,
+    marginLeft: 20,
     color: 'black'
   },
   confirmBtn: {
-    width: '80%',
+    width: '100%',
     height: 30,
-    backgroundColor: '#2c313a',
-    borderRadius: 20,
+    backgroundColor: '#F3A545',
+    borderRadius: 0,
     alignItems: 'center',
     marginRight:20,
     marginLeft:20,

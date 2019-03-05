@@ -1,15 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, 
-  Image, ScrollView, AsyncStorage, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Image, ScrollView, AsyncStorage} from 'react-native';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
 
@@ -17,21 +10,19 @@ import {baseURL} from './Constants';
 
 
 type Props = {};
-export default class RewardsScreen extends Component<Props> {
+export default class RecentOrderScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
-
     this.state = {
-      loyaltyPoints: [],
-      refresh: false
+      recentOrders: []
     };
   }
 
   async componentDidMount() {
     try {
-      const response = await axios.get(baseURL + '/user/loyaltyPoints');
-      this.setState({loyaltyPoints: response.data});
+      const response = await axios.get(baseURL + '/user/receipts');
+      this.setState({recentOrders: response.data});
     } catch (err) {
       console.log(err);
     }
@@ -44,14 +35,12 @@ export default class RewardsScreen extends Component<Props> {
            <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
         </TouchableOpacity>
       ),
-      title: 'Rewards',
+      title: 'Recent Orders',
     };
   }
 
-  _lookupRestaurant = (restaurantId, restaurantName) => {
-    this.props.navigation.navigate('Restaurant', {
-      restaurantName, restaurantId
-    });
+  _lookupReceipt = (partyId) => {
+    this.props.navigation.navigate('Receipt', {partyId});
   }
 
   render() {
@@ -61,17 +50,27 @@ export default class RewardsScreen extends Component<Props> {
         resizeMode='contain'>
         <Text style={styles.placeholderText}> </Text>
         <View style={[styles.headerContainer]} color='#000000'>
-            <Text style={[styles.btnText]}>Saved Loyalty Points</Text>
+            <Text style={[styles.btnText]}>Recent Orders</Text>
         </View>
-        {this.state.loyaltyPoints.map((reward, index) => (
-          <TouchableOpacity style={styles.rewardContainer} key={index} 
-                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-            <Text style={{fontSize: 16, marginTop: 15, marginBottom: 3, fontWeight: 'bold'}}>{reward.restaurantName} </Text>
-            <Text style={{color: 'gray', marginBottom: 3}}>{reward.description} </Text>
-            <Text style={{color: 'gray', marginBottom: 10}}>{reward.address} </Text>
-            <Text style={{}}>{`You have accumulated ${reward.points} points`} </Text>
-          </TouchableOpacity>
-        ))}
+        {this.state.recentOrders.map((order, index) => {
+           const date = new Date(order.time);
+           var hours = date.getHours();
+           const pmAm = hours < 12 ? 'am' : 'pm';
+           if(hours > 12) {
+              hours -= 12;
+           }
+           return (
+            <TouchableOpacity style={styles.rewardContainer} key={index} onPress={()=> this._lookupReceipt(order.partyId)}>
+              <Text style={{marginBottom: 3}}>{order.restaurantName} </Text>
+              <Text style={{color: 'gray', marginBottom: 3}}>{order.address}</Text>
+              <Text style={{color: 'gray', marginBottom: 3}}>{
+                date.getMonth()+1}/{date.getDate()}/{date.getFullYear()} at {hours}:{date.getMinutes()} {pmAm}
+              </Text>
+              <Text style={{color: 'gray', marginBottom: 20}}>{`Order #${order.chargeId.substr(order.chargeId.length - 5)}`}</Text>
+            </TouchableOpacity>
+            ); 
+          })
+        }
       </ScrollView>
     );
   }
