@@ -101,6 +101,13 @@ export default class CheckSplitScreen extends Component<Props> {
     
   }
 
+  willFocus = this.props.navigation.addListener(
+    'willBlur',
+    payload => {
+      colorIndex = 0;
+    }
+  );
+
   static navigationOptions = ({navigation}) => {
     return{
       headerLeft:( 
@@ -239,6 +246,7 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     borderColor:'#F3A545',
+    height: 35,
     borderWidth: 0
   },
   tabTextStyle: {
@@ -255,7 +263,7 @@ const styles = StyleSheet.create({
   },
   confirmBtn: {
     width: '100%',
-    height: 30,
+    height: 35,
     backgroundColor: '#F3A545',
     borderRadius: 0,
     alignItems: 'center',
@@ -267,6 +275,6 @@ const styles = StyleSheet.create({
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 7
+    paddingTop: 9
   }
 });

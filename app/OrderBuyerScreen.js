@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, 
   Image, ScrollView, FlatList} from 'react-native';
 import axios from 'axios';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {baseURL} from './Constants';
 
@@ -54,6 +55,12 @@ export default class OrderBuyerScreen extends Component<Props> {
           <Text style={{color: 'white'}}>{item.firstName[0]}{item.lastName[0]}</Text>
       </View>
       <Text style={{marginHorizontal: 15}}>{item.firstName} {item.lastName}</Text>
+      {item.finished ? 
+        ( <FontAwesome
+            name={'check-circle'}
+            size={15}
+            style={{color: 'green', position: 'absolute', left: 17, top: 12}}
+          />) : null}
     </View>
   )
 

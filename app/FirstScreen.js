@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     width: '80%',
-    height: 25,
+    height: 35,
     backgroundColor: '#F3A545',
     borderRadius: 2,
     alignItems: 'center',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 3
+    paddingTop: 9
   },
   coverImage: {
     flex: 8,

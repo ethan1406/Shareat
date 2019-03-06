@@ -8,7 +8,8 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, KeyboardAvoidingView, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback,
+  TextInput, Button, KeyboardAvoidingView, AsyncStorage, Keyboard} from 'react-native';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
@@ -67,31 +68,35 @@ export default class SignupScreen extends Component<Props> {
     });
   }
 
+        // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        //         </TouchableWithoutFeedback>
+
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior='padding' resizeMode='contain'>
-        <Text style={styles.loginMessage}>SIGN UP WITH EMAIL</Text>
-        <View style={[styles.stack, {marginTop: 60}]} resizeMode='contain'>
-          <TextInput style={styles.textInput} multiline={false}
-          value={this.state.firstName} placeholder='First Name' onChangeText={(firstName) => this.setState({firstName})}/>
-          <TextInput style={styles.textInput} multiline={false} 
-          value={this.state.lastName} placeholder='Last Name' onChangeText={(lastName) => this.setState({lastName})}/>
-          <TextInput style={styles.textInput} multiline={false} 
-          value={this.state.email} placeholder='Email' onChangeText={(email) => this.setState({email})}/>
-          <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-          value={this.state.pwd} placeholder='Password' onChangeText={(pwd) => this.setState({pwd})}/>
-          <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-          value={this.state.confirmPwd} placeholder='Confirm Password' onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
-          <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
-              <Text style={styles.btnText}>SIGN UP</Text>
-          </TouchableOpacity>
-          <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-        </View>
-        <View style={styles.loginContainer}>
-            <Text style={styles.welcome}>Already have an account? </Text>
-            <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
-        </View>
-      </KeyboardAvoidingView>
+          <Text style={styles.loginMessage}>SIGN UP WITH EMAIL</Text>
+          <View style={[styles.stack, {marginTop: 60}]} resizeMode='contain'>
+            <TextInput style={styles.textInput} multiline={false}
+            value={this.state.firstName} placeholder='First Name' onChangeText={(firstName) => this.setState({firstName})}/>
+            <TextInput style={styles.textInput} multiline={false} 
+            value={this.state.lastName} placeholder='Last Name' onChangeText={(lastName) => this.setState({lastName})}/>
+            <TextInput style={styles.textInput} multiline={false} 
+            value={this.state.email} placeholder='Email' onChangeText={(email) => this.setState({email})}/>
+            <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
+            value={this.state.pwd} placeholder='Password' onChangeText={(pwd) => this.setState({pwd})}/>
+            <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
+            value={this.state.confirmPwd} placeholder='Confirm Password' onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
+            <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
+                <Text style={styles.btnText}>SIGN UP</Text>
+            </TouchableOpacity>
+            <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
+          </View>
+          <View style={styles.loginContainer}>
+              <Text style={styles.welcome}>Already have an account? </Text>
+              <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
+          </View>
+     </KeyboardAvoidingView>
     );
   }
 }
@@ -140,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     width: '80%',
-    height: 25,
+    height: 35,
     backgroundColor: '#F3A545',
     borderRadius: 2,
     alignItems: 'center',
@@ -150,6 +155,6 @@ const styles = StyleSheet.create({
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 3
+    paddingTop: 9
   }
 });

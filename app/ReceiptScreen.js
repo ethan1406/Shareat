@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, 
-  Image, ScrollView, AsyncStorage, FlatList} from 'react-native';
+  Image, ScrollView, AsyncStorage, FlatList, Dimensions} from 'react-native';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
@@ -19,15 +19,22 @@ import OrderListItem from './components/OrderListItem';
 type Props = {};
 const colors = ['#F3A545', '#f85457','pink', '#8c62ca','#009cff'];
 var colorIndex = 0;
+const screenHeight = Dimensions.get('window').height;
+const screenWidth= Dimensions.get('window').width;
 export default class ReceiptScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
 
+    const params = this.props.navigation.state.params;
+
     this.state = {
       errMessage: '',
       refreshing: false,
       colorMap: {},
+      tip: params.order.tip,
+      tax: params.order.tax,
+      individualPrice: 0,
       myOrders: []
 
     };
@@ -36,10 +43,12 @@ export default class ReceiptScreen extends Component<Props> {
   async componentDidMount() {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await axios.get(`${baseURL}/party/${this.props.navigation.state.params.partyId}`);
+      const response = await axios.get(`${baseURL}/party/${this.props.navigation.state.params.order.partyId}`);
 
       const myOrders = 
         response.data.orders.filter(order => order.buyers.map(buyer => buyer.userId).includes(userId));
+
+      const individualPrice = myOrders.reduce((total, order) => ( total + order.price/order.buyers.length), 0);
 
       var colorMap = {};
       response.data.members.forEach((member) => {
@@ -47,7 +56,7 @@ export default class ReceiptScreen extends Component<Props> {
           colorIndex ++; 
       });
       
-      this.setState({myOrders, colorMap});
+      this.setState({myOrders, colorMap, individualPrice});
     } catch (err) {
       this.setState({errMessage: err.message});
     }
@@ -92,33 +101,42 @@ export default class ReceiptScreen extends Component<Props> {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.container} resizeMode='contain'>
-        <View style={{marginTop: 20, backgroundColor: 'white'}}>
-            <FlatList
-              style={{marginHorizontal: 15, backgroundColor: 'white'}}
-              data={this.state.myOrders}
-              extraData={this.state.refresh}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-              ListHeaderComponent={this._renderHeader}
-            />
-        </View>
-        <View style={styles.tipContainer}>         
-              <View style={[styles.feeContainer]}>
-                <Text style={{marginLeft: 15}}>Subtotal </Text>
-                <Text style={{marginRight: 15}}>{`$${(this.state.individualPrice/100).toFixed(2)}`}</Text>
-              </View>
-              <View style={styles.feeContainer}>
-                <Text style={{marginLeft: 15}}>Tax & Fees </Text>
-                <Text style={{marginRight: 15}}>{`$${(this.state.tax/100).toFixed(2)}`}</Text>
-              </View>
-              <View style={styles.feeContainer}>
-                <Text style={{marginLeft: 15}}>Tip </Text>
-                <Text style={{marginRight: 15}}>{`$${(this.state.tip/100).toFixed(2)}`}</Text>
-              </View>
-
+      <View style={styles.container}>
+        <ScrollView style={{height:screenHeight, width:screenWidth}}>
+          <View style={{marginTop: 20, backgroundColor: 'white'}}>
+              <FlatList
+                style={{marginHorizontal: 15, backgroundColor: 'white'}}
+                data={this.state.myOrders}
+                extraData={this.state.refresh}
+                keyExtractor={this._keyExtractor}
+                renderItem={this._renderItem}
+                ListHeaderComponent={this._renderHeader}
+              />
           </View>
-      </ScrollView>
+          <View style={styles.tipContainer}>         
+                <View style={[styles.feeContainer]}>
+                  <Text style={{marginLeft: 15}}>Subtotal </Text>
+                  <Text style={{marginRight: 15}}>{`$${(this.state.individualPrice/100).toFixed(2)}`}</Text>
+                </View>
+                <View style={styles.feeContainer}>
+                  <Text style={{marginLeft: 15}}>Tax & Fees </Text>
+                  <Text style={{marginRight: 15}}>{`$${(this.state.tax/100).toFixed(2)}`}</Text>
+                </View>
+                <View style={styles.feeContainer}>
+                  <Text style={{marginLeft: 15}}>Tip </Text>
+                  <Text style={{marginRight: 15}}>{`$${(this.state.tip/100).toFixed(2)}`}</Text>
+                </View>
+                <View style={styles.lineSeparator} />
+                <View style={styles.feeContainer}>
+                  <Text style={{marginLeft: 15}}>Total </Text>
+                  <Text style={{marginRight: 15}}>
+                    {`$${((this.state.individualPrice + this.state.tip + this.state.tax)/100).toFixed(2)}`}
+                  </Text>
+                </View>
+          </View>
+          
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -132,7 +150,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   cellContainer : {
-    flex: 1,
     marginTop: 5,
     height: 50,
     width: '100%',
@@ -147,8 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
    tipContainer: {
-    flex: 1,
-    marginTop: 0,
+    marginTop: 20,
     width: '100%',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -160,5 +176,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  lineSeparator: {
+     width: '90%', 
+     borderBottomColor: 'lightgray', 
+     alignSelf: 'center',
+     borderBottomWidth: 2, 
+     paddingHorizontal: 15,
+     marginVertical: 15
   }
 });

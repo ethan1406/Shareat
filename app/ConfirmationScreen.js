@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginTop: 20,
     width: '100%',
-    height: 30,
+    height: 34,
     backgroundColor: '#F3A545',
     borderRadius: 0,
     alignItems: 'center',
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     color:'white',
     textAlign:'left',
     marginLeft: 15,
-    paddingTop: 7
+    paddingTop: 9
   },
   rightText: {
     color:'white',
@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
   },
   tabsContainerStyle:{
     marginLeft: 15,
+    height: 30,
     width: '85%'
   },
   activeTabStyle: {

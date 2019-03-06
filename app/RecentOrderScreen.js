@@ -39,8 +39,8 @@ export default class RecentOrderScreen extends Component<Props> {
     };
   }
 
-  _lookupReceipt = (partyId) => {
-    this.props.navigation.navigate('Receipt', {partyId});
+  _lookupReceipt = (order) => {
+    this.props.navigation.navigate('Receipt', {order});
   }
 
   render() {
@@ -60,13 +60,17 @@ export default class RecentOrderScreen extends Component<Props> {
               hours -= 12;
            }
            return (
-            <TouchableOpacity style={styles.rewardContainer} key={index} onPress={()=> this._lookupReceipt(order.partyId)}>
+            <TouchableOpacity style={styles.rewardContainer} key={index} 
+              onPress={()=> this._lookupReceipt(order)}>
               <Text style={{marginBottom: 3}}>{order.restaurantName} </Text>
               <Text style={{color: 'gray', marginBottom: 3}}>{order.address}</Text>
               <Text style={{color: 'gray', marginBottom: 3}}>{
                 date.getMonth()+1}/{date.getDate()}/{date.getFullYear()} at {hours}:{date.getMinutes()} {pmAm}
               </Text>
-              <Text style={{color: 'gray', marginBottom: 20}}>{`Order #${order.chargeId.substr(order.chargeId.length - 5)}`}</Text>
+              {order.chargeIds.map(chargeId => 
+                (<Text style={{color: 'gray', marginBottom: 3}} key={chargeId}> 
+                    {`Order# ${chargeId.substr(chargeId.length - 5)}`}
+                  </Text>))}
             </TouchableOpacity>
             ); 
           })
@@ -90,6 +94,7 @@ const styles = StyleSheet.create({
   },
   rewardContainer: {
     marginTop: 15,
+    marginBottom: 20,
     marginLeft: 15
   },
   btnText: {
