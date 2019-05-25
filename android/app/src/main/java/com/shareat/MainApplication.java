@@ -2,10 +2,10 @@ package com.shareat;
 
 import android.app.Application;
 
+import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactApplication;
-import com.airbnb.android.react.lottie.LottiePackage;
-import com.cardio.RNCardIOPackage;
-import com.gettipsi.stripe.StripeReactPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -27,10 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new LottiePackage(),
-            new RNCardIOPackage(),
-            new StripeReactPackage(),
+            new MainReactPackage(),
+            new AsyncStoragePackage(),
+            new MapsPackage(),
+            new RNCameraPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
       );

@@ -7,6 +7,7 @@ module.exports = {
     "node": true
   },
   "extends": ["eslint:recommended"],
+  "plugins": ["react"],
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -16,6 +17,8 @@ module.exports = {
   },
   "rules": {
     //"indent": ["error", 2],
+    "react/jsx-uses-react": "error",   
+    "react/jsx-uses-vars": "error",
     "linebreak-style": ["error","unix"],
     "quotes": ["error","single"],
     "semi": ["error","always"],

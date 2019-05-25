@@ -1,19 +1,15 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, 
-  Image, ScrollView, AsyncStorage, FlatList, Dimensions} from 'react-native';
+  Image, ScrollView, FlatList, Dimensions} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
 import axios from 'axios';
 
 import {baseURL} from './Constants';
-import OrderListItem from './components/OrderListItem';
 
 
 type Props = {};

@@ -4,10 +4,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, 
   Image, ScrollView, FlatList} from 'react-native';
-import axios from 'axios';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-import {baseURL} from './Constants';
 
 
 type Props = {};

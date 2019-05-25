@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 
@@ -79,7 +79,6 @@ export default class OrderListItem extends Component<Props> {
     (<TouchableOpacity onPress={()=> this._handleDoubleTap(this.props)}>
         {this._renderContent()}
       </TouchableOpacity>)
-
     );
   }
 }
@@ -105,8 +104,7 @@ const styles = StyleSheet.create({
   bubble: {
     backgroundColor: '#F3A545',
     marginHorizontal: 2,
-    paddingHorizontal: 3,
-    paddingVertical: 3,
+    padding: 3,
     borderRadius: 20,
   }
 });

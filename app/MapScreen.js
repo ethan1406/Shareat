@@ -1,16 +1,9 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableHighlight} from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import {StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
 import Dialog from 'react-native-dialog';
 import axios from 'axios';
 
@@ -163,7 +156,7 @@ export default class MapScreen extends Component<Props> {
         </View>
         <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Description>
-            {`No results for ${this.state.searchString} in the map`}
+            {`No results for ${this.state.searchString} on the map`}
           </Dialog.Description>
           <Dialog.Button label="Ok" onPress={()=> {this.setState({dialogVisible: false});}} />
         </Dialog.Container>

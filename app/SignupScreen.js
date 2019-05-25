@@ -1,15 +1,11 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback,
-  TextInput, Button, KeyboardAvoidingView, AsyncStorage, Keyboard} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, TouchableOpacity,
+  TextInput, Button, KeyboardAvoidingView} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 import {baseURL} from './Constants';

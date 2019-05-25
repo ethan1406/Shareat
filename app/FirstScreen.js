@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 'use strict';
 
 import React, {Component} from 'react';
@@ -16,6 +9,7 @@ export default class FirstScreen extends Component<Props> {
   static navigationOptions = ({navigation}) => { 
     return {  headerTransparent: true};
   }
+  
   render() {
     return (
       <View style={styles.container} resizeMode='contain'>
@@ -44,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   loginContainer: {
-    flex: 1,
+    marginBottom: 60,
     flexDirection: 'row',
     justifyContent: 'center'
   },

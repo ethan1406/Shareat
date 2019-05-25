@@ -8,8 +8,10 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, AsyncStorage} from 'react-native';
-import {baseURL} from './Constants';
+import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
+import {baseURL} from './Constants.js';
 import axios from 'axios';
 
 type Props = {};
@@ -49,7 +51,7 @@ export default class LoginScreen extends Component<Props> {
         } catch (err) {
           console.log(err);
         }
-          this.props.navigation.navigate('Map');
+          this.props.navigation.navigate('Main');
       } 
     }).catch((err) => {
       this.setState({errorMessage: err.response.data.error});

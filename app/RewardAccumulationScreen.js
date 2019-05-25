@@ -1,15 +1,9 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Image, 
-  ScrollView, AsyncStorage, Animated, Easing} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity,
+  ScrollView, Animated, Easing} from 'react-native';
 import * as Progress from 'react-native-progress';
 //import Confetti from 'react-native-confetti';
 import axios from 'axios';

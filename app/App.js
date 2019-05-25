@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 'use strict';
 
 import React, {Component} from 'react';
@@ -13,19 +6,18 @@ import FirstScreen from './FirstScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
 import MapScreen from './MapScreen';
-import OptionsScreen from './OptionsScreen';
 import QrCodeScreen from './QrCodeScreen';
-import CheckSplitScreen from './CheckSplitScreen';
-import PaymentMethodsScreen from './PaymentMethodsScreen';
-import ConfirmationScreen from './ConfirmationScreen';
+import OptionsScreen from './OptionsScreen';
 import RewardsScreen from './RewardsScreen';
 import RestaurantScreen from './RestaurantScreen';
 import RecentOrderScreen from './RecentOrderScreen';
 import ReceiptScreen from './ReceiptScreen';
-import OrderBuyerScreen from './OrderBuyerScreen';
+import CheckSplitScreen from './CheckSplitScreen';
+import ConfirmationScreen from './ConfirmationScreen';
 import RewardAccumulationScreen from './RewardAccumulationScreen';
-import {TouchableOpacity, View, Image} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import OrderBuyerScreen from './OrderBuyerScreen';
+import PaymentMethodsScreen from './PaymentMethodsScreen';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
@@ -54,13 +46,13 @@ const CheckModalNavigator = createStackNavigator(
   }
 );
 
-
 const mapNavigator = createStackNavigator(
   {
     Map: MapScreen,
     Restaurant: RestaurantScreen
   }
 );
+
 
 const OptionNavigator = createStackNavigator(
   {
@@ -78,29 +70,14 @@ const OptionNavigator = createStackNavigator(
   }
 );
 
-const OptionModalNavigator = createStackNavigator(
-  {
-    OptionNavigator: {
-      screen : OptionNavigator,
-      navigationOptions: {
-        header: null
-      }
-    },
-    OrderBuyer: OrderBuyerScreen
-  }, 
-  {
-    mode: 'modal'
-  }
-);
-
 
 const main = createBottomTabNavigator({
       Map: {
         screen: mapNavigator,
         navigationOptions: {
           tabBarIcon: ({ tintColor, focused }) => (
-            <Ionicons
-              name={focused ? 'ios-map' : 'ios-map'}
+            <AntDesign
+              name={focused ? 'enviromento' : 'enviromento'}
               size={26}
               style={{ color: focused? '#F3A545' : tintColor }}
             />
@@ -120,7 +97,7 @@ const main = createBottomTabNavigator({
         },
       },
       Options: {
-        screen: OptionModalNavigator,
+        screen: OptionNavigator,
         navigationOptions: {
           tabBarLabel: '',
           tabBarIcon: ({ tintColor, focused }) => (
@@ -163,8 +140,3 @@ const AppNavigator = createStackNavigator(
 
 
 export default createAppContainer(AppNavigator);
-
-
-
-
-

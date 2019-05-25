@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shareat">
+  package="com.shareat">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
       android:name=".MainApplication"
@@ -22,6 +22,10 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+       
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDwh9yXaIPKOmslpXIAet_rv4CUp9XMdw0Y"/>
     </application>
 
 </manifest>

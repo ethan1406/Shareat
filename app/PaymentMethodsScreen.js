@@ -1,14 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, Text, View, TouchableOpacity, TextInput, Image, ScrollView, StyleSheet} from 'react-native';
+import {Platform, Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import {baseURL} from './Constants';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';

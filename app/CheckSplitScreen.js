@@ -1,25 +1,18 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+
 'use strict';
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions,
-  AsyncStorage, Image, ScrollView, StatusBar, SafeAreaView} from 'react-native';
+  AsyncStorage, Image, ScrollView, StatusBar} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import axios from 'axios';
 import Pusher from 'pusher-js/react-native';
 
 import OrderListItem from './components/OrderListItem';
 
 
 type Props = {};
-const colors = ['#F3A545', '#f85457','pink', '#8c62ca','#009cff'];
-const screenWidth= Dimensions.get('window').width;
+const colors = ['#F3A545', '#f85457','pink', '#8c62ca','#009cff', '#f85457'];
+const screenWidth= Dimensions.get('window').width; 
 
 var colorIndex = 0;
 export default class CheckSplitScreen extends Component<Props> {
@@ -34,7 +27,7 @@ export default class CheckSplitScreen extends Component<Props> {
 
     var colorMap = {};
     params.members.forEach((member) => {
-        colorMap[member.userId] = colors[colorIndex % 5];
+        colorMap[member.userId] = colors[colorIndex % 6];
         colorIndex ++; 
     });
 

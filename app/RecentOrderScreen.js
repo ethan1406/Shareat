@@ -2,8 +2,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, Image, ScrollView, AsyncStorage} from 'react-native';
-import * as Progress from 'react-native-progress';
+import {Platform, StyleSheet, Text, View, TouchableOpacity, Image, ScrollView} from 'react-native';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
