@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import { createStackNavigator, createAppContainer, createBottomTabNavigator, navigation } from 'react-navigation';
+import { createStackNavigator, createSwitchNavigator, createAppContainer, createBottomTabNavigator, navigation } from 'react-navigation';
 import FirstScreen from './FirstScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
@@ -17,7 +17,8 @@ import ConfirmationScreen from './ConfirmationScreen';
 import RewardAccumulationScreen from './RewardAccumulationScreen';
 import OrderBuyerScreen from './OrderBuyerScreen';
 import PaymentMethodsScreen from './PaymentMethodsScreen';
-
+import NewLoginScreen from './NewLoginScreen';
+import SplashScreen from './SplashScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
@@ -117,14 +118,17 @@ const main = createBottomTabNavigator({
 const AppNavigator = createStackNavigator(
   {
     Registration: createStackNavigator({
-      First: {
-        screen: FirstScreen,
-      },
       Login: {
-        screen: LoginScreen
+        screen: NewLoginScreen,
+        navigationOptions: {
+          header:null,
+        },
       },
       Signup: {
-        screen: SignupScreen
+        screen: SignupScreen,
+        navigationOptions: {
+          header:null,
+        },
       }
     }),
     Main: main
@@ -138,5 +142,9 @@ const AppNavigator = createStackNavigator(
   }
 );
 
+const InitialNavigator = createSwitchNavigator({
+  Splash: SplashScreen,
+  App: AppNavigator
+});
 
-export default createAppContainer(AppNavigator);
+export default createAppContainer(InitialNavigator);
