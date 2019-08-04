@@ -3,7 +3,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, TouchableOpacity,
-  TextInput, Button, KeyboardAvoidingView} from 'react-native';
+  TextInput, Button, KeyboardAvoidingView, Span} from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -23,17 +23,6 @@ export default class SignupScreen extends Component<Props> {
       confirmPwd: '',
       errorMessage: ''
      };
-  }
-
-  static navigationOptions = ({navigation}) => {
-    return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('First')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      headerTransparent: true
-    };
   }
 
   _signup = async () => {
@@ -71,27 +60,25 @@ export default class SignupScreen extends Component<Props> {
   render() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior='padding' resizeMode='contain'>
-          <Text style={styles.loginMessage}>SIGN UP WITH EMAIL</Text>
-          <View style={[styles.stack, {marginTop: 60}]} resizeMode='contain'>
-            <TextInput style={styles.textInput} multiline={false}
-            value={this.state.firstName} placeholder='First Name' onChangeText={(firstName) => this.setState({firstName})}/>
+          <Image style={styles.logo} source={require('./img/splash_logo.png')} />
+          <View style={styles.stack} resizeMode='contain'>
             <TextInput style={styles.textInput} multiline={false} 
-            value={this.state.lastName} placeholder='Last Name' onChangeText={(lastName) => this.setState({lastName})}/>
+            value={this.state.lastName} placeholder='Username' onChangeText={(lastName) => this.setState({lastName})}/>
             <TextInput style={styles.textInput} multiline={false} 
             value={this.state.email} placeholder='Email' onChangeText={(email) => this.setState({email})}/>
             <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
             value={this.state.pwd} placeholder='Password' onChangeText={(pwd) => this.setState({pwd})}/>
-            <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-            value={this.state.confirmPwd} placeholder='Confirm Password' onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
             <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
-                <Text style={styles.btnText}>SIGN UP</Text>
+                <Text style={styles.btnText}>Continue</Text>
             </TouchableOpacity>
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
           </View>
-          <View style={styles.loginContainer}>
-              <Text style={styles.welcome}>Already have an account? </Text>
-              <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
+          <View style={styles.divider}>
+          <Text style={styles.span}>   Or   </Text>
           </View>
+          <TouchableOpacity >
+          <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
+          </TouchableOpacity>
      </KeyboardAvoidingView>
     );
   }
@@ -109,21 +96,18 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: -30,
   },
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center'
   },
-  welcome: {
-    textAlign: 'center',
-    color: 'black',
-    margin: 10,
-  },
   loginMessage: {
     textAlign: 'center',
-    fontSize: 18,
-    color: 'black'
+    fontSize: 15,
+    color: 'grey',
+    marginBottom: 20,
   },
   errorMessage: {
     textAlign: 'center',
@@ -131,26 +115,50 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   textInput: {
-    height: 40, 
+    height: 45, 
     width: '80%',
-    textAlign: 'center',
     borderBottomColor: 'gray',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
   },
   signupBtn: {
-    marginTop: 10,
+    marginTop: 35,
     marginBottom: 10,
     width: '80%',
-    height: 35,
-    backgroundColor: '#F3A545',
+    height: 37,
+    backgroundColor: '#ffa91f',
     borderRadius: 2,
     alignItems: 'center',
     marginRight:20,
-    marginLeft:20
+    marginLeft:20,
   },
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 9
-  }
+    paddingTop: 9,
+    fontSize: 15.5,
+  },
+  logo: {
+    height: 80,
+    width: 75,
+    marginTop: 15,
+  },
+  facebook: {
+    alignItems: 'center', 
+    resizeMode: 'contain',
+    width: 220,
+  },
+    divider: {
+    flexDirection:'column',
+    borderColor: 'grey',
+    borderBottomWidth: 0.7,
+    width: '100%',
+    alignItems:'center',
+    height: 14,
+  },
+  span: {
+  paddingTop: -17,
+  alignSelf: 'center',
+  fontSize: 16,
+  backgroundColor: 'white',
+  },
 });
