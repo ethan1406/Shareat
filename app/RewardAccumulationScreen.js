@@ -87,7 +87,7 @@ export default class RewardAccumulationScreen extends Component<Props> {
           <Text style={{marginTop: 100, marginBottom: 25, fontWeight: 'bold'}}> {this.state.restaurantName} </Text>
           <Text style={{marginBottom: 50}}> You have earned {this.state.pointAccumulated} points! </Text>
           <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false} showsHorizontalScrollIndicator={false}>
-              {this.state.merchant.rewards.map((reward, index) => (
+              {this.state.merchant.rewards.loyalty_points.map((reward, index) => (
                 <TouchableOpacity style={styles.rewardContainer} key={index}>
                   <Text>{reward.reward} </Text>
                   <Animated.Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 
