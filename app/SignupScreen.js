@@ -79,6 +79,9 @@ export default class SignupScreen extends Component<Props> {
           <TouchableOpacity >
           <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
           </TouchableOpacity>
+          <TouchableOpacity >
+          <Image style={styles.google} source={require('./img/signin_google.png')} />
+          </TouchableOpacity>
      </KeyboardAvoidingView>
     );
   }
@@ -143,6 +146,11 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   facebook: {
+    alignItems: 'center', 
+    resizeMode: 'contain',
+    width: 220,
+  },
+  google: {
     alignItems: 'center', 
     resizeMode: 'contain',
     width: 220,
