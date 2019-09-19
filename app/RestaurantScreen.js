@@ -67,7 +67,7 @@ export default class RestaurantScreen extends Component<Props> {
           <Text style={{fontWeight: 'bold', marginHorizontal: 15}}> Loyalty </Text>
           <Text style={{color: 'gray', marginVertical: 5, marginHorizontal: 15}}> Earn 1pt for every dollar spent </Text>
           <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false}>
-            {this.state.merchant.rewards.map((reward, index) => (
+              {this.state.merchant.rewards.loyalty_points.map((reward, index) => (
               <View style={styles.rewardContainer} key={index}>
                 <Text>{reward.reward} </Text>
                 <Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 

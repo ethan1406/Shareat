@@ -25,7 +25,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const CheckNavigator = createStackNavigator(
   {
     QR: QrCodeScreen,
-    Check: CheckSplitScreen, 
+    Check: {
+      screen: CheckSplitScreen,
+      navigationOptions: {
+          header:null,
+        },
+      },
     Confirmation: ConfirmationScreen,
     PaymentMethods: PaymentMethodsScreen,
     RewardAccumulation:  RewardAccumulationScreen
@@ -47,13 +52,14 @@ const CheckModalNavigator = createStackNavigator(
   }
 );
 
+/**
 const mapNavigator = createStackNavigator(
   {
     Map: MapScreen,
     Restaurant: RestaurantScreen
   }
 );
-
+**/
 
 const OptionNavigator = createStackNavigator(
   {
@@ -73,12 +79,12 @@ const OptionNavigator = createStackNavigator(
 
 
 const main = createBottomTabNavigator({
-      Map: {
-        screen: mapNavigator,
+      Reward: {
+        screen: RewardsScreen,
         navigationOptions: {
           tabBarIcon: ({ tintColor, focused }) => (
             <AntDesign
-              name={focused ? 'enviromento' : 'enviromento'}
+              name={focused ? 'gift' : 'gift'}
               size={26}
               style={{ color: focused? '#F3A545' : tintColor }}
             />

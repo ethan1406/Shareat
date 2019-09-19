@@ -6,7 +6,6 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions
   AsyncStorage, Image, ScrollView, StatusBar} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Pusher from 'pusher-js/react-native';
-
 import OrderListItem from './components/OrderListItem';
 
 
@@ -101,22 +100,6 @@ export default class CheckSplitScreen extends Component<Props> {
     }
   );
 
-  static navigationOptions = ({navigation}) => {
-    return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('QR')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      title: 'Check',
-      headerStyle: {
-        backgroundColor: 'white',
-        elevation: 0,       //remove shadow on Android
-        shadowOpacity: 0,   //remove shadow on iOS
-      }
-    };
-  }
-
   _keyExtractor = (item) => item._id;
 
   _handleIndexChange = (index) => {
@@ -166,11 +149,14 @@ export default class CheckSplitScreen extends Component<Props> {
       <View style={[styles.container]} resizeMode='contain'>
         <StatusBar
           barStyle='dark-content'
-          backgroundColor='blue'
+          backgroundColor='white'
           translucent={false}
         />
         <ScrollView showsVerticalScrollIndicator={false}>
+          <Image style={styles.logo} source={require('./img/shareat_logo.png')}/>
           <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>
+          <View style={styles.divider}/>
+          <Text style={styles.orderdetail}> Order Detail </Text>
           <SegmentedControlTab
             values={['Group Orders', 'My Orders']}
             tabStyle={styles.tabStyle}
@@ -219,7 +205,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#ededed',
+    backgroundColor: 'white',
   },
   orderTotalContainer: {
     flexDirection: 'row',
@@ -247,12 +233,10 @@ const styles = StyleSheet.create({
   },
   restaurantText: {
     alignSelf: 'flex-start',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 20,
+    fontSize: 24,
     marginBottom: 15,
     marginLeft: 20,
-    color: 'black'
+    color: 'grey'
   },
   confirmBtn: {
     width: '100%',
@@ -269,5 +253,24 @@ const styles = StyleSheet.create({
     color:'white',
     textAlign:'center',
     paddingTop: 9
+  },
+  logo: {
+    width: '58%',
+    height: 65,
+    resizeMode: 'contain',
+    paddingTop: 35,
+    marginLeft: -10,
+  },
+  divider: {
+    flexDirection:'column',
+    borderColor: 'grey',
+    borderBottomWidth: 0.7,
+    width: '100%',
+    alignItems:'center',
+  },
+  orderdetail: {
+    fontSize: 24,
+    color: '#F3A545',
+    marginLeft: 15,
   }
 });
