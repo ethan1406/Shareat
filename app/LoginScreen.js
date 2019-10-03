@@ -58,13 +58,13 @@ export default class LoginScreen extends Component<Props> {
       <SafeAreaView style={styles.container} resizeMode='contain'>
         <KeyboardAvoidingView style={styles.stack} behavior='padding' keyboardVerticalOffset={64}>
           <Image style={styles.logo} source={require('./img/login_logo.png')}/>
-          <TextInput style={styles.textInput} multiline={false} placeholder='Username'
+          <TextInput style={styles.textInput} multiline={false} value={this.state.email}
           onChangeText={(email) => this.setState({email})}/>
           <View style={styles.passwordContainer}>
-          <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} placeholder='Password'
-          onChangeText={(pwd) => this.setState({pwd})}/>
+            <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
+            onChangeText={(pwd) => this.setState({pwd})}/>
           <TouchableOpacity>
-          <Text style={styles.forgot}> Forgot? </Text>
+            <Text style={styles.forgot}> Forgot? </Text>
           </TouchableOpacity>
           </View>
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   textInputPw: {
+    width: '83%',
     height: 50, 
     color: 'gray',
     fontSize: 15,

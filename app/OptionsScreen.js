@@ -59,11 +59,6 @@ export default class OptionsScreen extends Component<Props> {
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
-          <Image style={[styles.optionImage, {height: 20}]} source={require('./img/loyalty.png')} />
-          <Text> Rewards </Text>
-          <Text style={styles.rightText}> > </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
           <Image style={[styles.optionImage, {height: 25}]} source={require('./img/about.png')} />
           <Text> About </Text>
           <Text style={styles.rightText}> > </Text>
