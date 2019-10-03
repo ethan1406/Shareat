@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions,
   AsyncStorage, Image, ScrollView, StatusBar} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
+import NetInfo from '@react-native-community/netinfo';
 import Pusher from 'pusher-js/react-native';
 import OrderListItem from './components/OrderListItem';
 
