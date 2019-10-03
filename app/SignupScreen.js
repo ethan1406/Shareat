@@ -59,30 +59,37 @@ export default class SignupScreen extends Component<Props> {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior='padding' resizeMode='contain'>
-          <Image style={styles.logo} source={require('./img/splash_logo.png')} />
-          <View style={styles.stack} resizeMode='contain'>
+      <View style={styles.container} behavior='padding' resizeMode='contain'>
+          <KeyboardAvoidingView style={styles.stack} resizeMode='contain'>
+            <Image style={styles.logo} source={require('./img/splash_logo.png')} />
             <TextInput style={styles.textInput} multiline={false} 
-            value={this.state.lastName} placeholder='Username' onChangeText={(lastName) => this.setState({lastName})}/>
+            value={this.state.lastName} placeholder='Username' placeholderTextColor='gray'
+            onChangeText={(lastName) => this.setState({lastName})}/>
             <TextInput style={styles.textInput} multiline={false} 
-            value={this.state.email} placeholder='Email' onChangeText={(email) => this.setState({email})}/>
+            value={this.state.email} placeholder='Email' placeholderTextColor='gray'
+            onChangeText={(email) => this.setState({email})}/>
             <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-            value={this.state.pwd} placeholder='Password' onChangeText={(pwd) => this.setState({pwd})}/>
+            value={this.state.pwd} placeholder='Password' placeholderTextColor='gray'
+            onChangeText={(pwd) => this.setState({pwd})}/>
             <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
                 <Text style={styles.btnText}>Continue</Text>
             </TouchableOpacity>
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
+            <View style={styles.loginContainer}>
+              <Text style={styles.welcome}>Already have an account? </Text>
+              <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
+            </View>
+          </KeyboardAvoidingView>
+          <View>
+           <Text style={styles.span}>   Or   </Text>
+            <TouchableOpacity >
+              <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
+            </TouchableOpacity>
+            <TouchableOpacity >
+              <Image style={styles.google} source={require('./img/signin_google.png')} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.divider}>
-          <Text style={styles.span}>   Or   </Text>
-          </View>
-          <TouchableOpacity >
-          <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
-          </TouchableOpacity>
-          <TouchableOpacity >
-          <Image style={styles.google} source={require('./img/signin_google.png')} />
-          </TouchableOpacity>
-     </KeyboardAvoidingView>
+     </View>
     );
   }
 }
@@ -90,7 +97,7 @@ export default class SignupScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -111,6 +118,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'grey',
     marginBottom: 20,
+  },
+  welcome: {
+    textAlign: 'center',
+    color: 'gray',
+    margin: 10,
   },
   errorMessage: {
     textAlign: 'center',
@@ -144,6 +156,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 75,
     marginTop: 15,
+    marginBottom: 15
   },
   facebook: {
     alignItems: 'center', 

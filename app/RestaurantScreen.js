@@ -16,7 +16,7 @@ export default class RestaurantScreen extends Component<Props> {
     //var params = this.props.navigation.state.params;
 
     this.state = { 
-      merchant: {rewards:[]},
+      merchant: {rewards: {loyalty_points: []}},
       loyaltyPoints: [],
       pointAccumulated: 0,
       errorMessage: null
@@ -47,7 +47,7 @@ export default class RestaurantScreen extends Component<Props> {
           pointAccumulated = loyalty.points;
         }
       });
-
+      
       this.setState({merchant : response.data, loyaltyPoints, pointAccumulated});
 
     } catch (err) {

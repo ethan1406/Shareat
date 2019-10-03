@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import { createStackNavigator, createAppContainer, createBottomTabNavigator, navigation } from 'react-navigation';
+import { createStackNavigator, createSwitchNavigator, createAppContainer, createBottomTabNavigator, navigation } from 'react-navigation';
 import FirstScreen from './FirstScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
@@ -68,17 +68,23 @@ const OptionNavigator = createStackNavigator(
       }
     },
     PaymentMethods: PaymentMethodsScreen,
-    Rewards: RewardsScreen,
     Restaurant: RestaurantScreen,
     RecentOrder: RecentOrderScreen,
     Receipt: ReceiptScreen
   }
 );
 
+const RewardNavigator = createStackNavigator(
+  {
+    Rewards: RewardsScreen,
+    Restaurant: RestaurantScreen
+  }
+);
+
 
 const main = createBottomTabNavigator({
       Reward: {
-        screen: RewardsScreen,
+        screen: RewardNavigator,
         navigationOptions: {
           tabBarIcon: ({ tintColor, focused }) => (
             <AntDesign
@@ -121,7 +127,7 @@ const main = createBottomTabNavigator({
 
 const AppNavigator = createStackNavigator(
   {
-    Registration: createStackNavigator({
+    Registration: createSwitchNavigator({
       First: {
         screen: FirstScreen,
       },

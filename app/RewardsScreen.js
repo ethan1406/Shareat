@@ -32,15 +32,10 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity,
       }
     }
 
-    static navigationOptions = ({navigation}) => {
-      return {
-        headerLeft:( 
-          <TouchableOpacity onPress={() => navigation.navigate('Options')}>
-          <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-          </TouchableOpacity>
-          ),
-        title: 'Rewards',
-      };
+    static navigationOptions = ({navigation}) => { 
+      return {  headerStyle: {
+        borderBottomWidth: 0
+      }};
     }
 
     _lookupRestaurant = (restaurantId, restaurantName) => {
@@ -56,65 +51,64 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity,
     render() {
       return (
         <View style={styles.container}>
-        <Image style={styles.logo} source={require('./img/shareat_logo.png')}/>
-        <Text style={styles.header}> Rewards </Text>
-        <View style={styles.divider}/>
-        <View style={{marginTop: 22}}>
-        <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.state.modalVisible}
-        onRequestClose={() => {
-          this.setModalVisible(!this.state.modalVisible);
-        }}>
-        <View style={{marginTop: 22}}>
-        <View>
-        <TouchableOpacity
-        onPress={() => {
-          this.setModalVisible(!this.state.modalVisible);
-        }}>
-        <Text>Close</Text>
-        </TouchableOpacity>
-        </View>
-        </View>
-        </Modal>
-
-        </View>
-        <ScrollView style={styles.bodyContainer}>
-        <Text style={styles.wallet}> Wallet </Text>
-        {this.state.loyaltyPoints.map((reward, index) => (
-          <TouchableOpacity style={styles.rewardContainer} key={index} 
-          onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-          <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
-          <View style={styles.restaurantInfo}>
-          <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
-          <Text style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{reward.address} </Text>
-          <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
+          <Image style={styles.logo} source={require('./img/shareat_logo.png')}/>
+          <Text style={styles.header}> Rewards </Text>
+          <View style={styles.divider}/>
+          <View style={{marginTop: 22}}>
+            <Modal
+              animationType="fade"
+              transparent={false}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {
+                this.setModalVisible(!this.state.modalVisible);
+            }}>
+            <View style={{marginTop: 22}}>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                }}>
+                <Text>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            </Modal>
           </View>
-          </TouchableOpacity>
-          ))}
-        <View style={styles.checkIn}>
-        <Text style={styles.wallet}> Check-In </Text>
-        <TouchableOpacity style={styles.distance}
-        onPress={() => {
-          this.setModalVisible(true);
-        }}
-        >
-        <Text style={styles.distanceText}> {this.state.distance} mile </Text>
-        </TouchableOpacity>
-        </View>
-        {this.state.loyaltyPoints.map((reward, index) => (
-          <TouchableOpacity style={styles.rewardContainer} key={index} 
-          onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-          <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
-          <View style={styles.restaurantInfo}>
-          <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
-          <Text style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{reward.address} </Text>
-          <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
-          </View>
-          </TouchableOpacity>
-          ))}
-        </ScrollView>
+          <ScrollView style={styles.bodyContainer}>
+            <Text style={styles.wallet}> Wallet </Text>
+            {this.state.loyaltyPoints.map((reward, index) => (
+              <TouchableOpacity style={styles.rewardContainer} key={index} 
+                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
+                <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
+                <View style={styles.restaurantInfo}>
+                <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
+                <Text style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{reward.address} </Text>
+                <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
+                </View>
+              </TouchableOpacity>
+              ))}
+            <View style={styles.checkIn}>
+              <Text style={styles.wallet}> Check-In </Text>
+              <TouchableOpacity style={styles.distance}
+              onPress={() => {
+                this.setModalVisible(true);
+              }}
+              >
+              <Text style={styles.distanceText}> {this.state.distance} mile </Text>
+              </TouchableOpacity>
+            </View>
+            {this.state.loyaltyPoints.map((reward, index) => (
+              <TouchableOpacity style={styles.rewardContainer} key={index} 
+                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
+                <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
+                <View style={styles.restaurantInfo}>
+                <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
+                <Text style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{reward.address} </Text>
+                <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
+                </View>
+              </TouchableOpacity>
+              ))}
+          </ScrollView>
         </View>
         );
     }
