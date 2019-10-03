@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.1",
+    "@react-native-community/netinfo": "^4.2.2",
     "axios": "^0.18.0",
-    "pusher-js": "^4.4.0",
+    "pusher-js": "^5.0.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
     "react-native-camera": "^2.9.0",

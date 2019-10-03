@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     width: 220,
   },
-    divider: {
+  divider: {
     flexDirection:'column',
     borderColor: 'grey',
     borderBottomWidth: 0.7,
@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
     height: 14,
   },
   span: {
-  paddingTop: -17,
-  alignSelf: 'center',
-  fontSize: 16,
-  backgroundColor: 'white',
+    paddingTop: -17,
+    alignSelf: 'center',
+    fontSize: 16,
+    backgroundColor: 'white',
   },
 });

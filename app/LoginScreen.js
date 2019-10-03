@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
-
+import SafeAreaView from 'react-native-safe-area-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants.js';
 import axios from 'axios';
@@ -28,12 +28,7 @@ export default class LoginScreen extends Component<Props> {
 
   static navigationOptions = ({navigation}) => {
     return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('First')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      headerTransparent: true
+      headerTransparent: true,
     };
   }
 
@@ -60,28 +55,33 @@ export default class LoginScreen extends Component<Props> {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior='padding' resizeMode='contain'>
-        <Text style={styles.loginMessage}>LOG IN WITH EMAIL</Text>
-        <View style={[styles.stack, {marginTop: 60}]} resizeMode='contain'>
-          <TextInput style={styles.textInput} multiline={false}
-          value={this.state.email} onChangeText={(email) => this.setState({email})}/>
-          <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-          value={this.state.pwd} onChangeText={(pwd) => this.setState({pwd})}/>
-          <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
-              <Text style={styles.btnText}>SIGN IN</Text>
+      <SafeAreaView style={styles.container} resizeMode='contain'>
+        <KeyboardAvoidingView style={styles.stack} behavior='padding' keyboardVerticalOffset={64}>
+          <Image style={styles.logo} source={require('./img/login_logo.png')}/>
+          <TextInput style={styles.textInput} multiline={false} placeholder='Username'
+          onChangeText={(email) => this.setState({email})}/>
+          <View style={styles.passwordContainer}>
+          <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} placeholder='Password'
+          onChangeText={(pwd) => this.setState({pwd})}/>
+          <TouchableOpacity>
+          <Text style={styles.forgot}> Forgot? </Text>
           </TouchableOpacity>
+          </View>
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-        </View>
-        <View style={[styles.stack, {marginTop: -60}]} resizeMode='contain'>
+          <TouchableOpacity style={styles.signUpContainer} onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
+            <Text style={[styles.btnText, {fontSize: 14, color:'#ffa91f'}]}> Create a New Account </Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+        <View style={styles.stack} resizeMode='contain'>
           <Text style={{color: 'gray'}}> connect with </Text>
           <TouchableOpacity onPress={() => {}}>
              <Image style={{height: 50, width: 50}} source={require('./img/facebook.png')} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
-              <Text style={[styles.btnText, {fontSize: 15, color:'#F3A545'}]}> Sign up for Shareat </Text>
-          </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
+           <Text style={styles.btnText}>Log In</Text>
+          </TouchableOpacity>
+      </SafeAreaView>
     );
   }
 }
@@ -89,48 +89,70 @@ export default class LoginScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
   },
   stack: {
     width: '100%',
+   // marginTop: 200,
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center'
-  },
-  loginMessage: {
-    textAlign: 'center',
-    fontSize: 18,
-    color: 'black'
+    alignItems: 'center',
   },
   errorMessage: {
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 13,
     color: 'red',
   },
   textInput: {
-    height: 40, 
-    width: '80%',
-    textAlign: 'center',
+    height: 50, 
+    width: '83%',
     borderBottomColor: 'gray',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
+    color: 'gray',
+    fontSize: 15,
+  },
+  textInputPw: {
+    height: 50, 
+    color: 'gray',
+    fontSize: 15,
   },
   signupBtn: {
     marginTop: 10,
-    marginBottom: 10,
-    width: '80%',
-    height: 35,
-    backgroundColor: '#F3A545',
-    borderRadius: 2,
+    marginBottom: 0 ,
+    width: '100%',
+    height: 40,
+    backgroundColor: '#ffa91f',
     alignItems: 'center',
-    marginRight:20,
-    marginLeft:20
   },
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 9
+    paddingTop: 9,
+    fontSize: 15,
+  },
+  logo: {
+    alignSelf: 'center',
+    width: '58%',
+    height: 100,
+    resizeMode: 'contain',
+    marginTop: 150,
+    paddingLeft: 30,
+    marginBottom: 40,
+  },
+  passwordContainer: {
+    justifyContent:'space-between',
+    marginBottom: 0,
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    borderColor: 'gray',
+    width: '83%',
+  },
+  forgot: {
+    fontSize: 14,
+    color: '#ffa91f',
+    paddingTop: 15,
   }
 });
