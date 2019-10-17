@@ -9,6 +9,8 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.1",
     "@react-native-community/netinfo": "^4.2.2",
+    "aws-amplify": "^1.2.2",
+    "aws-amplify-react-native": "^2.2.2",
     "axios": "^0.18.0",
     "pusher-js": "^5.0.1",
     "react": "16.8.3",

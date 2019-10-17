@@ -4,9 +4,10 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, 
   Image, ScrollView, Modal} from 'react-native';
-  import axios from 'axios';
-  //import Slider from '@react-native-community/slider';
-  import {baseURL} from './Constants';
+import axios from 'axios';
+//import Slider from '@react-native-community/slider';
+import {baseURL} from './Constants';
+import { Storage } from 'aws-amplify'
 
 
   type Props = {};
@@ -26,6 +27,9 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity,
     async componentDidMount() {
       try {
         const response = await axios.get(baseURL + '/user/loyaltyPoints');
+
+        Storage.get('/restaurants/qinwest/covessr').then(result => console.log(result))
+      .catch(err => console.log(err));
         this.setState({loyaltyPoints: response.data});
       } catch (err) {
         console.log(err);
@@ -79,7 +83,7 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity,
             {this.state.loyaltyPoints.map((reward, index) => (
               <TouchableOpacity style={styles.rewardContainer} key={index} 
                 onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-                <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
+                <Image style={styles.restaurantIcon} source={{uri: 'https://shareat-react-20191016233607-deployment.s3-us-west-2.amazonaws.com/restaurants/qinwest/cover.jpg'}}/>
                 <View style={styles.restaurantInfo}>
                 <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
                 <Text style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{reward.address} </Text>
