@@ -1,0 +1,19 @@
+{
+    "react": {
+        "awscloudformation": {
+            "AuthRoleName": "shareat-react-20191016233607-authRole",
+            "UnauthRoleArn": "arn:aws:iam::474391618037:role/shareat-react-20191016233607-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::474391618037:role/shareat-react-20191016233607-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "shareat-react-20191016233607-deployment",
+            "UnauthRoleName": "shareat-react-20191016233607-unauthRole",
+            "StackName": "shareat-react-20191016233607",
+            "StackId": "arn:aws:cloudformation:us-west-2:474391618037:stack/shareat-react-20191016233607/6699fad0-f0a8-11e9-94c0-066798daf74a"
+        },
+        "categories": {
+            "auth": {
+                "shareat8de34e5a": {}
+            }
+        }
+    }
+}
