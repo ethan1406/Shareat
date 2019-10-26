@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
 
 type Props = {};
 export default class FirstScreen extends Component<Props> {

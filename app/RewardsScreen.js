@@ -2,12 +2,13 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, 
+import {StyleSheet, Text, View, TouchableOpacity, 
   Image, ScrollView, Modal} from 'react-native';
 import axios from 'axios';
 //import Slider from '@react-native-community/slider';
 import {baseURL} from './Constants';
-import { Storage } from 'aws-amplify'
+import { Storage } from 'aws-amplify';
+import Restaurant from './models/Restaurant';
 
 
   type Props = {};
@@ -17,8 +18,9 @@ import { Storage } from 'aws-amplify'
       super(props);
 
       this.state = {
+        imageUrl: '',
+        restaurants: [Restaurant],
         loyaltyPoints: [],
-        refresh: false,
         distance: 1,
         modalVisible: false,
       };
@@ -28,9 +30,25 @@ import { Storage } from 'aws-amplify'
       try {
         const response = await axios.get(baseURL + '/user/loyaltyPoints');
 
-        Storage.get('/restaurants/qinwest/covessr').then(result => console.log(result))
-      .catch(err => console.log(err));
+        let promises = await response.data.map( async (reward) => {
+            var restaurant = new Restaurant(reward.restaurantId, reward.restaurantName, 
+              reward.address, reward.description);
+            try{
+              const imageUrl = await Storage.get(`restaurants/${reward.restaurantName}/cover.jpg`);
+              restaurant.setImageUrl(imageUrl);
+            } catch(err) {
+              console.err(err);
+            }
+            return restaurant;
+        });
+
         this.setState({loyaltyPoints: response.data});
+
+        Promise.all(promises).then((restaurants) =>{
+          this.setState({restaurants});
+        });
+
+        
       } catch (err) {
         console.log(err);
       }
@@ -58,39 +76,22 @@ import { Storage } from 'aws-amplify'
           <Image style={styles.logo} source={require('./img/shareat_logo.png')}/>
           <Text style={styles.header}> Rewards </Text>
           <View style={styles.divider}/>
-          <View style={{marginTop: 22}}>
-            <Modal
-              animationType="fade"
-              transparent={false}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                this.setModalVisible(!this.state.modalVisible);
-            }}>
-            <View style={{marginTop: 22}}>
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setModalVisible(!this.state.modalVisible);
-                }}>
-                <Text>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            </Modal>
-          </View>
-          <ScrollView style={styles.bodyContainer}>
+          <ScrollView  contentContainerStyle={styles.bodyContainer}>
             <Text style={styles.wallet}> Wallet </Text>
-            {this.state.loyaltyPoints.map((reward, index) => (
-              <TouchableOpacity style={styles.rewardContainer} key={index} 
-                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-                <Image style={styles.restaurantIcon} source={{uri: 'https://shareat-react-20191016233607-deployment.s3-us-west-2.amazonaws.com/restaurants/qinwest/cover.jpg'}}/>
-                <View style={styles.restaurantInfo}>
-                <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
-                <Text style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{reward.address} </Text>
-                <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
-                </View>
-              </TouchableOpacity>
-              ))}
+            {this.state.restaurants.map((restaurant, index) => (
+                <TouchableOpacity style={styles.rewardContainer} key={index} 
+                  onPress={()=>{this._lookupRestaurant(restaurant.restaurantId, restaurant.name);}}>
+                  <Image style={styles.restaurantIcon}
+                        source={{uri: restaurant.imageUrl}}/>
+                  <View style={{flexDirection: 'column', flex: 1}}>
+                    <View style={styles.restaurantInfo}>
+                    <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{restaurant.name} </Text>
+                    <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{restaurant.address} </Text>
+                    <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{restaurant.description} </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                ))}
             <View style={styles.checkIn}>
               <Text style={styles.wallet}> Check-In </Text>
               <TouchableOpacity style={styles.distance}
@@ -101,14 +102,17 @@ import { Storage } from 'aws-amplify'
               <Text style={styles.distanceText}> {this.state.distance} mile </Text>
               </TouchableOpacity>
             </View>
-            {this.state.loyaltyPoints.map((reward, index) => (
+            {this.state.restaurants.map((restaurant, index) => (
               <TouchableOpacity style={styles.rewardContainer} key={index} 
-                onPress={()=>{this._lookupRestaurant(reward.restaurantId, reward.restaurantName);}}>
-                <Image style={styles.restaurantIcon} source={require('./img/icons8-noodles-64.png')}/>
-                <View style={styles.restaurantInfo}>
-                <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{reward.restaurantName} </Text>
-                <Text style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{reward.address} </Text>
-                <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{reward.description} </Text>
+                onPress={()=>{this._lookupRestaurant(restaurant.restaurantId, restaurant.name);}}>
+                <Image style={styles.restaurantIcon}
+                      source={{uri: restaurant.imageUrl}}/>
+                  <View style={{flexDirection: 'column', flex: 1}}>
+                  <View style={styles.restaurantInfo}>
+                  <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{restaurant.name} </Text>
+                  <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{restaurant.address} </Text>
+                  <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{restaurant.description} </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
               ))}
@@ -121,20 +125,28 @@ import { Storage } from 'aws-amplify'
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'column',
+      justifyContent: 'flex-start',
+      flex: 1
     },
     bodyContainer: {
       backgroundColor: 'white',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
     },
     rewardContainer: {
       marginLeft: 15,
+      marginRight: 15,
       flexDirection: 'row',
     },
     logo: {
       width: '58%',
       height: 65,
       resizeMode: 'contain',
-      paddingTop: 50,
-      marginLeft: -10,
+      marginLeft: 10,
+      marginTop: -15,
+      marginBottom: -5
     },
     divider: {
       flexDirection:'column',
@@ -146,7 +158,7 @@ import { Storage } from 'aws-amplify'
     header: {
       alignSelf: 'flex-start',
       fontSize: 20,
-      marginBottom: 15,
+      marginBottom: 10,
       marginLeft: 15,
       color: '#A9A9A9'
     },
@@ -159,8 +171,10 @@ import { Storage } from 'aws-amplify'
       color: '#ffa91f',
     },
     restaurantIcon: {
-      height: 60,
-      width: 60,
+      height: 50,
+      width: 50,
+      marginRight: 10,
+      borderRadius: 10,
       alignSelf: 'center',
     },
     restaurantInfo: {
