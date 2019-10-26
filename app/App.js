@@ -125,7 +125,7 @@ const main = createBottomTabNavigator({
       tabBarOptions: { showLabel: false }
     });
 
-const AppNavigator = createStackNavigator(
+const AppNavigator = createSwitchNavigator(
   {
     Registration: createSwitchNavigator({
       First: {
@@ -145,13 +145,6 @@ const AppNavigator = createStackNavigator(
       }
     }),
     Main: main
-  },
-  {
-    defaultNavigationOptions: {
-      gesturesEnabled: false,
-      header: null
-    },
-    mode: 'modal',
   }
 );
 
