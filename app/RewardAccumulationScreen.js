@@ -37,7 +37,7 @@ export default class RewardAccumulationScreen extends Component<Props> {
 
     try {
       const response = await axios.get(baseURL + 
-        `getMerchantInfo?restaurantId=${this.props.navigation.state.params.restaurantId}`);
+        `/user/getMerchantInfo?restaurantId=${this.props.navigation.state.params.restaurantId}`);
 
       const loyaltyResponse = await axios.get(baseURL + '/user/loyaltyPoints');
       const loyaltyPoints = loyaltyResponse.data;
