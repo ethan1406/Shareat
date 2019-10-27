@@ -33,7 +33,7 @@ export default class LoginScreen extends Component<Props> {
   }
 
   _login = async () => {
-    axios.post(baseURL + '/login/', 
+    axios.post(baseURL + '/user/login/', 
       {email: this.state.email, password: this.state.pwd})
     .then(async (response) => {
       if(response.status == 200){

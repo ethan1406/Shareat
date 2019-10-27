@@ -37,7 +37,7 @@ export default class RestaurantScreen extends Component<Props> {
   async componentDidMount() {
     try {
       const response = await axios.get(baseURL + 
-        `getMerchantInfo?restaurantId=${this.props.navigation.state.params.restaurantId}`);
+        `/user/getMerchantInfo?restaurantId=${this.props.navigation.state.params.restaurantId}`);
 
       const loyaltyPointsString = await AsyncStorage.getItem('loyaltyPoints');
       const loyaltyPoints = JSON.parse(loyaltyPointsString);

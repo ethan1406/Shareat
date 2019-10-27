@@ -31,7 +31,7 @@ export default class SignupScreen extends Component<Props> {
       return;
     }
  
-    axios.post(baseURL + '/signup/', 
+    axios.post(baseURL + '/user/signup/', 
       {email: this.state.email, password: this.state.pwd,
        firstName: this.state.firstName, lastName: this.state.lastName}
       )
