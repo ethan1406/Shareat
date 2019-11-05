@@ -2,7 +2,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
+import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import {baseURL} from './Constants';
 import stripe from 'tipsi-stripe';
 import axios from 'axios';
@@ -126,10 +126,10 @@ export default class PaymentMethodsScreen extends Component<Props> {
               </TouchableOpacity>   
           ))}
         </ScrollView>
-        <TouchableOpacity style={styles.cardContainer} onPress={() => {this._requestPaymentMethod();}}>
+        <TouchableOpacity style={styles.cardContainer} onPress={() => this.props.navigation.navigate('AddPaymentMethod')}>
             <Image style={{marginHorizontal: 15}} source={require('./img/stripe/icon_add.png')} />
             <Text> Add New Card... </Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
       </View>
     );
   }
