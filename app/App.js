@@ -5,7 +5,7 @@ import { createStackNavigator, createSwitchNavigator, createAppContainer, create
 import FirstScreen from './FirstScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
-import MapScreen from './MapScreen';
+import AddPaymentMethodScreen from './AddPaymentMethodScreen';
 import QrCodeScreen from './QrCodeScreen';
 import OptionsScreen from './OptionsScreen';
 import RewardsScreen from './RewardsScreen';
@@ -23,12 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const CheckNavigator = createStackNavigator(
   {
     QR: QrCodeScreen,
-    Check: {
-      screen: CheckSplitScreen,
-      navigationOptions: {
-          header:null,
-        },
-      },
+    Check: CheckSplitScreen,
     Confirmation: ConfirmationScreen,
     PaymentMethods: PaymentMethodsScreen,
     RewardAccumulation:  RewardAccumulationScreen
@@ -134,17 +129,26 @@ const AppNavigator = createSwitchNavigator(
       Login: {
         screen: LoginScreen,
         navigationOptions: {
-          header:null,
+          header: null,
         },
       },
       Signup: {
         screen: SignupScreen,
         navigationOptions: {
-          header:null,
+          header: null,
         },
       }
     }),
-    Main: main
+    Root: createStackNavigator(
+      {
+        Main: main,
+        AddPaymentMethod: AddPaymentMethodScreen,
+      },
+      {
+        mode: 'modal',
+        headerMode: 'none',
+      }
+    )
   }
 );
 

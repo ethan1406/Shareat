@@ -8,7 +8,8 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+import {ScrollView, Platform, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import SafeAreaView from 'react-native-safe-area-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants.js';
@@ -46,42 +47,49 @@ export default class LoginScreen extends Component<Props> {
         } catch (err) {
           console.log(err);
         }
-          this.props.navigation.navigate('Main');
+          this.props.navigation.navigate('QR');
       } 
     }).catch((err) => {
       this.setState({errorMessage: err.response.data.error});
     });
   } 
 
+  _scrollToInput (reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode);
+  }
+
+
   render() {
     return (
-      <SafeAreaView style={styles.container} resizeMode='contain'>
-        <KeyboardAvoidingView style={styles.stack} behavior='padding' keyboardVerticalOffset={64}>
-          <Image style={styles.logo} source={require('./img/login_logo.png')}/>
-          <TextInput style={styles.textInput} multiline={false} value={this.state.email}
-          onChangeText={(email) => this.setState({email})}/>
-          <View style={styles.passwordContainer}>
-            <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
-            onChangeText={(pwd) => this.setState({pwd})}/>
-          <TouchableOpacity>
-            <Text style={styles.forgot}> Forgot? </Text>
-          </TouchableOpacity>
+      <KeyboardAwareScrollView style={{width: '100%'}}  innerRef={ref => {this.scroll = ref;}}
+          contentContainerStyle={styles.container} bounces={false}>
+        <SafeAreaView style={styles.stack} resizeMode='contain'>
+            <Image style={styles.logo} source={require('./img/login_logo.png')}/>
+              <TextInput style={styles.textInput} multiline={false} value={this.state.email}
+              onChangeText={(email) => this.setState({email})}/>
+              <View style={styles.passwordContainer}>
+                <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
+                onChangeText={(pwd) => this.setState({pwd})}/>
+              <TouchableOpacity>
+                <Text style={styles.forgot}> Forgot? </Text>
+              </TouchableOpacity>
+              </View>
+            <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
+            <TouchableOpacity style={styles.signUpContainer} onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
+              <Text style={[styles.btnText, {fontSize: 14, color:'#ffa91f'}]}> Create a New Account </Text>
+            </TouchableOpacity>
+          <View style={styles.stack} resizeMode='contain'>
+            <Text style={{color: 'gray'}}> connect with </Text>
+            <TouchableOpacity onPress={() => {}}>
+               <Image style={{height: 50, width: 50}} source={require('./img/facebook.png')} />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-          <TouchableOpacity style={styles.signUpContainer} onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
-            <Text style={[styles.btnText, {fontSize: 14, color:'#ffa91f'}]}> Create a New Account </Text>
+          <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
+             <Text style={styles.btnText}>Log In</Text>
           </TouchableOpacity>
-        </KeyboardAvoidingView>
-        <View style={styles.stack} resizeMode='contain'>
-          <Text style={{color: 'gray'}}> connect with </Text>
-          <TouchableOpacity onPress={() => {}}>
-             <Image style={{height: 50, width: 50}} source={require('./img/facebook.png')} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
-           <Text style={styles.btnText}>Log In</Text>
-          </TouchableOpacity>
-      </SafeAreaView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
     );
   }
 }
