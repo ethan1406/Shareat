@@ -2,8 +2,11 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity,
-  TextInput, Button, KeyboardAvoidingView, Span} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity,
+  TextInput, Button} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import SafeAreaView from 'react-native-safe-area-view';
+
 
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -59,8 +62,9 @@ export default class SignupScreen extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.container} behavior='padding' resizeMode='contain'>
-          <KeyboardAvoidingView style={styles.stack} resizeMode='contain'>
+      <KeyboardAwareScrollView contentContainerStyle={styles.container} bounces={false}
+         behavior='padding' resizeMode='contain' innerRef={ref => {this.scroll = ref;}}>
+         <SafeAreaView style={styles.stack} resizeMode='contain' >
             <Image style={styles.logo} source={require('./img/splash_logo.png')} />
             <TextInput style={styles.textInput} multiline={false} 
             value={this.state.lastName} placeholder='Username' placeholderTextColor='gray'
@@ -79,7 +83,6 @@ export default class SignupScreen extends Component<Props> {
               <Text style={styles.welcome}>Already have an account? </Text>
               <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
             </View>
-          </KeyboardAvoidingView>
           <View>
            <Text style={styles.span}>   Or   </Text>
             <TouchableOpacity >
@@ -89,7 +92,8 @@ export default class SignupScreen extends Component<Props> {
               <Image style={styles.google} source={require('./img/signin_google.png')} />
             </TouchableOpacity>
           </View>
-     </View>
+        </SafeAreaView>
+     </KeyboardAwareScrollView>
     );
   }
 }
