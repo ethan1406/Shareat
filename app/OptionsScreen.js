@@ -33,6 +33,11 @@ export default class OptionsScreen extends Component<Props> {
     }
   }
 
+  _scrollToInput (reactNode: any) {
+    // Add a 'scroll' ref to your ScrollView
+    this.scroll.props.scrollToFocusedInput(reactNode);
+  }
+
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
