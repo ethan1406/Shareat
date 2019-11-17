@@ -3,7 +3,7 @@
 
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import {spreedlyAddCardURL, environment_key} from './Constants';
+import {spreedlyAddCardURL, environment_key, baseURL} from './Constants';
 import axios from 'axios';
 import SafeAreaView from 'react-native-safe-area-view';
 import { CreditCardInput } from 'react-native-credit-card-input';
@@ -15,7 +15,8 @@ type Props = {};
 export default class AddPaymentMethodScreen extends Component<Props> {
 
   state = {
-    form: {}
+    form: {},
+    errorMessage: ''
   }
 
   _onChange = form => {
@@ -39,15 +40,18 @@ export default class AddPaymentMethodScreen extends Component<Props> {
             year: `20${date[1]}`,
           },
           data: {
-            my_payment_method_identifier: number.slice(number.length - 4)
+            my_payment_method_identifier: number.slice(number.length - 4),
+            type: this.state.form.values.type
           }
       }};
       console.log(creditCardInfo);
       try {
         const {data} = await axios.post(`${spreedlyAddCardURL}?environment_key=${environment_key}`, creditCardInfo);
+        const response = await axios.post(`${baseURL}/user/storeCreditCardToken`, data.payment_method);
+        
+
       } catch(err) {
-        console.log(err);
-        return;
+        this.setState({errorMessage : 'Please try again'});
       }
       this.props.navigation.goBack();
     }
@@ -67,6 +71,7 @@ export default class AddPaymentMethodScreen extends Component<Props> {
               </TouchableOpacity>
             </View>
             <CreditCardInput style={{marginTop: 100}} onChange={this._onChange} requiresName={true} />
+            <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
         </SafeAreaView>
       </KeyboardAwareScrollView>
     );
@@ -87,6 +92,12 @@ const styles = StyleSheet.create({
       marginTop: 15, 
       marginBottom: 20,
       marginRight: 10
+    },
+    errorMessage: {
+      textAlign: 'center',
+      fontSize: 14,
+      marginTop: 40,
+      color: 'red',
     }
 });
 

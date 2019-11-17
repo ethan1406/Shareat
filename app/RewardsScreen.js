@@ -3,7 +3,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, 
-  Image, ScrollView, Modal} from 'react-native';
+  Image, ScrollView} from 'react-native';
 import axios from 'axios';
 //import Slider from '@react-native-community/slider';
 import {baseURL} from './Constants';

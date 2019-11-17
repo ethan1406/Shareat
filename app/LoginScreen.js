@@ -79,10 +79,10 @@ export default class LoginScreen extends Component<Props> {
             <TouchableOpacity style={styles.signUpContainer} onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
               <Text style={[styles.btnText, {fontSize: 14, color:'#ffa91f'}]}> Create a New Account </Text>
             </TouchableOpacity>
-          <View style={styles.stack} resizeMode='contain'>
-            <Text style={{color: 'gray'}}> connect with </Text>
+          <View style={[styles.stack, {marginBottom: 30}]} resizeMode='contain'>
+            <Text style={{color: 'gray', marginBottom: 20, marginTop: 20}}> connect with </Text>
             <TouchableOpacity onPress={() => {}}>
-               <Image style={{height: 50, width: 50}} source={require('./img/facebook.png')} />
+               <Image style={{height: 50, width: 50, }} source={require('./img/facebook.png')} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
@@ -131,8 +131,9 @@ const styles = StyleSheet.create({
   signupBtn: {
     marginTop: 10,
     marginBottom: 0 ,
-    width: '100%',
+    width: '80%',
     height: 40,
+    borderRadius: 40,
     backgroundColor: '#ffa91f',
     alignItems: 'center',
   },
