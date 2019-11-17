@@ -7,7 +7,7 @@ import {StyleSheet, Text, View, Image, TouchableOpacity,
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import SafeAreaView from 'react-native-safe-area-view';
 
-
+import { Auth } from 'aws-amplify';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
@@ -34,26 +34,38 @@ export default class SignupScreen extends Component<Props> {
       return;
     }
  
-    axios.post(baseURL + '/user/signup/', 
-      {email: this.state.email, password: this.state.pwd,
-       firstName: this.state.firstName, lastName: this.state.lastName}
-      )
-    .then(async (response) => {
-      if(response.status == 200){
-        try {
-          await AsyncStorage.setItem('email',response.data.email);
-          await AsyncStorage.setItem('userId',response.data.id);
-          await AsyncStorage.setItem('firstName',response.data.firstName);
-          await AsyncStorage.setItem('lastName',response.data.lastName);
-          await AsyncStorage.setItem('loyaltyPoints', JSON.stringify(response.data.loyaltyPoints));
-        } catch (err) {
-          console.log(err);
+    // axios.post(baseURL + '/user/signup/', 
+    //   {email: this.state.email, password: this.state.pwd,
+    //    firstName: this.state.firstName, lastName: this.state.lastName}
+    //   )
+    // .then(async (response) => {
+    //   if(response.status == 200){
+    //     try {
+    //       await AsyncStorage.setItem('email',response.data.email);
+    //       await AsyncStorage.setItem('userId',response.data.id);
+    //       await AsyncStorage.setItem('firstName',response.data.firstName);
+    //       await AsyncStorage.setItem('lastName',response.data.lastName);
+    //       await AsyncStorage.setItem('loyaltyPoints', JSON.stringify(response.data.loyaltyPoints));
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    //       this.props.navigation.navigate('Map');
+    //   } 
+    // }).catch((err) => {
+    //   this.setState({errorMessage: err.response.data.error});
+    // });
+
+    Auth.signUp({
+      username: this.state.email,
+      password: this.state.pwd,
+      attributes: {
+          'firstName' : this.state.firstName, 
+          'lastName' : this.state.lastName,  
         }
-          this.props.navigation.navigate('Map');
-      } 
-    }).catch((err) => {
-      this.setState({errorMessage: err.response.data.error});
-    });
+      })
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
+
   }
 
         // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -67,14 +79,20 @@ export default class SignupScreen extends Component<Props> {
          <SafeAreaView style={styles.stack} resizeMode='contain' >
             <Image style={styles.logo} source={require('./img/splash_logo.png')} />
             <TextInput style={styles.textInput} multiline={false} 
-            value={this.state.lastName} placeholder='Username' placeholderTextColor='gray'
-            onChangeText={(lastName) => this.setState({lastName})}/>
+              value={this.state.email} placeholder='Email' placeholderTextColor='gray'
+              onChangeText={(email) => this.setState({email})}/>
             <TextInput style={styles.textInput} multiline={false} 
-            value={this.state.email} placeholder='Email' placeholderTextColor='gray'
-            onChangeText={(email) => this.setState({email})}/>
+              value={this.state.firstName} placeholder='First Name' placeholderTextColor='gray'
+              onChangeText={(firstName) => this.setState({firstName})}/>
+            <TextInput style={styles.textInput} multiline={false} 
+              value={this.state.lastName} placeholder='Last Name' placeholderTextColor='gray'
+              onChangeText={(lastName) => this.setState({lastName})}/>
             <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
-            value={this.state.pwd} placeholder='Password' placeholderTextColor='gray'
-            onChangeText={(pwd) => this.setState({pwd})}/>
+              value={this.state.pwd} placeholder='Password' placeholderTextColor='gray'
+              onChangeText={(pwd) => this.setState({pwd})}/>
+            <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
+              value={this.state.confirmPwd} placeholder='Confirm Password' placeholderTextColor='gray'
+              onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
             <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
                 <Text style={styles.btnText}>Continue</Text>
             </TouchableOpacity>
@@ -145,7 +163,7 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 37,
     backgroundColor: '#ffa91f',
-    borderRadius: 2,
+    borderRadius: 40,
     alignItems: 'center',
     marginRight:20,
     marginLeft:20,

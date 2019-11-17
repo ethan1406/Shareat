@@ -4,7 +4,6 @@
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import {baseURL} from './Constants';
-import stripe from 'tipsi-stripe';
 import axios from 'axios';
 
 type Props = {};
@@ -16,19 +15,14 @@ export default class PaymentMethodsScreen extends Component<Props> {
     super(props);
     this.state = { 
       cards: [],
-      selectedCardId: 0,
       errorMessage: ''
     };
   }
 
   async componentDidMount() {
-    stripe.setOptions({
-      publishableKey: 'pk_test_x9efkreYwQ5wlmqXXc2paByL',
-    });
-
     try {
-      const response = await axios.get(baseURL + '/user/listCards');
-      this.setState({cards: response.data.data, selectedCardId: response.data.data[0].id});
+      const {data} = await axios.get(baseURL + '/user/getCards');
+      this.setState({cards: data.creditCards});
     } catch (err) {
       this.setState({errorMessage: err.response.data.error});
     }
@@ -63,47 +57,14 @@ export default class PaymentMethodsScreen extends Component<Props> {
   }
 
   _onPressItem = async (id) => {
-
-    this.setState({selectedCardId: id});
     try{
-        await axios.post(baseURL + '/user/changeDefaultPayment', {cardId: id});
+        const {data} = await axios.post(baseURL + '/user/changeDefaultPayment', {cardId: id});
+        this.setState({cards: data.creditCards});
      } catch (err) {
         this.setState({errorMessage: err.response.data.error});
      }
   }
 
-  _requestPaymentMethod = async () => {
-    const theme = {
-      primaryBackgroundColor: 'white',
-      secondaryBackgroundColor: 'white',
-      primaryForegroundColor: 'gray',
-      secondaryForegroundColor: '#F3A545',
-      accentColor: '#F3A545',
-      errorColor: 'red'
-    };
-    const options = {
-      smsAutofillDisabled: true,
-      requiredBillingAddressFields: 'full', // or 'full'
-      theme
-    };
-
-    stripe.paymentRequestWithCardForm(options)
-      .then( async response => {
-        // Get the token from the response, and send to your server
-         try{
-            await axios.post(baseURL + '/user/addPayment', {tokenId: response.tokenId});
-            const responseListCards = await axios.get(baseURL + '/user/listCards');
-            this.setState({cards: responseListCards.data.data, selectedCardId: responseListCards.data.data[0].id});
-         } catch (err) {
-            this.setState({errorMessage: err.response.data.error});
-         }
-      })
-      .catch(error => {
-        // Handle error
-        console.warn('Payment failed', { error });
-
-      });
-  }
 
   render() {
     return (
@@ -112,17 +73,17 @@ export default class PaymentMethodsScreen extends Component<Props> {
         <ScrollView styles={{flexDirection: 'column'}}
           contentContainerStyle={{paddingVertical: 20}}>
           {this.state.cards.map((card, index) => (
-            card.id == this.state.selectedCardId ? 
+            card.selected? 
               <TouchableOpacity style={styles.cardContainer} key={index}>
-                {this._getCardImage(card.brand, '#F3A545')}
-                <Text>{`${card.brand} Ending in ${card.last4}`}</Text>
+                {this._getCardImage(card.type, '#F3A545')}
+                <Text>{`${card.type} Ending in ${card.last4Digits}`}</Text>
                 <Image style={{tintColor: '#F3A545', marginLeft: 20}} source={require('./img/stripe/icon_checkmark.png')} />
               </TouchableOpacity>
             : 
               <TouchableOpacity style={styles.cardContainer} key={index}
-                onPress={()=>{this._onPressItem(card.id);}}>
-                {this._getCardImage(card.brand, '#8E8E8E')}
-                <Text>{`${card.brand} Ending in ${card.last4}`}</Text>
+                onPress={()=>{this._onPressItem(card._id);}}>
+                {this._getCardImage(card.type, '#8E8E8E')}
+                <Text>{`${card.type} Ending in ${card.last4Digits}`}</Text>
               </TouchableOpacity>   
           ))}
         </ScrollView>
