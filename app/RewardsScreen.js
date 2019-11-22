@@ -56,7 +56,9 @@ import Restaurant from './models/Restaurant';
 
     static navigationOptions = ({navigation}) => { 
       return {  headerStyle: {
-        borderBottomWidth: 0
+        borderBottomWidth: 0,
+        shadowColor: 'transparent',
+        backgroundColor: '#fff', elevation:0 
       }};
     }
 

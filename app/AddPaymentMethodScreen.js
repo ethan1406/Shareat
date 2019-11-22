@@ -44,16 +44,23 @@ export default class AddPaymentMethodScreen extends Component<Props> {
             type: this.state.form.values.type
           }
       }};
-      console.log(creditCardInfo);
       try {
         const {data} = await axios.post(`${spreedlyAddCardURL}?environment_key=${environment_key}`, creditCardInfo);
+        console.log('here');
+        console.log(data.payment_method);
+        console.log('hajsdflsanjfkaslkfnadskjfnaskfjasflkdsajlfere');
+        console.log('hajsdflsanjfkaslkfnadskjfnaskfjasflkdsajlfere');
+        console.log('hajsdflsanjfkaslkfnadskjfnaskfjasflkdsajlfere');
+        console.log('hajsdflsanjfkaslkfnadskjfnaskfjasflkdsajlfere');
         const response = await axios.post(`${baseURL}/user/storeCreditCardToken`, data.payment_method);
-        
-
+        if(response.status == 500) {
+          this.setState({errorMessage : 'Please try again'});
+        } else if (response.status == 200) {
+          this.props.navigation.goBack();
+        }
       } catch(err) {
         this.setState({errorMessage : 'Please try again'});
       }
-      this.props.navigation.goBack();
     }
   }
 

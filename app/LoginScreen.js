@@ -65,24 +65,24 @@ export default class LoginScreen extends Component<Props> {
       <KeyboardAwareScrollView style={{width: '100%'}}  innerRef={ref => {this.scroll = ref;}}
           contentContainerStyle={styles.container} bounces={false}>
         <SafeAreaView style={styles.stack} resizeMode='contain'>
-            <Image style={styles.logo} source={require('./img/login_logo.png')}/>
-              <TextInput style={styles.textInput} multiline={false} value={this.state.email}
-              onChangeText={(email) => this.setState({email})}/>
-              <View style={styles.passwordContainer}>
+             <TouchableOpacity style={{alignSelf: 'flex-start'}} onPress={() => this.props.navigation.navigate('First')}>
+               <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
+            </TouchableOpacity>
+            <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')}/>
+            <TextInput style={styles.textInput} multiline={false} value={this.state.email}
+            onChangeText={(email) => this.setState({email})}/>
+            <View style={styles.passwordContainer}>
                 <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
                 onChangeText={(pwd) => this.setState({pwd})}/>
               <TouchableOpacity>
                 <Text style={styles.forgot}> Forgot? </Text>
               </TouchableOpacity>
-              </View>
+            </View>
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-            <TouchableOpacity style={styles.signUpContainer} onPress={()=> {}} color='#000000' onPress={()=> this.props.navigation.navigate('Signup')}>
-              <Text style={[styles.btnText, {fontSize: 14, color:'#ffa91f'}]}> Create a New Account </Text>
-            </TouchableOpacity>
-          <View style={[styles.stack, {marginBottom: 30}]} resizeMode='contain'>
-            <Text style={{color: 'gray', marginBottom: 20, marginTop: 20}}> connect with </Text>
-            <TouchableOpacity onPress={() => {}}>
-               <Image style={{height: 50, width: 50, }} source={require('./img/facebook.png')} />
+          <View style={{marginBottom: 30}} resizeMode='contain'>
+            <TouchableOpacity style={[{flexDirection:'row', alignItems: 'center'}]} onPress={() => {}}>
+               <Image style={{height: 40, width: 40, }} source={require('./img/facebook.png')} />
+               <Text style={{color: '#3b5998', marginBottom: 20, marginTop: 20}}> Log in with Facebook </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
@@ -97,15 +97,16 @@ export default class LoginScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
   },
   stack: {
     width: '100%',
-   // marginTop: 200,
-    justifyContent: 'center',
+    flex: 1,
+    marginTop: 20,
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
   },
@@ -132,25 +133,28 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 0 ,
     width: '80%',
-    height: 40,
+    height: 45,
     borderRadius: 40,
     backgroundColor: '#ffa91f',
     alignItems: 'center',
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: 1, width: 1 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    elevation: 2 // Android
   },
   btnText: {
     color:'white',
     textAlign:'center',
-    paddingTop: 9,
+    paddingTop: 11,
     fontSize: 15,
   },
   logo: {
     alignSelf: 'center',
-    width: '58%',
-    height: 100,
+    width: '40%',
+    height: '40%',
     resizeMode: 'contain',
-    marginTop: 150,
     paddingLeft: 30,
-    marginBottom: 40,
   },
   passwordContainer: {
     justifyContent:'space-between',
