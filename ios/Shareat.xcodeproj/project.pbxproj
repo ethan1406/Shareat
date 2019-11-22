@@ -1422,7 +1422,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Shareat/Pods-Shareat-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Shareat/Pods-Shareat-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1431,7 +1431,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Shareat/Pods-Shareat-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Shareat/Pods-Shareat-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EE56DCCC0CB5D403725F0CCC /* [CP] Check Pods Manifest.lock */ = {

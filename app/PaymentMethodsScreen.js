@@ -44,11 +44,11 @@ export default class PaymentMethodsScreen extends Component<Props> {
     const brandLower = brandName.toLowerCase();
     if (brandLower === 'visa') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_visa.png')} />);
-    } else if (brandLower === 'mastercard') {
+    } else if (brandLower === 'master-card') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_mastercard.png')} />);
-    } else if (brandLower === 'american express') {
+    } else if (brandLower === 'american-express') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_amex.png')} />);
-    } else if (brandLower === 'apple pay') {
+    } else if (brandLower === 'apple-pay') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_applepay.png')} />);
     } else if (brandLower === 'discover') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_discover.png')} />);

@@ -77,7 +77,10 @@ export default class SignupScreen extends Component<Props> {
       <KeyboardAwareScrollView contentContainerStyle={styles.container} bounces={false}
          behavior='padding' resizeMode='contain' innerRef={ref => {this.scroll = ref;}}>
          <SafeAreaView style={styles.stack} resizeMode='contain' >
-            <Image style={styles.logo} source={require('./img/splash_logo.png')} />
+            <TouchableOpacity style={{alignSelf: 'flex-start', 'marginTop': 20}} onPress={() => this.props.navigation.navigate('First')}>
+               <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
+            </TouchableOpacity>
+            <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')} />
             <TextInput style={styles.textInput} multiline={false} 
               value={this.state.email} placeholder='Email' placeholderTextColor='gray'
               onChangeText={(email) => this.setState({email})}/>
@@ -93,23 +96,13 @@ export default class SignupScreen extends Component<Props> {
             <TextInput style={styles.textInput} multiline={false} secureTextEntry={true}
               value={this.state.confirmPwd} placeholder='Confirm Password' placeholderTextColor='gray'
               onChangeText={(confirmPwd) => this.setState({confirmPwd})}/>
+            <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
             <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._signup();}} color='#000000'>
                 <Text style={styles.btnText}>Continue</Text>
             </TouchableOpacity>
-            <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-            <View style={styles.loginContainer}>
-              <Text style={styles.welcome}>Already have an account? </Text>
-              <Button onPress={()=> this.props.navigation.navigate('Login')} color='#F3A545' title='LOGIN'/>
-            </View>
-          <View>
-           <Text style={styles.span}>   Or   </Text>
             <TouchableOpacity >
               <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
             </TouchableOpacity>
-            <TouchableOpacity >
-              <Image style={styles.google} source={require('./img/signin_google.png')} />
-            </TouchableOpacity>
-          </View>
         </SafeAreaView>
      </KeyboardAwareScrollView>
     );
@@ -119,17 +112,17 @@ export default class SignupScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
   },
   stack: {
     width: '100%',
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: -30,
   },
   loginContainer: {
     flexDirection: 'row',
@@ -161,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     marginBottom: 10,
     width: '80%',
-    height: 37,
+    height: 45,
     backgroundColor: '#ffa91f',
     borderRadius: 40,
     alignItems: 'center',
@@ -175,10 +168,10 @@ const styles = StyleSheet.create({
     fontSize: 15.5,
   },
   logo: {
-    height: 80,
-    width: 75,
-    marginTop: 15,
-    marginBottom: 15
+    height: 120,
+    width: 150,
+    marginTop: 20,
+    marginBottom: 20
   },
   facebook: {
     alignItems: 'center', 
