@@ -2,13 +2,14 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, 
+import {StyleSheet, Text, View, TouchableOpacity, 
   FlatList, Image, ScrollView, Dimensions} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Dialog from 'react-native-dialog';
 
 import {baseURL} from './Constants';
+import Card from './models/Card';
 import OrderListItem from './components/OrderListItem';
 
 
@@ -46,7 +47,7 @@ export default class ConfirmationScreen extends Component<Props> {
       partyId: params.partyId,
       refresh: false,
       dialogVisible: false,
-      card: {brand: ''}
+      selectedCard: Card
     };
   }
 
@@ -62,35 +63,40 @@ export default class ConfirmationScreen extends Component<Props> {
   }
 
   async componentDidMount() {
-    try {
-      const response = await axios.get(baseURL + '/user/listCards');
-      this.setState({card: response.data.data[0]});
-    } catch (err) {
-      this.setState({errorMessage: err.response.data.error});
-    }
+    this._fetchCards();
   }
 
   willFocus = this.props.navigation.addListener(
     'willFocus',
     async payload => {
-        try {
-        const response = await axios.get(baseURL + '/user/listCards');
-        this.setState({card: response.data.data[0]});
-      } catch (err) {
-        this.setState({errorMessage: err.response.data.error});
-      }
+      this._fetchCards();
     }
   );
 
-  _getCardImage = (brandName, tintColor) => {
-    const brandLower = brandName.toLowerCase();
+  _fetchCards = async () => {
+    try {
+        const {data} = await axios.get(baseURL + '/user/getCards');
+        var selectedCard;
+        data.forEach(card => {
+          if(card.selected) {
+            selectedCard = new Card(card._id, card.last4Digits, card.type, card.selected);
+          }
+        });
+        this.setState({selectedCard});
+      } catch (err) {
+        this.setState({errorMessage: err.response.data.error});
+      }
+  }
+
+  _getCardImage = (type, tintColor) => {
+    const brandLower = type.toLowerCase();
     if (brandLower === 'visa') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_visa.png')} />);
-    } else if (brandLower === 'mastercard') {
+    } else if (brandLower === 'master-card') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_mastercard.png')} />);
-    } else if (brandLower === 'american express') {
+    } else if (brandLower === 'american-express') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_amex.png')} />);
-    } else if (brandLower === 'apple pay') {
+    } else if (brandLower === 'apple-pay') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_applepay.png')} />);
     } else if (brandLower === 'discover') {
       return (<Image style={{tintColor: tintColor, marginHorizontal: 15}} source={require('./img/stripe/card_discover.png')} />);
@@ -209,10 +215,10 @@ export default class ConfirmationScreen extends Component<Props> {
           </TouchableOpacity>
           <View style={[styles.signupBtn, {backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', height: 45}]} 
             color='#000000'>
-              {this._getCardImage(this.state.card.brand, '#F3A545')}
-              <Text>{`${this.state.card.brand} Ending in ${this.state.card.last4}`}</Text>
+              {this._getCardImage(this.state.selectedCard.type, '#F3A545')}
+              <Text>{`${this.state.selectedCard.type} Ending in ${this.state.selectedCard.last4Digits}`}</Text>
           </View>
-          <View style={[styles.signupBtn]} color='#000000'>
+          <View style={[styles.signupBtn]} color='#000000'>s
               <Text style={[styles.btnText]}>Orders</Text>
           </View>
           <View style={{backgroundColor: 'white'}}>

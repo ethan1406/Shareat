@@ -36,14 +36,16 @@ export default class RestaurantScreen extends Component<Props> {
 
   async componentDidMount() {
     try {
+      const restaurantId = this.props.navigation.state.params.restaurantId;
       const response = await axios.get(baseURL + 
-        `/user/getMerchantInfo?restaurantId=${this.props.navigation.state.params.restaurantId}`);
+        `/user/getMerchantInfo?restaurantId=${restaurantId}`);
+
 
       const loyaltyPointsString = await AsyncStorage.getItem('loyaltyPoints');
       const loyaltyPoints = JSON.parse(loyaltyPointsString);
       var pointAccumulated = 0;
       loyaltyPoints.forEach(loyalty => {
-        if(loyalty.restaurantId == this.props.navigation.state.params.restaurantId) {
+        if(loyalty.restaurantId == restaurantId) {
           pointAccumulated = loyalty.points;
         }
       });
@@ -51,6 +53,7 @@ export default class RestaurantScreen extends Component<Props> {
       this.setState({merchant : response.data, loyaltyPoints, pointAccumulated});
 
     } catch (err) {
+      console.log(err);
       this.setState({errorMessage: err.response.data.error});
     }
   }
