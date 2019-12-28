@@ -46,7 +46,7 @@ export default class OptionsScreen extends Component<Props> {
           <Image style={styles.optionImage} source={require('./img/email.png')} />
           <Text> {this.state.email} </Text>
         </View>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('EditProfile');}} color='#000000'>
+        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
             <Text style={styles.btnText}> Edit Profile </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
