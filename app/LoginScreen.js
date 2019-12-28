@@ -65,7 +65,7 @@ export default class LoginScreen extends Component<Props> {
       <KeyboardAwareScrollView style={{width: '100%'}}  innerRef={ref => {this.scroll = ref;}}
           contentContainerStyle={styles.container} bounces={false}>
         <SafeAreaView style={styles.stack} resizeMode='contain'>
-             <TouchableOpacity style={{alignSelf: 'flex-start', marginTop: 30}} onPress={() => this.props.navigation.navigate('First')}>
+             <TouchableOpacity style={{alignSelf: 'flex-start'}} onPress={() => this.props.navigation.navigate('First')}>
                <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
             </TouchableOpacity>
             <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')}/>

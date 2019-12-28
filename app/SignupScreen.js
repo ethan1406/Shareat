@@ -80,7 +80,7 @@ export default class SignupScreen extends Component<Props> {
             <TouchableOpacity style={{alignSelf: 'flex-start', 'marginTop': 20}} onPress={() => this.props.navigation.navigate('First')}>
                <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
             </TouchableOpacity>
-            <Image style={styles.logo} source={require('./img/splash_logo.png')} />
+            <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')} />
             <TextInput style={styles.textInput} multiline={false} 
               value={this.state.email} placeholder='Email' placeholderTextColor='gray'
               onChangeText={(email) => this.setState({email})}/>
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     fontSize: 15.5,
   },
   logo: {
-    height: '12%',
-    width: '20%',
+    height: 120,
+    width: 150,
     marginTop: 20,
     marginBottom: 20
   },

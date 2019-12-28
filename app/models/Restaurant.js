@@ -1,7 +1,8 @@
 
+
 export default class Restaurant {
-	constructor(restaurantId, name, address, description) {
-		this.restaurantId = restaurantId;
+	constructor(restaurantid, name, address, description) {
+		this.restaurantid = restaurantid;
 		this.name = name;
 		this.address = address;
 		this.description = description;
