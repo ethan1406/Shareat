@@ -17,6 +17,7 @@ import ConfirmationScreen from './ConfirmationScreen';
 import RewardAccumulationScreen from './RewardAccumulationScreen';
 import OrderBuyerScreen from './OrderBuyerScreen';
 import PaymentMethodsScreen from './PaymentMethodsScreen';
+import EditProfileScreen from './EditProfileScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
@@ -65,7 +66,8 @@ const OptionNavigator = createStackNavigator(
     PaymentMethods: PaymentMethodsScreen,
     Restaurant: RestaurantScreen,
     RecentOrder: RecentOrderScreen,
-    Receipt: ReceiptScreen
+    Receipt: ReceiptScreen,
+    EditProfile: EditProfileScreen,
   }
 );
 

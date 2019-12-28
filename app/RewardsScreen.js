@@ -5,7 +5,6 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, 
   Image, ScrollView} from 'react-native';
 import axios from 'axios';
-//import Slider from '@react-native-community/slider';
 import {baseURL} from './Constants';
 import { Storage } from 'aws-amplify';
 import Restaurant from './models/Restaurant';
@@ -21,8 +20,6 @@ import Restaurant from './models/Restaurant';
         imageUrl: '',
         restaurants: [Restaurant],
         loyaltyPoints: [],
-        distance: 1,
-        modalVisible: false,
       };
     }
 
@@ -67,11 +64,6 @@ import Restaurant from './models/Restaurant';
         restaurantName, restaurantId
       });
     }
-
-    setModalVisible(visible) {
-      this.setState({modalVisible: visible});
-    }
-
     render() {
       return (
         <View style={styles.container}>
@@ -96,13 +88,6 @@ import Restaurant from './models/Restaurant';
                 ))}
             <View style={styles.checkIn}>
               <Text style={styles.wallet}> Check-In </Text>
-              <TouchableOpacity style={styles.distance}
-              onPress={() => {
-                this.setModalVisible(true);
-              }}
-              >
-              <Text style={styles.distanceText}> {this.state.distance} mile </Text>
-              </TouchableOpacity>
             </View>
             {this.state.restaurants.map((restaurant, index) => (
               <TouchableOpacity style={styles.rewardContainer} key={index} 
