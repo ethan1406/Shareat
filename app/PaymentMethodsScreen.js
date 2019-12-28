@@ -6,7 +6,6 @@ import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react
 import {baseURL} from './Constants';
 import axios from 'axios';
 
-import Card from './models/Card';
 type Props = {};
 
 
@@ -15,23 +14,15 @@ export default class PaymentMethodsScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = { 
-      cards: [Card],
+      cards: [],
       errorMessage: ''
     };
   }
 
   async componentDidMount() {
-    this._fetchCards();
-  }
-
-  _fetchCards = async () => {
     try {
       const {data} = await axios.get(baseURL + '/user/getCards');
-      const cards = data.map(card => new Card(card._id, card.last4Digits, card.type, card.selected));
-       console.log('asdsdaklfaskldfadlksjfa');
-      console.log(JSON.stringify(cards));
-      console.log('asdsdaklfaskldfadlksjfa');
-      this.setState({cards});
+      this.setState({cards: data.creditCards});
     } catch (err) {
       this.setState({errorMessage: err.response.data.error});
     }
@@ -68,22 +59,11 @@ export default class PaymentMethodsScreen extends Component<Props> {
   _onPressItem = async (id) => {
     try{
         const {data} = await axios.post(baseURL + '/user/changeDefaultPayment', {cardId: id});
-        this.setState({cards: data.cards});
+        this.setState({cards: data.creditCards});
      } catch (err) {
         this.setState({errorMessage: err.response.data.error});
      }
   }
-
-  _addCard = card => {
-    this.setState([...this.state.cards, card]);
-  };
-
-  willFocus = this.props.navigation.addListener(
-    'willFocus',
-    async payload => {
-      this._fetchCards();
-    }
-  );
 
 
   render() {
@@ -107,7 +87,7 @@ export default class PaymentMethodsScreen extends Component<Props> {
               </TouchableOpacity>   
           ))}
         </ScrollView>
-        <TouchableOpacity style={styles.cardContainer} onPress={() => this.props.navigation.navigate('AddPaymentMethod', { addCard: this._addCard })}>
+        <TouchableOpacity style={styles.cardContainer} onPress={() => this.props.navigation.navigate('AddPaymentMethod')}>
             <Image style={{marginHorizontal: 15}} source={require('./img/stripe/icon_add.png')} />
             <Text> Add New Card... </Text>
         </TouchableOpacity>
