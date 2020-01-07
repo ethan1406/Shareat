@@ -47,7 +47,7 @@ export default class ConfirmationScreen extends Component<Props> {
       partyId: params.partyId,
       refresh: false,
       dialogVisible: false,
-      selectedCard: Card
+      selectedCard: {_id:'', last4Digits: 0, selected:false, type:''}
     };
   }
 
@@ -79,7 +79,8 @@ export default class ConfirmationScreen extends Component<Props> {
         var selectedCard;
         data.forEach(card => {
           if(card.selected) {
-            selectedCard = new Card(card._id, card.last4Digits, card.type, card.selected);
+            selectedCard = {_id: card._id, last4Digits: card.last4Digits, selected: card.selected,
+            type: card.type};
           }
         });
         this.setState({selectedCard});

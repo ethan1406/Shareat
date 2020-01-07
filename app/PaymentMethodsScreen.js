@@ -6,7 +6,6 @@ import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react
 import {baseURL} from './Constants';
 import axios from 'axios';
 
-import Card from './models/Card';
 type Props = {};
 
 
@@ -15,7 +14,7 @@ export default class PaymentMethodsScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = { 
-      cards: [Card],
+      cards: [],
       errorMessage: ''
     };
   }
@@ -27,11 +26,7 @@ export default class PaymentMethodsScreen extends Component<Props> {
   _fetchCards = async () => {
     try {
       const {data} = await axios.get(baseURL + '/user/getCards');
-      const cards = data.map(card => new Card(card._id, card.last4Digits, card.type, card.selected));
-       console.log('asdsdaklfaskldfadlksjfa');
-      console.log(JSON.stringify(cards));
-      console.log('asdsdaklfaskldfadlksjfa');
-      this.setState({cards});
+      this.setState({cards: data.cards});
     } catch (err) {
       this.setState({errorMessage: err.response.data.error});
     }
