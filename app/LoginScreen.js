@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 'use strict';
 
 import React, {Component} from 'react';
@@ -14,6 +7,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants.js';
 import axios from 'axios';
+import { Auth } from 'aws-amplify';
 
 type Props = {};
 export default class LoginScreen extends Component<Props> {
@@ -21,10 +15,24 @@ export default class LoginScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = { 
-      email: 'ethan3@gmail.com',
-      pwd: 'haha12345',
-      errorMessage: ''
+      email: 'ethan1406@gmail.com',
+      pwd: 'Haha12345',
+      errorMessage: '',
+      confirmationCode: '',
+      resendCodeText: 'Resend One-Time Password',
+      isForgotPage: false,
+      isConfirmationPage: false,
+      isForgotSubmitPage: false
      };
+
+     this._login = this._login.bind(this);
+     this._forgotPassowrd = this._forgotPassowrd.bind(this);
+     this._resendEmail = this._resendEmail.bind(this);
+     this._verifyEmail = this._verifyEmail.bind(this);
+     this._forgotPasswordSubmit = this._forgotPasswordSubmit.bind(this);
+     this._forgotPassowrdRequest = this._forgotPassowrdRequest.bind(this);
+     this._saveUserToDB = this._saveUserToDB.bind(this);
+     this._facebookLogin = this._facebookLogin.bind(this);
   }
 
   static navigationOptions = ({navigation}) => {
@@ -33,26 +41,140 @@ export default class LoginScreen extends Component<Props> {
     };
   }
 
-  _login = async () => {
-    axios.post(baseURL + '/user/login/', 
-      {email: this.state.email, password: this.state.pwd})
-    .then(async (response) => {
-      if(response.status == 200){
-        try {
-          await AsyncStorage.setItem('email',response.data.email);
-          await AsyncStorage.setItem('userId',response.data.id);
-          await AsyncStorage.setItem('firstName',response.data.firstName);
-          await AsyncStorage.setItem('lastName',response.data.lastName);
-          await AsyncStorage.setItem('loyaltyPoints', JSON.stringify(response.data.loyaltyPoints));
-        } catch (err) {
-          console.log(err);
-        }
-          this.props.navigation.navigate('QR');
-      } 
-    }).catch((err) => {
-      this.setState({errorMessage: err.response.data.error});
-    });
+  async _login() {
+    if(this.state.email === '') {
+      this.setState({errorMessage: 'Please enter your email'});
+      return;
+    }
+
+    if(this.state.pwd === '') {
+      this.setState({errorMessage: 'Please enter your password'});
+      return;
+    }
+
+    try {
+      const user = await Auth.signIn(this.state.email, this.state.pwd);
+      await AsyncStorage.setItem('email', user.attributes.email);
+      await AsyncStorage.setItem('amazonUserSub', user.attributes.sub);
+      await AsyncStorage.setItem('firstName', user.attributes.given_name);
+      await AsyncStorage.setItem('lastName', user.attributes.family_name);
+      this.props.navigation.navigate('QR');
+
+    } catch(err) {
+      if (err.code === 'UserNotConfirmedException') {
+          await Auth.resendSignUp(this.state.email);
+          this.setState({errorMessage: 'Email has not been confirmed yet', isConfirmationPage: true});
+      } else if(err.code === 'NotAuthorizedException') {
+        this.setState({errorMessage: 'Incorrect Password'});
+      } else if(err.code === 'UserNotFoundException'){
+        this.setState({errorMessage: 'Email Not Found'});
+      } else {
+        console.log(err);
+      }
+    }
   } 
+
+  async _forgotPassowrd() {
+    try {
+      this.setState({email:'', pwd:'', isForgotPage: true, isForgotSubmitPage: false});
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: err.message});
+    }
+  }
+
+  async _forgotPassowrdRequest() {
+    if(this.state.email === '') {
+      this.setState({errorMessage: 'Please enter your email'});
+      return;
+    }
+
+    try {
+      console.log('testing haha 12345');
+      await Auth.forgotPassword(this.state.email);
+      console.log(this.state.email);
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: err.message});
+    }
+  }
+
+  async _forgotPasswordSubmit() {
+    if(this.state.pwd === '') {
+      this.setState({errorMessage: 'Please enter your password'});
+      return;
+    }
+
+    if(this.state.confirmationCode === '') {
+      this.setState({errorMessage: 'Please enter your confirmation code'});
+      return;
+    }
+
+    try {
+      await Auth.forgotPasswordSubmit(this.state.email, this.state.confirmationCode, this.state.pwd);
+      this._login();
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: err.message});
+    }
+  }
+
+  async _resendEmail() {
+      this.setState({errorMessage: ''});
+      try {
+        await Auth.resendSignUp(this.state.email);
+        this.setState({resendCodeText: 'Resend Code Again'});
+      } catch(err) {
+        console.log(err);
+        this.setState({errorMessage: err.message});
+      }
+   }
+
+ async _verifyEmail() {
+    this.setState({errorMessage: ''});
+    try {
+      await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
+      const user = await Auth.signIn(this.state.email, this.state.pwd);
+      this._saveUserToDB(user.attributes);
+
+      this.props.navigation.navigate('QR');
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: err.message});
+    }
+ }
+
+
+  async _saveUserToDB(attributes) {
+    console.log(this.state.amazonUserSub);
+    try {
+       await axios.post(baseURL + '/user/signup/', 
+              {email: attributes.email, amazonUserSub: attributes.sub}
+             );
+       await AsyncStorage.setItem('email', attributes.email);
+       await AsyncStorage.setItem('amazonUserSub', attributes.sub);
+       await AsyncStorage.setItem('firstName', attributes.given_name);
+       await AsyncStorage.setItem('lastName', attributes.family_name);
+
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: 'Please try again.'});
+    }
+ }
+
+  async _facebookLogin() {
+    try{
+      const user = await Auth.federatedSignIn({provider: 'Facebook'});
+      console.log(user);
+      console.log('hahahaha');
+    } catch(err) {
+      console.log(err);
+      this.setState({errorMessage: err.message});
+    }
+  }
+
+  
+
 
   _scrollToInput (reactNode: any) {
     // Add a 'scroll' ref to your ScrollView
@@ -61,6 +183,97 @@ export default class LoginScreen extends Component<Props> {
 
 
   render() {
+
+    const isConfirmationPage = this.state.isConfirmationPage;
+    const isForgotPage = this.state.isForgotPage;
+    const isForgotSubmitPage = this.state.isForgotSubmitPage;
+
+    let display;
+    let resendBtn;
+    let form;
+    let submitBtn;
+
+    if(!isConfirmationPage && !isForgotPage && !isForgotSubmitPage) {
+
+      display = <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')}/>;
+
+      form = <View style={styles.textInputContainer}>
+                <TextInput style={styles.textInput} multiline={false} value={this.state.email}
+                    placeholder='Email' placeholderTextColor='gray' onChangeText={(email) => this.setState({email})}/>
+                <View style={styles.passwordContainer}>
+                  <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
+                    placeholder='Password' placeholderTextColor='gray' onChangeText={(pwd) => this.setState({pwd})}/>
+                  <TouchableOpacity onPress={this._forgotPassowrd}>
+                    <Text style={styles.forgot}> Forgot? </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>;
+
+      resendBtn = 
+            <View style={{marginBottom: 30}} resizeMode='contain'>
+              <TouchableOpacity style={[{flexDirection:'row', alignItems: 'center'}]} onPress={this._facebookLogin}>
+                 <Image style={{height: 40, width: 40, }} source={require('./img/facebook.png')} />
+                 <Text style={{color: '#3b5998', marginBottom: 20, marginTop: 20}}> Log in with Facebook </Text>
+              </TouchableOpacity>
+            </View>;
+
+      submitBtn = 
+           <TouchableOpacity style={styles.signupBtn} onPress={this._login} color='#000000'>
+             <Text style={styles.btnText}>Log In</Text>
+          </TouchableOpacity>;
+
+    } else if(isForgotPage) {
+      display = <Text style={styles.mfaText}>Enter your email address to reset your password</Text>;
+
+      form = <View style={styles.textInputContainer}>
+               <TextInput style={styles.textInput} multiline={false} value={this.state.email}
+                      placeholder='Email' placeholderTextColor='gray' onChangeText={(email) => this.setState({email})}/>
+             </View>;
+
+      submitBtn = 
+         <TouchableOpacity style={styles.signupBtn} onPress={this._forgotPassowrdRequest} color='#000000'>
+           <Text style={styles.btnText}>Forgot Password</Text>
+        </TouchableOpacity>;
+
+    } else if(isConfirmationPage){
+      display = <Text style={styles.mfaText}>A One-Time Password has been sent to {this.state.email}</Text>;
+
+      form = <View style={styles.textInputContainer}>
+              <TextInput style={styles.textInput} multiline={false} value={this.state.confirmationCode} 
+                placeholder='Confirmation Code' placeholderTextColor='gray' secureTextEntry={true} 
+                onChangeText={(confirmationCode) => this.setState({confirmationCode})}/>
+            </View>;
+
+      resendBtn = 
+          <View style={{marginBottom: 30}} resizeMode='contain'>
+             <TouchableOpacity style={styles.resendBtn} onPress={this._resendEmail} color='#000000'>
+                <Text style={styles.resendText}>{this.state.resendCodeText}</Text>
+             </TouchableOpacity>
+          </View>;
+
+      submitBtn = 
+         <TouchableOpacity style={styles.signupBtn} onPress={this._verifyEmail} color='#000000'>
+           <Text style={styles.btnText}>Log In</Text>
+        </TouchableOpacity>;
+    } else if (isForgotSubmitPage) {
+      display = <Text style={styles.mfaText}>A One-Time Password has been sent to {this.state.email}{'\n'}
+                    Please Enter the code and your new password</Text>;
+
+      form = <View style={styles.textInputContainer}>
+                 <TextInput style={styles.textInput} multiline={false} value={this.state.pwd}
+                    placeholder= 'New Password' placeholderTextColor='gray' onChangeText={(pwd) => this.setState({pwd})}/>
+                 <TextInput style={styles.textInput} multiline={false} value={this.state.confirmationCode}
+                    placeholder='Confrimation Code' placeholderTextColor='gray' onChangeText={(confirmationCode) => this.setState({confirmationCode})}/>
+              </View>;
+      
+      resendBtn = null;
+
+       submitBtn = 
+         <TouchableOpacity style={styles.signupBtn} onPress={this._forgotPasswordSubmit} color='#000000'>
+           <Text style={styles.btnText}>Update Password</Text>
+        </TouchableOpacity>;
+    }
+
     return (
       <KeyboardAwareScrollView style={{width: '100%'}}  innerRef={ref => {this.scroll = ref;}}
           contentContainerStyle={styles.container} bounces={false}>
@@ -68,26 +281,11 @@ export default class LoginScreen extends Component<Props> {
              <TouchableOpacity style={{alignSelf: 'flex-start', marginTop: 30}} onPress={() => this.props.navigation.navigate('First')}>
                <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
             </TouchableOpacity>
-            <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')}/>
-            <TextInput style={styles.textInput} multiline={false} value={this.state.email}
-            onChangeText={(email) => this.setState({email})}/>
-            <View style={styles.passwordContainer}>
-                <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
-                onChangeText={(pwd) => this.setState({pwd})}/>
-              <TouchableOpacity>
-                <Text style={styles.forgot}> Forgot? </Text>
-              </TouchableOpacity>
-            </View>
+            {display}
+            {form}
             <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-          <View style={{marginBottom: 30}} resizeMode='contain'>
-            <TouchableOpacity style={[{flexDirection:'row', alignItems: 'center'}]} onPress={() => {}}>
-               <Image style={{height: 40, width: 40, }} source={require('./img/facebook.png')} />
-               <Text style={{color: '#3b5998', marginBottom: 20, marginTop: 20}}> Log in with Facebook </Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.signupBtn} onPress={()=> {this._login();}} color='#000000'>
-             <Text style={styles.btnText}>Log In</Text>
-          </TouchableOpacity>
+            {resendBtn}
+            {submitBtn}
         </SafeAreaView>
       </KeyboardAwareScrollView>
     );
@@ -97,7 +295,7 @@ export default class LoginScreen extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -113,6 +311,8 @@ const styles = StyleSheet.create({
   errorMessage: {
     textAlign: 'center',
     fontSize: 13,
+    marginTop: 20,
+    marginBottom: 10,
     color: 'red',
   },
   textInput: {
@@ -122,6 +322,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     color: 'gray',
     fontSize: 15,
+  },
+  textInputContainer: {
+    width: '100%', 
+    alignItems: 'center',
+    zIndex: 0
   },
   textInputPw: {
     width: '83%',
@@ -149,12 +354,35 @@ const styles = StyleSheet.create({
     paddingTop: 11,
     fontSize: 15,
   },
+  resendBtn: {
+    marginTop: 50,
+    marginBottom: - 20,
+    width: '80%',
+    height: 25,
+    alignItems: 'center',
+    marginRight: 20,
+    marginLeft: 20,
+  },
+  resendText: {
+    color: 'gray',
+    textAlign:'center',
+    fontSize: 12
+  },
+  mfaText: {
+    color: 'gray',
+    textAlign:'center',
+    marginTop: 50,
+    marginBottom: 50,
+    fontSize: 12,
+    width: '80%'
+  },
   logo: {
     alignSelf: 'center',
     width: '40%',
     height: '40%',
     resizeMode: 'contain',
     paddingLeft: 30,
+    marginTop: -25
   },
   passwordContainer: {
     justifyContent:'space-between',

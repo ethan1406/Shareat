@@ -1,4 +1,3 @@
-
 'use strict';
 
 import React, {Component} from 'react';
@@ -7,7 +6,9 @@ import {Platform, StyleSheet, ScrollView, View,
 
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants';
+import { Auth } from 'aws-amplify';
 import axios from 'axios';
+import Dialog from 'react-native-dialog';
 
 type Props = {};
 export default class OptionsScreen extends Component<Props> {
@@ -18,8 +19,12 @@ export default class OptionsScreen extends Component<Props> {
       firstName: '',
       lastName: '',
       email: '',
-      errorMessage: ''
+      errorMessage: '',
+      dialogVisible: false
     };
+
+    this._signout = this._signout.bind(this);
+    this._signoutRequest = this._signoutRequest.bind(this);
   }
 
   async componentDidMount() {
@@ -38,6 +43,19 @@ export default class OptionsScreen extends Component<Props> {
     this.scroll.props.scrollToFocusedInput(reactNode);
   }
 
+  _signoutRequest() {
+    this.setState({dialogVisible: true});
+  }
+
+  async _signout() {
+    try {
+      await Auth.signOut();
+      this.props.navigation.navigate('First');
+    }catch(err) {
+      console.log(err);
+    }
+  }
+
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
@@ -49,7 +67,7 @@ export default class OptionsScreen extends Component<Props> {
         <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('EditProfile');}} color='#000000'>
             <Text style={styles.btnText}> Edit Profile </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {}} color='#000000'>
+        <TouchableOpacity style={styles.signupBtn} onPress={this._signoutRequest} color='#000000'>
             <Text style={styles.btnText}> Sign Out </Text>
         </TouchableOpacity>
         <View style={{marginVertical: 50}}></View>
@@ -68,6 +86,11 @@ export default class OptionsScreen extends Component<Props> {
           <Text> About </Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
+         <Dialog.Container visible={this.state.dialogVisible}>
+          <Dialog.Title>Are you sure you want to sign out?</Dialog.Title>
+          <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
+          <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
+        </Dialog.Container>
       </ScrollView>
     );
   }

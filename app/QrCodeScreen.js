@@ -5,6 +5,8 @@ import React, {Component} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {baseURL} from './Constants';
+import { Auth } from 'aws-amplify';
+
 import axios from 'axios';
 
 type Props = {};
@@ -30,6 +32,7 @@ export default class QrCodeScreen extends Component<Props> {
     // }).catch((err) => {
     //   console.log(err);
     // });
+  
   }
 
   onSuccess(e) {
