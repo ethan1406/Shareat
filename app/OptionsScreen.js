@@ -56,6 +56,16 @@ export default class OptionsScreen extends Component<Props> {
     }
   }
 
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    async payload => {
+      const firstName = await AsyncStorage.getItem('firstName');
+      const lastName = await AsyncStorage.getItem('lastName');
+      const email = await AsyncStorage.getItem('email');
+      this.setState({firstName, lastName, email});
+    }
+  );
+
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
@@ -87,7 +97,7 @@ export default class OptionsScreen extends Component<Props> {
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
          <Dialog.Container visible={this.state.dialogVisible}>
-          <Dialog.Title>Are you sure you want to sign out?</Dialog.Title>
+          <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
           <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
           <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
         </Dialog.Container>

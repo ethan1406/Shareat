@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import {baseURL} from './Constants';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 type Props = {};
 
@@ -25,7 +26,11 @@ export default class PaymentMethodsScreen extends Component<Props> {
 
   _fetchCards = async () => {
     try {
-      const {data} = await axios.get(baseURL + '/user/getCards');
+      const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+      const firstName = await AsyncStorage.getItem('firstName');
+      const lastName = await AsyncStorage.getItem('lastName');
+
+      const {data} = await axios.get(`${baseURL}/user/${amazonUserSub}/getCards`);
       this.setState({cards: data.cards});
     } catch (err) {
       this.setState({errorMessage: err.response.data.error});
@@ -62,7 +67,8 @@ export default class PaymentMethodsScreen extends Component<Props> {
 
   _onPressItem = async (id) => {
     try{
-        const {data} = await axios.post(baseURL + '/user/changeDefaultPayment', {cardId: id});
+        const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+        const {data} = await axios.post(`${baseURL}/user/${amazonUserSub}/changeDefaultPayment`, {cardId: id});
         this.setState({cards: data.cards});
      } catch (err) {
         this.setState({errorMessage: err.response.data.error});

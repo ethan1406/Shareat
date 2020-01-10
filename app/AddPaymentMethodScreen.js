@@ -8,6 +8,7 @@ import axios from 'axios';
 import SafeAreaView from 'react-native-safe-area-view';
 import { CreditCardInput } from 'react-native-credit-card-input';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import AsyncStorage from '@react-native-community/async-storage';
 
 type Props = {};
 
@@ -45,8 +46,9 @@ export default class AddPaymentMethodScreen extends Component<Props> {
           }
       }};
       try {
+        const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
         const {data} = await axios.post(`${spreedlyAddCardURL}?environment_key=${environment_key}`, cardInfo);
-        const response = await axios.post(`${baseURL}/user/storeCardToken`, data.transaction);
+        const response = await axios.post(`${baseURL}/user/${amazonUserSub}/storeCardToken`, data.transaction);
         if(response.status == 500) {
           this.setState({errorMessage : 'Please try again'});
         } else if (response.status == 200) {

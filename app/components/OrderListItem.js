@@ -3,6 +3,8 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-community/async-storage';
+import {baseURL} from '../Constants';
 import axios from 'axios';
 
 type Props = {};
@@ -20,8 +22,19 @@ export default class OrderListItem extends Component<Props> {
     }
   }
 
-  _splitOrder = () => {
-      axios.post('https://www.shareatpay.com/order/split', {partyId: this.props.partyId, orderId: this.props.id});
+  _splitOrder = async () => {
+      try {
+        const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+        const firstName = await AsyncStorage.getItem('firstName');
+        const lastName = await AsyncStorage.getItem('lastName');
+
+        axios.post(`${baseURL}/order/split`, 
+          {partyId: this.props.partyId, orderId: this.props.id,
+           amazonUserSub, firstName, lastName});
+      } catch (err) {
+        console.log(err);
+      }
+      
   }
 
   _lookupBuyers = () => {
