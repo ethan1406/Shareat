@@ -7,6 +7,7 @@ import {StyleSheet, Text, View, TouchableOpacity,
 import axios from 'axios';
 import {baseURL} from './Constants';
 import { Storage } from 'aws-amplify';
+import AsyncStorage from '@react-native-community/async-storage';
 import Restaurant from './models/Restaurant';
 
 
@@ -25,7 +26,8 @@ import Restaurant from './models/Restaurant';
 
     async componentDidMount() {
       try {
-        const response = await axios.get(baseURL + '/user/loyaltyPoints');
+        const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+        const response = await axios.get(baseURL + `/user/${amazonUserSub}/loyaltyPoints`);
 
         let promises = await response.data.map( async (reward) => {
             var restaurant = new Restaurant(reward.restaurantId, reward.restaurantName, 

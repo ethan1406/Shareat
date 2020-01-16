@@ -2,9 +2,10 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions,
-  AsyncStorage, Image, ScrollView, StatusBar} from 'react-native';
+   Image, ScrollView, StatusBar} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Pusher from 'pusher-js/react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import OrderListItem from './components/OrderListItem';
 
@@ -26,7 +27,7 @@ export default class CheckSplitScreen extends Component<Props> {
 
     var colorMap = {};
     params.members.forEach((member) => {
-        colorMap[member.userId] = colors[colorIndex % 6];
+        colorMap[member.amazonUserSub] = colors[colorIndex % 6];
         colorIndex ++; 
     });
 
@@ -42,7 +43,7 @@ export default class CheckSplitScreen extends Component<Props> {
       selectedIndex: 0,
       partyId: params.partyId,
       colorMap: colorMap,
-      userId: ''
+      amazonUserSub: ''
     };
 
     //set up pusher to asynchronously update who are splitting the dishes
@@ -56,14 +57,16 @@ export default class CheckSplitScreen extends Component<Props> {
 
     this.splittingChannel.bind('splitting', (data) => {
       if(data.add) {
+        console.log('here');
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
+        console.log(index);
         updatedOrders[index].buyers.push({firstName: data.firstName, 
-            lastName: data.lastName, userId: data.userId});
+            lastName: data.lastName, amazonUserSub: data.amazonUserSub});
         var updatedColorMap = JSON.parse(JSON.stringify(this.state.colorMap));
 
         if(!data.isMember) {
-          updatedColorMap[data.userId] = colors[colorIndex % 5];
+          updatedColorMap[data.amazonUserSub] = colors[colorIndex % 5];
           colorIndex++;
         }
         //var joined = this.state.members.concat(data.userId);
@@ -73,7 +76,7 @@ export default class CheckSplitScreen extends Component<Props> {
       } else {
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
-        updatedOrders[index].buyers = updatedOrders[index].buyers.filter(buyer => buyer.userId != data.userId);
+        updatedOrders[index].buyers = updatedOrders[index].buyers.filter(buyer => buyer.amazonUserSub != data.amazonUserSub);
 
         // const indexToRemove = this.state.members.indexOf(data.userId);
         // const updatedMembers = this.state.members.slice(indexToRemove, 1);
@@ -85,8 +88,8 @@ export default class CheckSplitScreen extends Component<Props> {
 
   async componentDidMount() {    
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      this.setState({userId});
+      const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+      this.setState({amazonUserSub});
     } catch (err) {
       console.log(err);
     }
@@ -141,7 +144,7 @@ export default class CheckSplitScreen extends Component<Props> {
   _renderHeader = () => {
     var priceTag = 'Price';
     if(this.state.selectedIndex == 1) {
-      if(this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)).length == 0) {
+      if(this.state.data.filter(order => order.buyers.map(buyer => buyer.amazonUserSub).includes(this.state.amazonUserSub)).length == 0) {
         return null;
       } else {
         priceTag = 'Price for You';
@@ -155,7 +158,7 @@ export default class CheckSplitScreen extends Component<Props> {
 
 
   _getindividualTotal = () => {
-    const individualOrders = this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId));
+    const individualOrders = this.state.data.filter(order => order.buyers.map(buyer => buyer.amazonUserSub).includes(this.state.amazonUserSub));
     const individualPrice = individualOrders.reduce((total, order) => ( total + order.price/order.buyers.length), 0);
     return (individualPrice/100).toFixed(2);
   }
@@ -183,7 +186,7 @@ export default class CheckSplitScreen extends Component<Props> {
             <FlatList
               style={{marginHorizontal: 20, backgroundColor: 'white'}}
               data={this.state.selectedIndex ? 
-                this.state.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(this.state.userId)) : 
+                this.state.data.filter(order => order.buyers.map(buyer => buyer.amazonUserSub).includes(this.state.amazonUserSub)) : 
                 this.state.data}
               extraData={this.state.refresh}
               keyExtractor={this._keyExtractor}
@@ -201,7 +204,7 @@ export default class CheckSplitScreen extends Component<Props> {
               data: this.state.data, 
               restaurantName: this.state.restaurantName,
               restaurantId: this.state.restaurantId,
-              userId: this.state.userId,
+              amazonUserSub: this.state.amazonUserSub,
               partyId: this.state.partyId,
               colorMap: this.state.colorMap
             })} color='#000000'>

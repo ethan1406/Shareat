@@ -4,6 +4,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, Image, ScrollView} from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {baseURL} from './Constants';
 
@@ -20,7 +21,8 @@ export default class RecentOrderScreen extends Component<Props> {
 
   async componentDidMount() {
     try {
-      const response = await axios.get(baseURL + '/user/receipts');
+      const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+      const response = await axios.get(`${baseURL}/user/${amazonUserSub}/receipts`);
       this.setState({recentOrders: response.data});
     } catch (err) {
       console.log(err);

@@ -6,7 +6,7 @@ import {Platform, StyleSheet, ScrollView, View,
 
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants';
-import { Auth } from 'aws-amplify';
+import { Auth, Analytics } from 'aws-amplify';
 import axios from 'axios';
 import Dialog from 'react-native-dialog';
 
@@ -56,6 +56,20 @@ export default class OptionsScreen extends Component<Props> {
     }
   }
 
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    async payload => {
+      const firstName = await AsyncStorage.getItem('firstName');
+      const lastName = await AsyncStorage.getItem('lastName');
+      const email = await AsyncStorage.getItem('email');
+      this.setState({firstName, lastName, email});
+    }
+  );
+
+  async _testAnalytics() {
+    Analytics.record({ name: 'albumVisit' });
+  }
+
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
@@ -81,13 +95,13 @@ export default class OptionsScreen extends Component<Props> {
           <Text> Payment Methods</Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('Rewards');}} color='#000000'>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
           <Image style={[styles.optionImage, {height: 25}]} source={require('./img/about.png')} />
           <Text> About </Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
          <Dialog.Container visible={this.state.dialogVisible}>
-          <Dialog.Title>Are you sure you want to sign out?</Dialog.Title>
+          <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
           <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
           <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
         </Dialog.Container>

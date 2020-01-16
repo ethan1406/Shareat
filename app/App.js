@@ -18,6 +18,7 @@ import RewardAccumulationScreen from './RewardAccumulationScreen';
 import OrderBuyerScreen from './OrderBuyerScreen';
 import PaymentMethodsScreen from './PaymentMethodsScreen';
 import EditProfileScreen from './EditProfileScreen';
+import ForgotPasswordScreen from './ForgotPasswordScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
@@ -68,6 +69,12 @@ const OptionNavigator = createStackNavigator(
     RecentOrder: RecentOrderScreen,
     Receipt: ReceiptScreen,
     EditProfile: EditProfileScreen,
+    ForgotPassword: {
+      screen: ForgotPasswordScreen,
+      navigationOptions: {
+        header: null,
+      }
+    }
   }
 );
 
@@ -128,12 +135,20 @@ const AppNavigator = createSwitchNavigator(
       First: {
         screen: FirstScreen,
       },
-      Login: {
-        screen: LoginScreen,
-        navigationOptions: {
-          header: null,
+      LoginFlow: createStackNavigator({
+        Login: {
+          screen: LoginScreen,
+          navigationOptions: {
+            header: null,
+          },
         },
-      },
+        ForgotPassword: {
+          screen: ForgotPasswordScreen,
+          navigationOptions: {
+            header: null,
+          }
+        }
+      }),
       Signup: {
         screen: SignupScreen,
         navigationOptions: {

@@ -29,5 +29,11 @@
 				}
 			]
 		}
+	},
+	"analytics": {
+		"shareat": {
+			"service": "Pinpoint",
+			"providerPlugin": "awscloudformation"
+		}
 	}
 }

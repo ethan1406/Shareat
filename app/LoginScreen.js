@@ -16,21 +16,16 @@ export default class LoginScreen extends Component<Props> {
     super(props);
     this.state = { 
       email: 'ethan1406@gmail.com',
-      pwd: 'Haha12345',
+      pwd: 'Testing123',
       errorMessage: '',
       confirmationCode: '',
       resendCodeText: 'Resend One-Time Password',
-      isForgotPage: false,
       isConfirmationPage: false,
-      isForgotSubmitPage: false
      };
 
      this._login = this._login.bind(this);
-     this._forgotPassowrd = this._forgotPassowrd.bind(this);
      this._resendEmail = this._resendEmail.bind(this);
      this._verifyEmail = this._verifyEmail.bind(this);
-     this._forgotPasswordSubmit = this._forgotPasswordSubmit.bind(this);
-     this._forgotPassowrdRequest = this._forgotPassowrdRequest.bind(this);
      this._saveUserToDB = this._saveUserToDB.bind(this);
      this._facebookLogin = this._facebookLogin.bind(this);
   }
@@ -42,18 +37,18 @@ export default class LoginScreen extends Component<Props> {
   }
 
   async _login() {
-    if(this.state.email === '') {
+    if(this.state.email.trim().toLowerCase() === '') {
       this.setState({errorMessage: 'Please enter your email'});
       return;
     }
 
-    if(this.state.pwd === '') {
+    if(this.state.pwd.trim() === '') {
       this.setState({errorMessage: 'Please enter your password'});
       return;
     }
 
     try {
-      const user = await Auth.signIn(this.state.email, this.state.pwd);
+      const user = await Auth.signIn(this.state.email.trim().toLowerCase(), this.state.pwd.trim());
       await AsyncStorage.setItem('email', user.attributes.email);
       await AsyncStorage.setItem('amazonUserSub', user.attributes.sub);
       await AsyncStorage.setItem('firstName', user.attributes.given_name);
@@ -73,51 +68,6 @@ export default class LoginScreen extends Component<Props> {
       }
     }
   } 
-
-  async _forgotPassowrd() {
-    try {
-      this.setState({email:'', pwd:'', isForgotPage: true, isForgotSubmitPage: false});
-    } catch(err) {
-      console.log(err);
-      this.setState({errorMessage: err.message});
-    }
-  }
-
-  async _forgotPassowrdRequest() {
-    if(this.state.email === '') {
-      this.setState({errorMessage: 'Please enter your email'});
-      return;
-    }
-
-    try {
-      console.log('testing haha 12345');
-      await Auth.forgotPassword(this.state.email);
-      console.log(this.state.email);
-    } catch(err) {
-      console.log(err);
-      this.setState({errorMessage: err.message});
-    }
-  }
-
-  async _forgotPasswordSubmit() {
-    if(this.state.pwd === '') {
-      this.setState({errorMessage: 'Please enter your password'});
-      return;
-    }
-
-    if(this.state.confirmationCode === '') {
-      this.setState({errorMessage: 'Please enter your confirmation code'});
-      return;
-    }
-
-    try {
-      await Auth.forgotPasswordSubmit(this.state.email, this.state.confirmationCode, this.state.pwd);
-      this._login();
-    } catch(err) {
-      console.log(err);
-      this.setState({errorMessage: err.message});
-    }
-  }
 
   async _resendEmail() {
       this.setState({errorMessage: ''});
@@ -143,7 +93,6 @@ export default class LoginScreen extends Component<Props> {
       this.setState({errorMessage: err.message});
     }
  }
-
 
   async _saveUserToDB(attributes) {
     console.log(this.state.amazonUserSub);
@@ -173,9 +122,6 @@ export default class LoginScreen extends Component<Props> {
     }
   }
 
-  
-
-
   _scrollToInput (reactNode: any) {
     // Add a 'scroll' ref to your ScrollView
     this.scroll.props.scrollToFocusedInput(reactNode);
@@ -185,15 +131,13 @@ export default class LoginScreen extends Component<Props> {
   render() {
 
     const isConfirmationPage = this.state.isConfirmationPage;
-    const isForgotPage = this.state.isForgotPage;
-    const isForgotSubmitPage = this.state.isForgotSubmitPage;
 
     let display;
     let resendBtn;
     let form;
     let submitBtn;
 
-    if(!isConfirmationPage && !isForgotPage && !isForgotSubmitPage) {
+    if(!isConfirmationPage) {
 
       display = <Image style={styles.logo} source={require('./img/shareat_logo_with_name.png')}/>;
 
@@ -203,7 +147,7 @@ export default class LoginScreen extends Component<Props> {
                 <View style={styles.passwordContainer}>
                   <TextInput style={styles.textInputPw} multiline={false} secureTextEntry={true} value={this.state.pwd}
                     placeholder='Password' placeholderTextColor='gray' onChangeText={(pwd) => this.setState({pwd})}/>
-                  <TouchableOpacity onPress={this._forgotPassowrd}>
+                  <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ForgotPassword');}}>
                     <Text style={styles.forgot}> Forgot? </Text>
                   </TouchableOpacity>
                 </View>
@@ -222,20 +166,7 @@ export default class LoginScreen extends Component<Props> {
              <Text style={styles.btnText}>Log In</Text>
           </TouchableOpacity>;
 
-    } else if(isForgotPage) {
-      display = <Text style={styles.mfaText}>Enter your email address to reset your password</Text>;
-
-      form = <View style={styles.textInputContainer}>
-               <TextInput style={styles.textInput} multiline={false} value={this.state.email}
-                      placeholder='Email' placeholderTextColor='gray' onChangeText={(email) => this.setState({email})}/>
-             </View>;
-
-      submitBtn = 
-         <TouchableOpacity style={styles.signupBtn} onPress={this._forgotPassowrdRequest} color='#000000'>
-           <Text style={styles.btnText}>Forgot Password</Text>
-        </TouchableOpacity>;
-
-    } else if(isConfirmationPage){
+    } else {
       display = <Text style={styles.mfaText}>A One-Time Password has been sent to {this.state.email}</Text>;
 
       form = <View style={styles.textInputContainer}>
@@ -255,24 +186,7 @@ export default class LoginScreen extends Component<Props> {
          <TouchableOpacity style={styles.signupBtn} onPress={this._verifyEmail} color='#000000'>
            <Text style={styles.btnText}>Log In</Text>
         </TouchableOpacity>;
-    } else if (isForgotSubmitPage) {
-      display = <Text style={styles.mfaText}>A One-Time Password has been sent to {this.state.email}{'\n'}
-                    Please Enter the code and your new password</Text>;
-
-      form = <View style={styles.textInputContainer}>
-                 <TextInput style={styles.textInput} multiline={false} value={this.state.pwd}
-                    placeholder= 'New Password' placeholderTextColor='gray' onChangeText={(pwd) => this.setState({pwd})}/>
-                 <TextInput style={styles.textInput} multiline={false} value={this.state.confirmationCode}
-                    placeholder='Confrimation Code' placeholderTextColor='gray' onChangeText={(confirmationCode) => this.setState({confirmationCode})}/>
-              </View>;
-      
-      resendBtn = null;
-
-       submitBtn = 
-         <TouchableOpacity style={styles.signupBtn} onPress={this._forgotPasswordSubmit} color='#000000'>
-           <Text style={styles.btnText}>Update Password</Text>
-        </TouchableOpacity>;
-    }
+    } 
 
     return (
       <KeyboardAwareScrollView style={{width: '100%'}}  innerRef={ref => {this.scroll = ref;}}

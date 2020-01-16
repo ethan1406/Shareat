@@ -20,18 +20,18 @@ export default class QrCodeScreen extends Component<Props> {
   }
 
   componentDidMount() {
-    // axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
-    //   this.props.navigation.navigate('Check', {
-    //     data: response.data.orders, 
-    //     restaurantName: response.data.restaurantName,
-    //     orderTotal: response.data.orderTotal,
-    //     members: response.data.members,
-    //     partyId: response.data._id,
-    //     restaurantId: response.data.restaurantId
-    //   });
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
+    axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
+      this.props.navigation.navigate('Check', {
+        data: response.data.orders, 
+        restaurantName: response.data.restaurantName,
+        orderTotal: response.data.orderTotal,
+        members: response.data.members,
+        partyId: response.data._id,
+        restaurantId: response.data.restaurantId
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
   
   }
 

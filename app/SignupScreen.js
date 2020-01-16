@@ -75,9 +75,8 @@ export default class SignupScreen extends Component<Props> {
       this.setState({errorMessage: ''});
       try {
         await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
-        
-        this._saveUserToDB();
-        await Auth.signIn(this.state.email, this.state.pwd);
+        const user = await Auth.signIn(this.state.email, this.state.pwd);
+        this._saveUserToDB(user.attributes);
         this.props.navigation.navigate('QR');
       } catch(err) {
         console.log(err);
@@ -97,16 +96,15 @@ export default class SignupScreen extends Component<Props> {
       }
    }
 
-   async _saveUserToDB() {
-      console.log(this.state.amazonUserSub);
+   async _saveUserToDB(attributes) {
       try {
          await axios.post(baseURL + '/user/signup/', 
-                {email: this.state.email, amazonUserSub: this.state.amazonUserSub}
+                {email: attributes.email, amazonUserSub: attributes.sub}
                );
-         await AsyncStorage.setItem('email', this.state.email);
-         await AsyncStorage.setItem('amazonUserSub', this.state.amazonUserSub);
-         await AsyncStorage.setItem('firstName', this.state.firstName);
-         await AsyncStorage.setItem('lastName', this.state.lastName);
+         await AsyncStorage.setItem('email', attributes.email);
+         await AsyncStorage.setItem('amazonUserSub', attributes.sub);
+         await AsyncStorage.setItem('firstName', attributes.given_name);
+         await AsyncStorage.setItem('lastName', attributes.family_name);
 
       } catch(err) {
         console.log(err);

@@ -10,6 +10,7 @@ import Dialog from 'react-native-dialog';
 
 import {baseURL} from './Constants';
 import Card from './models/Card';
+import AsyncStorage from '@react-native-community/async-storage';
 import OrderListItem from './components/OrderListItem';
 
 
@@ -24,7 +25,7 @@ export default class ConfirmationScreen extends Component<Props> {
     super(props);
 
     var params = this.props.navigation.state.params;
-    var myOrders = params.data.filter(order => order.buyers.map(buyer => buyer.userId).includes(params.userId));
+    var myOrders = params.data.filter(order => order.buyers.map(buyer => buyer.amazonUserSub).includes(params.amazonUserSub));
 
     var individualPrice = myOrders.reduce((total, order) => ( total + order.price/order.buyers.length), 0);
     var tax = individualPrice * taxRate;
@@ -75,9 +76,11 @@ export default class ConfirmationScreen extends Component<Props> {
 
   _fetchCards = async () => {
     try {
-        const {data} = await axios.get(baseURL + '/user/getCards');
+        const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
+        const {data} = await axios.get(`${baseURL}/user/${amazonUserSub}/getCards`);
+        console.log(data);
         var selectedCard;
-        data.forEach(card => {
+        data.cards.forEach(card => {
           if(card.selected) {
             selectedCard = {_id: card._id, last4Digits: card.last4Digits, selected: card.selected,
             type: card.type};
@@ -219,7 +222,7 @@ export default class ConfirmationScreen extends Component<Props> {
               {this._getCardImage(this.state.selectedCard.type, '#F3A545')}
               <Text>{`${this.state.selectedCard.type} Ending in ${this.state.selectedCard.last4Digits}`}</Text>
           </View>
-          <View style={[styles.signupBtn]} color='#000000'>s
+          <View style={[styles.signupBtn]} color='#000000'>
               <Text style={[styles.btnText]}>Orders</Text>
           </View>
           <View style={{backgroundColor: 'white'}}>
