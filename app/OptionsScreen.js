@@ -2,7 +2,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, ScrollView, View,
-  TouchableOpacity, Text, Image} from 'react-native';
+  TouchableOpacity, Text, Image, StatusBar} from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants';
@@ -73,31 +73,33 @@ export default class OptionsScreen extends Component<Props> {
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
-        <Text style={{fontWeight: 'bold', fontSize: 16, marginTop: 25, marginBottom: 10}}> {this.state.firstName} </Text>
-        <View style={[styles.optionContainer, {justifyContent: 'center', borderColor: 'white'}]} color='#000000'>
-          <Image style={styles.optionImage} source={require('./img/email.png')} />
-          <Text> {this.state.email} </Text>
-        </View>
-        <TouchableOpacity style={styles.signupBtn} onPress={()=> {this.props.navigation.navigate('EditProfile');}} color='#000000'>
-            <Text style={styles.btnText}> Edit Profile </Text>
+            <StatusBar
+    backgroundColor='#ffa91f'
+    barStyle="light-content"
+  />
+        <TouchableOpacity style={{paddingTop: 20}} onPress={()=> {this.props.navigation.navigate('EditProfile');}}>
+        <Image style={styles.profile} source={require('./img/defaultUserFemale.png')} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.signupBtn} onPress={this._signoutRequest} color='#000000'>
-            <Text style={styles.btnText}> Sign Out </Text>
-        </TouchableOpacity>
-        <View style={{marginVertical: 50}}></View>
+        <Text style={styles.name}> {this.state.firstName} </Text>
+        <Text style={styles.email}> {this.state.email} </Text>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
-          <Image style={styles.optionImage} source={require('./img/receipt.png')} />
-          <Text> Receipts </Text>
+          <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
+          <Text style={styles.optionText}> Receipts </Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
           <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
-          <Text> Payment Methods</Text>
+          <Text style={styles.optionText}> Payment Methods</Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
-          <Image style={[styles.optionImage, {height: 25}]} source={require('./img/about.png')} />
-          <Text> About </Text>
+          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+          <Text style={styles.optionText}> About </Text>
+          <Text style={styles.rightText}> > </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
+          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+          <Text style={styles.optionText}> Sign Out </Text>
           <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
          <Dialog.Container visible={this.state.dialogVisible}>
@@ -118,17 +120,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', 
     alignItems: 'center'
   },
-  signupBtn: {
-    marginTop: 10,
-    marginBottom: 10,
-    width: '80%',
-    height: 25,
-    backgroundColor: '#F3A545',
-    borderRadius: 2,
-    alignItems: 'center',
-    marginRight:20,
-    marginLeft:20
-  },
   rightText: {
     color:'black',
     textAlign:'right',
@@ -140,19 +131,36 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    height: 40,
+    height: 60,
     borderColor: '#D3D3D3',
-    borderWidth: 0.5
+    borderWidth: 0.5,
   },
   optionImage: {
     tintColor: 'black', 
-    marginHorizontal: 15, 
+    marginHorizontal: 30, 
     height: 25, 
-    width: 25
+    width: 30
   },
-  btnText: {
-    color:'white',
-    textAlign:'center',
-    paddingTop: 3
-  }
+  profile: {
+    width: 100,
+    height: 100,
+    borderRadius: 0,
+    borderWidth: 0,
+    overflow: 'hidden',
+  },
+  optionText: {
+    fontSize: 15,
+    color: '#888888',
+  },
+  name: {
+    fontSize: 16,
+    color: 'grey',
+    marginTop: 7,
+  },
+  email: {
+    fontSize: 13,
+    color: '#888888',
+    marginTop: 3,
+    marginBottom: 25,
+  },
 });

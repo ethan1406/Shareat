@@ -70,8 +70,10 @@ export default class QrCodeScreen extends Component<Props> {
             Scan the QR code on your table
           </Text>
         }
-        showMarker={true}
+        showMarker={false}
         cameraProps={{captureAudio: false}}
+        cameraStyle={{alignSelf:'center',width: 330, height:330, borderRadius: 300, borderWidth: 6, borderColor: '#ffa91f', overflow: 'hidden'}}
+        containerStyle={{backgroundColor: '#F0F0F0'}}
       />
     );
   }
@@ -94,5 +96,9 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
+  },
+  logo: {
+    width: 170,
+    height: 40,
   }
 });
