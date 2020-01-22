@@ -85,22 +85,18 @@ export default class OptionsScreen extends Component<Props> {
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
           <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
           <Text style={styles.optionText}> Receipts </Text>
-          <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
           <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
           <Text style={styles.optionText}> Payment Methods</Text>
-          <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
           <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
           <Text style={styles.optionText}> About </Text>
-          <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
           <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
           <Text style={styles.optionText}> Sign Out </Text>
-          <Text style={styles.rightText}> > </Text>
         </TouchableOpacity>
          <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
@@ -120,12 +116,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', 
     alignItems: 'center'
   },
-  rightText: {
-    color:'black',
-    textAlign:'right',
-    marginLeft: 'auto',
-    marginRight: 20
-  },
   optionContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -137,7 +127,8 @@ const styles = StyleSheet.create({
   },
   optionImage: {
     tintColor: 'black', 
-    marginHorizontal: 30, 
+    marginLeft: 20, 
+    marginRight: 15,
     height: 25, 
     width: 30
   },

@@ -19,6 +19,12 @@ export default class QrCodeScreen extends Component<Props> {
      };
   }
 
+  static navigationOptions = ({navigation}) => {
+    return{
+      headerTransparent: true,
+    };
+  }
+
   componentDidMount() {
     axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
       this.props.navigation.navigate('Check', {
@@ -36,7 +42,7 @@ export default class QrCodeScreen extends Component<Props> {
   }
 
   onSuccess(e) {
-    //e.data
+    // e.data
     axios.get(e.data).then((response) => {
       this.props.navigation.navigate('Check', {
         data: response.data.orders, 
@@ -65,15 +71,12 @@ export default class QrCodeScreen extends Component<Props> {
       <QRCodeScanner
         ref={(node) => { this.scanner = node; }}
         onRead={this.onSuccess.bind(this)}
-        topContent={
-          <Text style={styles.centerText}>
-            Scan the QR code on your table
-          </Text>
-        }
-        showMarker={false}
+        showMarker={true}
+        markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
         cameraProps={{captureAudio: false}}
-        cameraStyle={{alignSelf:'center',width: 330, height:330, borderRadius: 300, borderWidth: 6, borderColor: '#ffa91f', overflow: 'hidden'}}
+        cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
         containerStyle={{backgroundColor: '#F0F0F0'}}
+        bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
       />
     );
   }
