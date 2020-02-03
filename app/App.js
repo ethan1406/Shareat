@@ -158,7 +158,10 @@ const AppNavigator = createSwitchNavigator(
     }),
     Root: createStackNavigator(
       {
-        Main: main,
+        Main: {
+          screen: main,
+          path: 'main'
+        },
         AddPaymentMethod: AddPaymentMethodScreen,
       },
       {
@@ -170,4 +173,11 @@ const AppNavigator = createSwitchNavigator(
 );
 
 
-export default createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AppNavigator);
+
+const prefix = 'shareat://';
+
+const app = () => <AppContainer uriPrefix={prefix} />;
+
+
+export default app;

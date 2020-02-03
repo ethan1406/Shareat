@@ -7,10 +7,11 @@ import SafeAreaView from 'react-native-safe-area-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import {baseURL} from './Constants.js';
 import axios from 'axios';
-import { Auth } from 'aws-amplify';
+import { withOAuth } from 'aws-amplify-react-native';
+import { Auth, Hub } from 'aws-amplify';
 
 type Props = {};
-export default class LoginScreen extends Component<Props> {
+class LoginScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
@@ -23,11 +24,26 @@ export default class LoginScreen extends Component<Props> {
       isConfirmationPage: false,
      };
 
+     Hub.listen('auth', async (data) => {
+        switch (data.payload.event) {
+            case 'signIn':
+                try {
+                  const user = await Auth.currentAuthenticatedUser();
+                  this._saveUserToDB(user.signInUserSession.idToken.payload);
+                  this.props.navigation.navigate('QR');
+                } catch(err) {
+                  console.log(err);
+                }
+                break;
+            default:
+                break;
+        }
+    });
+
      this._login = this._login.bind(this);
      this._resendEmail = this._resendEmail.bind(this);
      this._verifyEmail = this._verifyEmail.bind(this);
      this._saveUserToDB = this._saveUserToDB.bind(this);
-     this._facebookLogin = this._facebookLogin.bind(this);
   }
 
   static navigationOptions = ({navigation}) => {
@@ -111,16 +127,6 @@ export default class LoginScreen extends Component<Props> {
     }
  }
 
-  async _facebookLogin() {
-    try{
-      const user = await Auth.federatedSignIn({provider: 'Facebook'});
-      console.log(user);
-      console.log('hahahaha');
-    } catch(err) {
-      console.log(err);
-      this.setState({errorMessage: err.message});
-    }
-  }
 
   _scrollToInput (reactNode: any) {
     // Add a 'scroll' ref to your ScrollView
@@ -136,6 +142,10 @@ export default class LoginScreen extends Component<Props> {
     let resendBtn;
     let form;
     let submitBtn;
+
+    const {
+      facebookSignIn,
+    } = this.props;
 
     if(!isConfirmationPage) {
 
@@ -155,7 +165,7 @@ export default class LoginScreen extends Component<Props> {
 
       resendBtn = 
             <View style={{marginBottom: 30}} resizeMode='contain'>
-              <TouchableOpacity style={[{flexDirection:'row', alignItems: 'center'}]} onPress={this._facebookLogin}>
+              <TouchableOpacity style={[{flexDirection:'row', alignItems: 'center'}]} onPress={facebookSignIn}>
                  <Image style={{height: 40, width: 40, }} source={require('./img/facebook.png')} />
                  <Text style={{color: '#3b5998', marginBottom: 20, marginTop: 20}}> Log in with Facebook </Text>
               </TouchableOpacity>
@@ -312,3 +322,5 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   }
 });
+
+export default withOAuth(LoginScreen);

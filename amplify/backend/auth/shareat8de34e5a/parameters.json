@@ -1,6 +1,6 @@
 {
     "identityPoolName": "shareat8de34e5a_identitypool_8de34e5a",
-    "allowUnauthenticatedIdentities": true,
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "sharea8de34e5a",
     "userPoolName": "shareat8de34e5a_userpool_8de34e5a",
     "autoVerifiedAttributes": [
@@ -44,6 +44,13 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
-    "dependsOn": []
+    "useDefault": "defaultSocial",
+    "dependsOn": [],
+    "hostedUI": true,
+    "hostedUIDomainName": "shareat6c2ab8d1-6c2ab8d1",
+    "authProvidersUserPool": [
+        "Facebook"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://www.shareatpay.com/\"],\"LogoutURLs\":[\"https://www.shareatpay.com/\"]}"
 }

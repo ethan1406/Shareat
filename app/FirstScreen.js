@@ -3,6 +3,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { Auth } from 'aws-amplify';
 
@@ -15,8 +16,14 @@ export default class FirstScreen extends Component<Props> {
 
   async componentDidMount() {
       try {
-        await Auth.currentAuthenticatedUser();
+        const user = await Auth.currentAuthenticatedUser();
+
         this.props.navigation.navigate('QR');
+
+        await AsyncStorage.setItem('email', user.attributes.email);
+        await AsyncStorage.setItem('amazonUserSub', user.attributes.sub);
+        await AsyncStorage.setItem('firstName', user.attributes.given_name);
+        await AsyncStorage.setItem('lastName', user.attributes.family_name);
       }catch(err) {
         console.log(err);
       }

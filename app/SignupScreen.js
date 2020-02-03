@@ -7,14 +7,15 @@ import {StyleSheet, Text, View, Image, TouchableOpacity,
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import SafeAreaView from 'react-native-safe-area-view';
 
-import { Auth } from 'aws-amplify';
+import { Auth, Hub } from 'aws-amplify';
+import { withOAuth } from 'aws-amplify-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 import {baseURL} from './Constants';
 
 type Props = {};
-export default class SignupScreen extends Component<Props> {
+class SignupScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
@@ -31,11 +32,26 @@ export default class SignupScreen extends Component<Props> {
       amazonUserSub: ''
      };
 
+     Hub.listen('auth', async (data) => {
+        switch (data.payload.event) {
+            case 'signIn':
+                try {
+                  const user = await Auth.currentAuthenticatedUser();
+                  this._saveUserToDB(user.signInUserSession.idToken.payload);
+                  this.props.navigation.navigate('QR');
+                } catch(err) {
+                  console.log(err);
+                }
+                break;
+            default:
+                break;
+          }
+      });
+
      this._signup = this._signup.bind(this);
      this._verifyEmail = this._verifyEmail.bind(this);
      this._resendEmail = this._resendEmail.bind(this);
      this._saveUserToDB = this._saveUserToDB.bind(this);
-     this._facebookLogin = this._facebookLogin.bind(this);
   }
 
   async _signup() {
@@ -112,17 +128,6 @@ export default class SignupScreen extends Component<Props> {
       }
    }
 
-   async _facebookLogin() {
-    try{
-      const user = await Auth.federatedSignIn({provider: 'Facebook'});
-      console.log(user);
-      console.log('hahahaha');
-    } catch(err) {
-      console.log(err);
-      this.setState({errorMessage: err.message});
-    }
-   }
-
 
   render() {
 
@@ -130,6 +135,10 @@ export default class SignupScreen extends Component<Props> {
 
     let form;
     let resendBtn;
+
+    const {
+      facebookSignIn,
+    } = this.props;
 
     if(!isSubmitted) {
       form = <View style={styles.textInputContainer}>
@@ -151,7 +160,7 @@ export default class SignupScreen extends Component<Props> {
             </View>;
 
       resendBtn = 
-            <TouchableOpacity onPress={this._facebookLogin}>
+            <TouchableOpacity onPress={facebookSignIn}>
               <Image style={styles.facebook} source={require('./img/continue_fb.png')} />
             </TouchableOpacity>;
     } else {
@@ -346,3 +355,5 @@ const styles = StyleSheet.create({
     width: 220,
   }
 });
+
+export default withOAuth(SignupScreen);

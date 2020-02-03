@@ -12,7 +12,9 @@
         },
         "categories": {
             "auth": {
-                "shareat8de34e5a": {}
+                "shareat8de34e5a": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"184399145517801\",\"client_secret\":\"1bc61b99aadaab8145b57af3a63e2934\"}]"
+                }
             }
         }
     }
