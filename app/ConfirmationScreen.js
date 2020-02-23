@@ -7,7 +7,7 @@ import {StyleSheet, Text, View, TouchableOpacity,
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import axios from 'axios';
 import Dialog from 'react-native-dialog';
-
+import {HeaderBackButton} from 'react-navigation';
 import {baseURL} from './Constants';
 import Card from './models/Card';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -52,17 +52,23 @@ export default class ConfirmationScreen extends Component<Props> {
     };
   }
 
-  static navigationOptions = ({navigation}) => {
-    return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('Check')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      title: 'Confirmation'
-    };
-  }
-
+    static navigationOptions = ({navigation}) => {
+        return{
+            headerRight: (
+                <View/>
+            ),
+            title: 'Confirmation',
+            headerStyle: {
+                backgroundColor: '#ffa91f',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+                fontSize: 18, 
+                textAlign:"center", 
+                flex:1 ,
+            } 
+        };
+    }
   async componentDidMount() {
     this._fetchCards();
   }

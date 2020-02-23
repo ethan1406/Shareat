@@ -53,12 +53,20 @@ import Restaurant from './models/Restaurant';
       }
     }
 
-    static navigationOptions = ({navigation}) => { 
-      return {  headerStyle: {
-        borderBottomWidth: 0,
-        shadowColor: 'transparent',
-        backgroundColor: '#fff', elevation:0 
-      }};
+    static navigationOptions = ({navigation}) => {
+      return{
+        title: 'Rewards',
+        headerStyle: {
+          backgroundColor: '#ffa91f',
+        },
+        headerTintColor: 'white',
+        headerTitleStyle: {
+          marginTop:5,
+          fontSize: 18, 
+          textAlign:"center", 
+          flex:1 ,
+        }
+      };
     }
 
     _lookupRestaurant = (restaurantId, restaurantName) => {
@@ -69,9 +77,6 @@ import Restaurant from './models/Restaurant';
     render() {
       return (
         <View style={styles.container}>
-          <Image style={styles.logo} source={require('./img/shareat_logo.png')}/>
-          <Text style={styles.header}> Rewards </Text>
-          <View style={styles.divider}/>
           <ScrollView  contentContainerStyle={styles.bodyContainer}>
             <Text style={styles.wallet}> Wallet </Text>
             {this.state.restaurants.map((restaurant, index) => (
@@ -153,9 +158,9 @@ import Restaurant from './models/Restaurant';
     },
     wallet: {
       alignSelf: 'flex-start',
-      fontSize: 20,
-      marginBottom: 15,
-      marginLeft: 15,
+      fontSize: 18,
+      marginBottom: 5,
+      marginLeft: 12,
       marginTop: 20,
       color: '#ffa91f',
     },
@@ -181,8 +186,4 @@ import Restaurant from './models/Restaurant';
       alignSelf: 'center',
       alignItems: 'center',
     },
-    distanceText: {
-      fontSize: 15,
-      color: 'grey',
-    }
   });

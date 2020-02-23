@@ -4,41 +4,41 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, ScrollView, View,
   TouchableOpacity, Text, Image, StatusBar} from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
-import {baseURL} from './Constants';
-import { Auth, Analytics } from 'aws-amplify';
-import axios from 'axios';
-import Dialog from 'react-native-dialog';
+  import AsyncStorage from '@react-native-community/async-storage';
+  import {baseURL} from './Constants';
+  import { Auth, Analytics } from 'aws-amplify';
+  import axios from 'axios';
+  import Dialog from 'react-native-dialog';
 
-type Props = {};
-export default class OptionsScreen extends Component<Props> {
+  type Props = {};
+  export default class OptionsScreen extends Component<Props> {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      errorMessage: '',
-      dialogVisible: false
-    };
+    constructor(props) {
+      super(props);
+      this.state = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        errorMessage: '',
+        dialogVisible: false
+      };
 
-    this._signout = this._signout.bind(this);
-    this._signoutRequest = this._signoutRequest.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const firstName = await AsyncStorage.getItem('firstName');
-      const lastName = await AsyncStorage.getItem('lastName');
-      const email = await AsyncStorage.getItem('email');
-      this.setState({firstName, lastName, email});
-    } catch (err) {
-      this.setState({errorMessage: err.message});
+      this._signout = this._signout.bind(this);
+      this._signoutRequest = this._signoutRequest.bind(this);
     }
-  }
 
-  _scrollToInput (reactNode: any) {
+    async componentDidMount() {
+      try {
+        const firstName = await AsyncStorage.getItem('firstName');
+        const lastName = await AsyncStorage.getItem('lastName');
+        const email = await AsyncStorage.getItem('email');
+        this.setState({firstName, lastName, email});
+      } catch (err) {
+        this.setState({errorMessage: err.message});
+      }
+    }
+
+    _scrollToInput (reactNode: any) {
     // Add a 'scroll' ref to your ScrollView
     this.scroll.props.scrollToFocusedInput(reactNode);
   }
@@ -64,47 +64,62 @@ export default class OptionsScreen extends Component<Props> {
       const email = await AsyncStorage.getItem('email');
       this.setState({firstName, lastName, email});
     }
-  );
+    );
 
   async _testAnalytics() {
     Analytics.record({ name: 'albumVisit' });
   }
 
+  static navigationOptions = ({navigation}) => {
+    return{
+      headerStyle: {
+        backgroundColor: '#ffa91f',
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        marginTop:5,
+        fontSize: 18, 
+        textAlign:"center", 
+        flex:1 ,
+      }
+    };
+  }
+
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
-            <StatusBar
-    backgroundColor='#ffa91f'
-    barStyle="light-content"
-  />
-        <TouchableOpacity style={{paddingTop: 20}} onPress={()=> {this.props.navigation.navigate('EditProfile');}}>
-        <Image style={styles.profile} source={require('./img/defaultUserFemale.png')} />
-        </TouchableOpacity>
-        <Text style={styles.name}> {this.state.firstName} </Text>
-        <Text style={styles.email}> {this.state.email} </Text>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
-          <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
-          <Text style={styles.optionText}> Receipts </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
-          <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
-          <Text style={styles.optionText}> Payment Methods</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
-          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
-          <Text style={styles.optionText}> About </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
-          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
-          <Text style={styles.optionText}> Sign Out </Text>
-        </TouchableOpacity>
-         <Dialog.Container visible={this.state.dialogVisible}>
-          <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
-          <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
-          <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
-        </Dialog.Container>
+      <StatusBar
+      backgroundColor='#ffa91f'
+      barStyle="light-content"
+      />
+      <TouchableOpacity style={{paddingTop: 20}} onPress={()=> {this.props.navigation.navigate('EditProfile');}}>
+      <Image style={styles.profile} source={require('./img/defaultUserFemale.png')} />
+      </TouchableOpacity>
+      <Text style={styles.name}> {this.state.firstName} </Text>
+      <Text style={styles.email}> {this.state.email} </Text>
+      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
+      <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
+      <Text style={styles.optionText}> Receipts </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
+      <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
+      <Text style={styles.optionText}> Payment Methods</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
+      <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+      <Text style={styles.optionText}> About </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
+      <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+      <Text style={styles.optionText}> Sign Out </Text>
+      </TouchableOpacity>
+      <Dialog.Container visible={this.state.dialogVisible}>
+      <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
+      <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
+      <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
+      </Dialog.Container>
       </ScrollView>
-    );
+      );
   }
 }
 

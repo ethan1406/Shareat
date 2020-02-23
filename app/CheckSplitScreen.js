@@ -6,7 +6,7 @@ import {Platform, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Pusher from 'pusher-js/react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {HeaderBackButton} from 'react-navigation';
 import OrderListItem from './components/OrderListItem';
 
 
@@ -105,17 +105,19 @@ export default class CheckSplitScreen extends Component<Props> {
 
   static navigationOptions = ({navigation}) => {
     return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('QR')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
+      headerRight: (
+        <View/>
+        ),
       title: 'Check',
       headerStyle: {
-        backgroundColor: 'white',
-        elevation: 0,       //remove shadow on Android
-        shadowOpacity: 0,   //remove shadow on iOS
-      }
+        backgroundColor: '#ffa91f',
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        fontSize: 18, 
+        textAlign:"center", 
+        flex:1 ,
+      } 
     };
   }
 

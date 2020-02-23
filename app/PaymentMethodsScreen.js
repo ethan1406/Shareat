@@ -6,7 +6,7 @@ import {Text, View, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react
 import {baseURL} from './Constants';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {HeaderBackButton} from 'react-navigation';
 type Props = {};
 
 
@@ -37,17 +37,24 @@ export default class PaymentMethodsScreen extends Component<Props> {
     }
   }
 
-  static navigationOptions = ({navigation}) => {
-    return{
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      title: 'Payment Method'
-      //headerTransparent: true
-    };
-  }
+    static navigationOptions = ({navigation}) => {
+        return{
+            headerRight: (
+                <View/>
+            ),
+            title: 'Payment Method',
+            headerStyle: {
+                backgroundColor: '#ffa91f',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+                fontSize: 18, 
+                textAlign:"center", 
+                flex:1 ,
+            } 
+        };
+    }
+
 
   _getCardImage = (brandName, tintColor) => {
     const brandLower = brandName.toLowerCase();

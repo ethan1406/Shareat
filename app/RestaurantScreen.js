@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as Progress from 'react-native-progress';
 import {baseURL} from './Constants';
 import axios from 'axios';
+import {HeaderBackButton} from 'react-navigation';
 
 type Props = {};
 export default class RestaurantScreen extends Component<Props> {
@@ -23,14 +24,22 @@ export default class RestaurantScreen extends Component<Props> {
     };
   }
 
+
   static navigationOptions = ({navigation}) => {
-    return {
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      title: navigation.state.params.restaurantName
+    return{
+      headerRight: (
+        <View/>
+        ),
+      title: navigation.state.params.restaurantName,
+      headerStyle: {
+        backgroundColor: '#ffa91f',
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        fontSize: 18, 
+        textAlign:"center", 
+        flex:1 ,
+      } 
     };
   }
 
@@ -62,42 +71,42 @@ export default class RestaurantScreen extends Component<Props> {
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
-        <View style={{marginHorizontal: 15}}>
-          <Text style={{color: 'gray', marginTop: 5}}> {this.state.merchant.description} </Text>
-          <Text style={{color: 'gray', marginVertical: 5}}> {this.state.merchant.address} </Text>
+      <View style={{marginHorizontal: 15}}>
+      <Text style={{color: 'gray', marginTop: 5}}> {this.state.merchant.description} </Text>
+      <Text style={{color: 'gray', marginVertical: 5}}> {this.state.merchant.address} </Text>
+      </View>
+      <View style={styles.lineSeparator} />
+      <Text style={{fontWeight: 'bold', marginHorizontal: 15}}> Loyalty </Text>
+      <Text style={{color: 'gray', marginVertical: 5, marginHorizontal: 15}}> Earn 1pt for every dollar spent </Text>
+      <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false}>
+      {this.state.merchant.rewards.loyalty_points.map((reward, index) => (
+        <View style={styles.rewardContainer} key={index}>
+        <Text>{reward.reward} </Text>
+        <Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 
+        {this.state.pointAccumulated} / {reward.pointsRequired} pts
+        </Text>
+        <Progress.Circle showsText={true} animated={true}
+        progress={this.state.pointAccumulated/reward.pointsRequired} size={90} color='#F3A545'/>
+        <Text style={{color:'gray', marginTop: 10}}> 
+        {reward.pointsRequired - this.state.pointAccumulated} pts left
+        </Text>
         </View>
-        <View style={styles.lineSeparator} />
-          <Text style={{fontWeight: 'bold', marginHorizontal: 15}}> Loyalty </Text>
-          <Text style={{color: 'gray', marginVertical: 5, marginHorizontal: 15}}> Earn 1pt for every dollar spent </Text>
-          <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false}>
-            {this.state.merchant.rewards.loyalty_points.map((reward, index) => (
-              <View style={styles.rewardContainer} key={index}>
-                <Text>{reward.reward} </Text>
-                <Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 
-                  {this.state.pointAccumulated} / {reward.pointsRequired} pts
-                </Text>
-                <Progress.Circle showsText={true} animated={true}
-                  progress={this.state.pointAccumulated/reward.pointsRequired} size={90} color='#F3A545'/>
-                <Text style={{color:'gray', marginTop: 10}}> 
-                  {reward.pointsRequired - this.state.pointAccumulated} pts left
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-        <View style={styles.lineSeparator} />
-        <View style={{marginHorizontal: 15}}>
-          <Text style={{fontWeight: 'bold'}}> Hours </Text>
-          <Text style={{marginTop: 20}}> Monday - Friday: 7:00am - 11:00pm </Text>
-          <Text> Sunday: 7:00am - 11:00pm </Text>
-          <Text> Saturday: 7:00am - 11:00pm </Text>
-        </View>
-        <View style={styles.lineSeparator} />
-        <View style={{marginHorizontal: 15}}>
-          <Text style={{fontWeight: 'bold'}}> Description </Text>
-          <Text style={{marginVertical: 20}}> {this.state.merchant.details} </Text>
-        </View>
+        ))}
       </ScrollView>
-    );
+      <View style={styles.lineSeparator} />
+      <View style={{marginHorizontal: 15}}>
+      <Text style={{fontWeight: 'bold'}}> Hours </Text>
+      <Text style={{marginTop: 20}}> Monday - Friday: 7:00am - 11:00pm </Text>
+      <Text> Sunday: 7:00am - 11:00pm </Text>
+      <Text> Saturday: 7:00am - 11:00pm </Text>
+      </View>
+      <View style={styles.lineSeparator} />
+      <View style={{marginHorizontal: 15}}>
+      <Text style={{fontWeight: 'bold'}}> Description </Text>
+      <Text style={{marginVertical: 20}}> {this.state.merchant.details} </Text>
+      </View>
+      </ScrollView>
+      );
   }
 }
 
@@ -110,23 +119,23 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   lineSeparator: {
-     width: '90%', 
-     borderBottomColor: 'gray', 
-     alignSelf: 'center',
-     borderBottomWidth: 2, 
-     paddingHorizontal: 15,
-     marginVertical: 25
-  },
-  rewardContainer: {
-    marginTop: 15,
-    marginLeft: 15,
-    marginRight: 25
-  },
-  pointsContainer: {
-    justifyContent: 'flex-start', 
-    marginHorizontal: 15,
-    marginVertical: 20,
-    alignItems: 'center', 
-    flexDirection: 'row'
-  }
+   width: '90%', 
+   borderBottomColor: 'gray', 
+   alignSelf: 'center',
+   borderBottomWidth: 2, 
+   paddingHorizontal: 15,
+   marginVertical: 25
+ },
+ rewardContainer: {
+  marginTop: 15,
+  marginLeft: 15,
+  marginRight: 25
+},
+pointsContainer: {
+  justifyContent: 'flex-start', 
+  marginHorizontal: 15,
+  marginVertical: 20,
+  alignItems: 'center', 
+  flexDirection: 'row'
+}
 });

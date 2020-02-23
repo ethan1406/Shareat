@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import AsyncStorage from '@react-native-community/async-storage';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Auth } from 'aws-amplify';
+import {HeaderBackButton} from 'react-navigation';
 
 type props = {};
 
@@ -28,186 +29,192 @@ export default class EditProfileScreen extends Component<props> {
     }
 
     static navigationOptions = ({navigation}) => {
-    return {
-          headerLeft:( 
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-               <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-            </TouchableOpacity>
-          ),
-          title: 'Edit Profile'
-
+        return{
+            headerRight: (
+                <View/>
+            ),
+            title: 'Edit Profile',
+            headerStyle: {
+                backgroundColor: '#ffa91f',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+                fontSize: 18, 
+                textAlign:"center", 
+                flex:1 ,
+            } 
         };
     }
 
-    async componentDidMount() {
-        try {
-          const firstName = await AsyncStorage.getItem('firstName');
-          const lastName = await AsyncStorage.getItem('lastName');
-          this.setState({firstName, lastName});
-        } catch (err) {
-          this.setState({errorMessage: err.message});
-        }
+async componentDidMount() {
+    try {
+      const firstName = await AsyncStorage.getItem('firstName');
+      const lastName = await AsyncStorage.getItem('lastName');
+      this.setState({firstName, lastName});
+  } catch (err) {
+      this.setState({errorMessage: err.message});
+  }
+}
+
+async _saveAttributes() {
+    const firstName = this.state.firstName.trim();
+    const lastName = this.state.lastName.trim();
+
+    if(firstName === '') {
+      this.setState({errorMessage: 'First name cannot be empty', 'messageColor': 'red'});
+      return;
+  }
+
+  if(lastName === '') {
+      this.setState({errorMessage: 'Last name cannot be empty', 'messageColor': 'red'});
+      return;
+  }
+
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+
+    await Auth.updateUserAttributes(user, {
+        'given_name': firstName,
+        'family_name': lastName
+    });
+    await AsyncStorage.setItem('firstName', firstName);
+    await AsyncStorage.setItem('lastName', lastName);
+    this.setState({errorMessage: 'saved successfully!', 'messageColor': 'green'});
+} catch(err) {
+    console.log(err);
+    this.setState({errorMessage: err.message, 'messageColor': 'red'});
+}
+}
+
+async _changePassword() {
+    if(this.state.oldPwd === '') {
+      this.setState({errorMessage: 'Please enter your old password', 'messageColor': 'red'});
+      return;
+  }
+
+  if(!this._passwordReqVerification(this.state.oldPwd, this.state.newPwd, this.state.confirmNewPwd)){
+    return;
+}
+
+try {
+    const user = await Auth.currentAuthenticatedUser();
+    const test = await Auth.changePassword(user, 
+        this.state.oldPwd, this.state.newPwd
+        );
+    console.log('hahahahaha');
+    console.log(test);
+    console.log('hahahahaha');
+    this.setState({errorMessage: 'saved successfully!', 'messageColor': 'green'});
+} catch(err) {
+    console.log(err);
+    this.setState({errorMessage: err.message, 'messageColor': 'red'});
+}
+}
+
+render() {
+    const isChangePassword = this.state.isChangePassword;
+
+    let form;
+    let changeText;
+
+    if(!isChangePassword) {
+        form = <View style={styles.textInputContainer}>
+        <Text style={{color:'gray'}}>First Name</Text>
+        <TextInput style={styles.textInput} multiline={false} value={this.state.firstName}
+        onChangeText={(firstName) => this.setState({firstName})}/>
+        <Text style={{color:'gray'}}>Last Name</Text>
+        <TextInput style={styles.textInput} multiline={false} value={this.state.lastName}
+        onChangeText={(lastName) => this.setState({lastName})}/>
+        </View>;
+
+        changeText = 'Change Password';
+    } else {
+        form = <View style={styles.textInputContainer}>
+        <Text style={{color:'gray'}}>Old Password</Text>
+        <TextInput style={styles.textInput} multiline={false} value={this.state.oldPwd}
+        onChangeText={(oldPwd) => this.setState({oldPwd})} secureTextEntry={true}/>
+        <Text style={{color:'gray'}}>New Password</Text>
+        <TextInput style={styles.textInput} multiline={false} value={this.state.newPwd}
+        onChangeText={(newPwd) => this.setState({newPwd})} secureTextEntry={true}/>
+        <Text style={{color:'gray'}}>Confrim New Password</Text>
+        <TextInput style={styles.textInput} multiline={false} value={this.state.confirmNewPwd}
+        onChangeText={(confirmNewPwd) => this.setState({confirmNewPwd})} secureTextEntry={true}/>
+        <TouchableOpacity onPress={()=> this.props.navigation.navigate('ForgotPassword')}color='#000000'>
+        <Text style={styles.forgotBtnText}>Forgot Your Password?</Text>
+        </TouchableOpacity>  
+        </View>;
+
+        changeText = 'Change Profile';
     }
 
-    async _saveAttributes() {
-        const firstName = this.state.firstName.trim();
-        const lastName = this.state.lastName.trim();
+    return(
+        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+        <Image style={styles.userIcon} source={require('./img/splash_logo.png')}/>
+        {form}
+        <TouchableOpacity 
+        onPress={()=> this.setState({isChangePassword: !this.state.isChangePassword, errorMessage: ''})} color='#000000'>
+        <Text style={styles.forgotBtnText}>{changeText}</Text>
+        </TouchableOpacity>  
+        <TouchableOpacity style={styles.signupBtn} onPress={!isChangePassword ? this._saveAttributes : this._changePassword} color='#000000'>
+        <Text style={styles.btnText}>Save</Text>
+        </TouchableOpacity>  
+        <Text style={[styles.errorMessage, {color: this.state.messageColor}]}>{this.state.errorMessage}</Text>
+        </KeyboardAwareScrollView>
+        );
+}
 
-        if(firstName === '') {
-          this.setState({errorMessage: 'First name cannot be empty', 'messageColor': 'red'});
-          return;
-        }
-
-        if(lastName === '') {
-          this.setState({errorMessage: 'Last name cannot be empty', 'messageColor': 'red'});
-          return;
-        }
-
-        try {
-            const user = await Auth.currentAuthenticatedUser();
-
-            await Auth.updateUserAttributes(user, {
-                'given_name': firstName,
-                'family_name': lastName
-            });
-            await AsyncStorage.setItem('firstName', firstName);
-            await AsyncStorage.setItem('lastName', lastName);
-            this.setState({errorMessage: 'saved successfully!', 'messageColor': 'green'});
-        } catch(err) {
-            console.log(err);
-            this.setState({errorMessage: err.message, 'messageColor': 'red'});
-        }
+_passwordReqVerification = (oldPwd, pwd, confirmPwd) => {
+    console.log('here1');
+    if(pwd !== confirmPwd) {
+        console.log('here1.2');
+        this.setState({errorMessage: 'Passwords do not match', messageColor: 'red'});
+        return false;
     }
 
-    async _changePassword() {
-        if(this.state.oldPwd === '') {
-          this.setState({errorMessage: 'Please enter your old password', 'messageColor': 'red'});
-          return;
-        }
-
-        if(!this._passwordReqVerification(this.state.oldPwd, this.state.newPwd, this.state.confirmNewPwd)){
-            return;
-        }
-
-        try {
-            const user = await Auth.currentAuthenticatedUser();
-            const test = await Auth.changePassword(user, 
-                this.state.oldPwd, this.state.newPwd
-            );
-            console.log('hahahahaha');
-            console.log(test);
-            console.log('hahahahaha');
-            this.setState({errorMessage: 'saved successfully!', 'messageColor': 'green'});
-        } catch(err) {
-            console.log(err);
-            this.setState({errorMessage: err.message, 'messageColor': 'red'});
-        }
+    if(pwd.length < 8 || oldPwd.length < 8) {
+        console.log('here1.3');
+        this.setState({errorMessage: 'Password must be longer than 7 characters', messageColor: 'red'});
+        return false;
     }
 
-    render() {
-        const isChangePassword = this.state.isChangePassword;
-
-        let form;
-        let changeText;
-
-        if(!isChangePassword) {
-            form = <View style={styles.textInputContainer}>
-                    <Text style={{color:'gray'}}>First Name</Text>
-                    <TextInput style={styles.textInput} multiline={false} value={this.state.firstName}
-                    onChangeText={(firstName) => this.setState({firstName})}/>
-                    <Text style={{color:'gray'}}>Last Name</Text>
-                    <TextInput style={styles.textInput} multiline={false} value={this.state.lastName}
-                    onChangeText={(lastName) => this.setState({lastName})}/>
-                </View>;
-
-            changeText = 'Change Password';
-        } else {
-            form = <View style={styles.textInputContainer}>
-                    <Text style={{color:'gray'}}>Old Password</Text>
-                    <TextInput style={styles.textInput} multiline={false} value={this.state.oldPwd}
-                    onChangeText={(oldPwd) => this.setState({oldPwd})} secureTextEntry={true}/>
-                    <Text style={{color:'gray'}}>New Password</Text>
-                    <TextInput style={styles.textInput} multiline={false} value={this.state.newPwd}
-                    onChangeText={(newPwd) => this.setState({newPwd})} secureTextEntry={true}/>
-                    <Text style={{color:'gray'}}>Confrim New Password</Text>
-                    <TextInput style={styles.textInput} multiline={false} value={this.state.confirmNewPwd}
-                    onChangeText={(confirmNewPwd) => this.setState({confirmNewPwd})} secureTextEntry={true}/>
-                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('ForgotPassword')}color='#000000'>
-                       <Text style={styles.forgotBtnText}>Forgot Your Password?</Text>
-                    </TouchableOpacity>  
-                </View>;
-
-            changeText = 'Change Profile';
-        }
-
-        return(
-            <KeyboardAwareScrollView contentContainerStyle={styles.container}>
-                <Image style={styles.userIcon} source={require('./img/splash_logo.png')}/>
-                {form}
-                 <TouchableOpacity 
-                    onPress={()=> this.setState({isChangePassword: !this.state.isChangePassword, errorMessage: ''})} color='#000000'>
-                   <Text style={styles.forgotBtnText}>{changeText}</Text>
-                </TouchableOpacity>  
-                <TouchableOpacity style={styles.signupBtn} onPress={!isChangePassword ? this._saveAttributes : this._changePassword} color='#000000'>
-                   <Text style={styles.btnText}>Save</Text>
-                </TouchableOpacity>  
-                <Text style={[styles.errorMessage, {color: this.state.messageColor}]}>{this.state.errorMessage}</Text>
-            </KeyboardAwareScrollView>
-            );
+    console.log('here1.5');
+    if(!this._criteriaSatisfied(oldPwd) || !this._criteriaSatisfied(pwd)) {
+        console.log('failed');
+        return false;
     }
+    console.log('here2');
+    return true;
+}
 
-    _passwordReqVerification = (oldPwd, pwd, confirmPwd) => {
-        console.log('here1');
-        if(pwd !== confirmPwd) {
-            console.log('here1.2');
-            this.setState({errorMessage: 'Passwords do not match', messageColor: 'red'});
-            return false;
-        }
-
-        if(pwd.length < 8 || oldPwd.length < 8) {
-            console.log('here1.3');
-            this.setState({errorMessage: 'Password must be longer than 7 characters', messageColor: 'red'});
-            return false;
-        }
-
-        console.log('here1.5');
-        if(!this._criteriaSatisfied(oldPwd) || !this._criteriaSatisfied(pwd)) {
-            console.log('failed');
-            return false;
-        }
-        console.log('here2');
-        return true;
+_criteriaSatisfied = (pwd) => {
+  var lowerLetterNum = 0;
+  var upperLetterNum = 0;
+  var numNum = 0;
+  for(var i = 0; i < pwd.length ; i++) {
+      if(pwd[i] >= '0' && pwd[i] <= '9') {
+          numNum ++;
       }
-
-    _criteriaSatisfied = (pwd) => {
-          var lowerLetterNum = 0;
-          var upperLetterNum = 0;
-          var numNum = 0;
-          for(var i = 0; i < pwd.length ; i++) {
-              if(pwd[i] >= '0' && pwd[i] <= '9') {
-                  numNum ++;
-              }
-              if((pwd[i] >= 'a' && pwd[i] <= 'z')){
-                  lowerLetterNum ++;
-              }
-              if((pwd[i] >= 'A' && pwd[i] <= 'Z')){
-                  upperLetterNum ++;
-              }
-          }
-          if(!numNum){
-              this.setState({errorMessage: 'Password must contain at least one number.', messageColor: 'red'});
-              return false;
-          }
-          if(!lowerLetterNum) {
-              this.setState({errorMessage: 'Password must contain at least one lowercase letter.', messageColor: 'red'});
-              return false;
-          }
-          if(!upperLetterNum) {
-              this.setState({errorMessage: 'Password must contain at least one uppercase letter.', messageColor: 'red'});
-              return false;
-          }
-          return true;
-    }
+      if((pwd[i] >= 'a' && pwd[i] <= 'z')){
+          lowerLetterNum ++;
+      }
+      if((pwd[i] >= 'A' && pwd[i] <= 'Z')){
+          upperLetterNum ++;
+      }
+  }
+  if(!numNum){
+      this.setState({errorMessage: 'Password must contain at least one number.', messageColor: 'red'});
+      return false;
+  }
+  if(!lowerLetterNum) {
+      this.setState({errorMessage: 'Password must contain at least one lowercase letter.', messageColor: 'red'});
+      return false;
+  }
+  if(!upperLetterNum) {
+      this.setState({errorMessage: 'Password must contain at least one uppercase letter.', messageColor: 'red'});
+      return false;
+  }
+  return true;
+}
 }
 
 const styles = StyleSheet.create({

@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, Image, ScrollView} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {HeaderBackButton} from 'react-navigation';
 import {baseURL} from './Constants';
 
 
@@ -29,16 +29,23 @@ export default class RecentOrderScreen extends Component<Props> {
     }
   }
 
-  static navigationOptions = ({navigation}) => {
-    return {
-      headerLeft:( 
-        <TouchableOpacity onPress={() => navigation.navigate('Options')}>
-           <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-        </TouchableOpacity>
-      ),
-      title: 'Recent Orders',
-    };
-  }
+    static navigationOptions = ({navigation}) => {
+        return{
+            headerRight: (
+                <View/>
+            ),
+            title: 'Recent Orders',
+            headerStyle: {
+                backgroundColor: '#ffa91f',
+            },
+            headerTintColor: 'white',
+            headerTitleStyle: {
+                fontSize: 18, 
+                textAlign:"center", 
+                flex:1 ,
+            } 
+        };
+    }
 
   _lookupReceipt = (order) => {
     this.props.navigation.navigate('Receipt', {order});

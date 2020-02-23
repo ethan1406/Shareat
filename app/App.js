@@ -23,28 +23,28 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
 const CheckNavigator = createStackNavigator(
-  {
-    QR: QrCodeScreen,
-    Check: CheckSplitScreen,
-    Confirmation: ConfirmationScreen,
-    PaymentMethods: PaymentMethodsScreen,
-    RewardAccumulation:  RewardAccumulationScreen
-  }
+{
+  QR: QrCodeScreen,
+  Check: CheckSplitScreen,
+  Confirmation: ConfirmationScreen,
+  PaymentMethods: PaymentMethodsScreen,
+  RewardAccumulation:  RewardAccumulationScreen
+}
 );
 
 const CheckModalNavigator = createStackNavigator(
-  {
-    CheckNavigator: {
-      screen: CheckNavigator,
-      navigationOptions: {
-        header: null
-      }
-    },
-    OrderBuyer: OrderBuyerScreen
-  }, 
-  {
-    mode: 'modal'
-  }
+{
+  CheckNavigator: {
+    screen: CheckNavigator,
+    navigationOptions: {
+      header: null
+    }
+  },
+  OrderBuyer: OrderBuyerScreen
+}, 
+{
+  mode: 'modal'
+}
 );
 
 /**
@@ -57,119 +57,118 @@ const mapNavigator = createStackNavigator(
 **/
 
 const OptionNavigator = createStackNavigator(
-  {
-    Options: {
-      screen: OptionsScreen,
-      navigationOptions: {
-        title: 'Profile'
-      }
-    },
-    PaymentMethods: PaymentMethodsScreen,
-    Restaurant: RestaurantScreen,
-    RecentOrder: RecentOrderScreen,
-    Receipt: ReceiptScreen,
-    EditProfile: EditProfileScreen,
-    ForgotPassword: {
-      screen: ForgotPasswordScreen,
-      navigationOptions: {
-        header: null,
-      }
+{
+  Options: {
+    screen: OptionsScreen,
+    navigationOptions: {
+      title: 'Profile'
+    }
+  },
+  PaymentMethods: PaymentMethodsScreen,
+  Restaurant: RestaurantScreen,
+  RecentOrder: RecentOrderScreen,
+  Receipt: ReceiptScreen,
+  EditProfile: EditProfileScreen,
+  ForgotPassword: {
+    screen: ForgotPasswordScreen,
+    navigationOptions: {
+      header: null,
     }
   }
+}
 );
 
 const RewardNavigator = createStackNavigator(
-  {
-    Rewards: RewardsScreen,
-    Restaurant: RestaurantScreen
-  }
+{
+  Rewards: RewardsScreen,
+  Restaurant: RestaurantScreen
+}
 );
 
 
 const main = createBottomTabNavigator({
-      Reward: {
-        screen: RewardNavigator,
-        navigationOptions: {
-          tabBarIcon: ({ tintColor, focused }) => (
-            <AntDesign
-              name={focused ? 'gift' : 'gift'}
-              size={26}
-              style={{ color: focused? '#F3A545' : tintColor }}
-            />
-          ),
-        },
-      },
-      QR: {
-        screen: CheckModalNavigator,
-        navigationOptions: {
-          tabBarIcon: ({ tintColor, focused }) => (
-            <AntDesign
-              name={focused ? 'qrcode' : 'qrcode'}
-              size={26}
-              style={{ color: focused? '#F3A545' : tintColor }}
-            />
-          )
-        },
-      },
-      Options: {
-        screen: OptionNavigator,
-        navigationOptions: {
-          tabBarLabel: '',
-          tabBarIcon: ({ tintColor, focused }) => (
-            <AntDesign
-              name={focused ? 'user' : 'user'}
-              size={26}
-              style={{ color: focused? '#F3A545' : tintColor }}
-            />
-          ),
-        },
-      }
+  Reward: {
+    screen: RewardNavigator,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor, focused }) => (
+        <AntDesign
+        name={focused ? 'gift' : 'gift'}
+        size={26}
+        style={{ color: focused? '#F3A545' : tintColor }}
+        />
+        ),
     },
-    {
-      tabBarOptions: { showLabel: false }
-    });
+  },
+  QR: {
+    screen: CheckModalNavigator,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor, focused }) => (
+        <AntDesign
+        name={focused ? 'qrcode' : 'qrcode'}
+        size={26}
+        style={{ color: focused? '#F3A545' : tintColor }}
+        />
+        )
+    },
+  },
+  Options: {
+    screen: OptionNavigator,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor, focused }) => (
+        <AntDesign
+        name={focused ? 'user' : 'user'}
+        size={26}
+        style={{ color: focused? '#F3A545' : tintColor }}
+        />
+        ),
+    },
+  }
+},
+{
+  tabBarOptions: { showLabel: false },
+});
 
 const AppNavigator = createSwitchNavigator(
-  {
-    Registration: createSwitchNavigator({
-      First: {
-        screen: FirstScreen,
-      },
-      LoginFlow: createStackNavigator({
-        Login: {
-          screen: LoginScreen,
-          navigationOptions: {
-            header: null,
-          },
-        },
-        ForgotPassword: {
-          screen: ForgotPasswordScreen,
-          navigationOptions: {
-            header: null,
-          }
-        }
-      }),
-      Signup: {
-        screen: SignupScreen,
+{
+  Registration: createSwitchNavigator({
+    First: {
+      screen: FirstScreen,
+    },
+    LoginFlow: createStackNavigator({
+      Login: {
+        screen: LoginScreen,
         navigationOptions: {
           header: null,
         },
+      },
+      ForgotPassword: {
+        screen: ForgotPasswordScreen,
+        navigationOptions: {
+          header: null,
+        }
       }
     }),
-    Root: createStackNavigator(
-      {
-        Main: {
-          screen: main,
-          path: 'main'
-        },
-        AddPaymentMethod: AddPaymentMethodScreen,
+    Signup: {
+      screen: SignupScreen,
+      navigationOptions: {
+        header: null,
       },
-      {
-        mode: 'modal',
-        headerMode: 'none',
-      }
-    )
+    }
+  }),
+  Root: createStackNavigator(
+  {
+    Main: {
+      screen: main,
+      path: 'main'
+    },
+    AddPaymentMethod: AddPaymentMethodScreen,
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
   }
+  )
+}
 );
 
 
