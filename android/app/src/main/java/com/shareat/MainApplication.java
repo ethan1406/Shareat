@@ -4,11 +4,11 @@ import android.app.Application;
 
 import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.amazonaws.RNAWSCognitoPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -31,12 +31,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNCameraPackage(),
             new RNCWebViewPackage(),
             new NetInfoPackage(),
             new RNAWSCognitoPackage(),
             new AsyncStoragePackage(),
             new MapsPackage(),
-            new RNCameraPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
       );
@@ -55,6 +55,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
+    setTheme(R.style.AppTheme);
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }

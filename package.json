@@ -9,8 +9,8 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.1",
     "@react-native-community/netinfo": "^4.2.2",
-    "aws-amplify": "^1.2.2",
-    "aws-amplify-react-native": "^2.2.2",
+    "aws-amplify": "^2.2.2",
+    "aws-amplify-react-native": "^3.2.0",
     "axios": "^0.18.0",
     "pusher-js": "^5.0.1",
     "react": "16.8.3",
@@ -33,7 +33,7 @@
     "@babel/runtime": "7.4.4",
     "babel-jest": "24.8.0",
     "jest": "24.8.0",
-    "jetifier": "^1.6.4",
+    "jetifier": "^1.6.5",
     "metro-react-native-babel-preset": "0.54.1",
     "react-test-renderer": "16.8.3"
   },

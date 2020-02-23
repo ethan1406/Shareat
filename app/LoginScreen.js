@@ -37,8 +37,8 @@ class LoginScreen extends Component<Props> {
                 break;
             default:
                 break;
-        }
-    });
+          }
+      });
 
      this._login = this._login.bind(this);
      this._resendEmail = this._resendEmail.bind(this);
@@ -111,8 +111,9 @@ class LoginScreen extends Component<Props> {
  }
 
   async _saveUserToDB(attributes) {
-    console.log(this.state.amazonUserSub);
     try {
+       console.log(`sup ${attributes.sub}`);
+
        await axios.post(baseURL + '/user/signup/', 
               {email: attributes.email, amazonUserSub: attributes.sub}
              );

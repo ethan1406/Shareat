@@ -170,7 +170,6 @@ export default class CheckSplitScreen extends Component<Props> {
       <View style={[styles.container]} resizeMode='contain'>
         <StatusBar
           barStyle='dark-content'
-          backgroundColor='blue'
           translucent={false}
         />
         <ScrollView showsVerticalScrollIndicator={false}>
