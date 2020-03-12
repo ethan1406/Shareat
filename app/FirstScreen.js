@@ -10,6 +10,14 @@ import { Auth } from 'aws-amplify';
 type Props = {};
 export default class FirstScreen extends Component<Props> {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isUserLoaded: false
+    };
+  }
+
   static navigationOptions = ({navigation}) => { 
     return {  headerTransparent: true};
   }
@@ -27,10 +35,18 @@ export default class FirstScreen extends Component<Props> {
       }catch(err) {
         console.log(err);
       }
+      this.setState({isUserLoaded: true});
   }
+
   
   render() {
-    return (
+    
+    const {isUserLoaded} = this.state;
+
+    if (!isUserLoaded) {
+      return <View/>;
+    } else {
+      return (
        <ImageBackground source={require('./img/background_image.jpg')} resizeMode='contain' 
           style={[styles.container, {width: '100%', height: '100%'}]}>
           <Image style={styles.coverImage} source={require('./img/splash_logo.png')}/>
@@ -44,7 +60,8 @@ export default class FirstScreen extends Component<Props> {
               </TouchableOpacity>
           </View>
         </ImageBackground>
-    );
+      );
+    }
   }
 }
 

@@ -169,8 +169,8 @@ export default class CheckSplitScreen extends Component<Props> {
     return (
       <View style={[styles.container]} resizeMode='contain'>
         <StatusBar
-          barStyle='dark-content'
-          translucent={false}
+          backgroundColor='#ffa91f'
+          barStyle="light-content"
         />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.restaurantText}>{this.state.restaurantName}</Text>

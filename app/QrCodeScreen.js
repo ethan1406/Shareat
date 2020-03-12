@@ -2,15 +2,16 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {baseURL} from './Constants';
 import { Auth } from 'aws-amplify';
+import { withNavigationFocus } from 'react-navigation';
 
 import axios from 'axios';
 
 type Props = {};
-export default class QrCodeScreen extends Component<Props> {
+class QrCodeScreen extends Component<Props> {
 
   constructor(props) {
     super(props);
@@ -26,18 +27,18 @@ export default class QrCodeScreen extends Component<Props> {
   }
 
   componentDidMount() {
-    axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
-      this.props.navigation.navigate('Check', {
-        data: response.data.orders, 
-        restaurantName: response.data.restaurantName,
-        orderTotal: response.data.orderTotal,
-        members: response.data.members,
-        partyId: response.data._id,
-        restaurantId: response.data.restaurantId
-      });
-    }).catch((err) => {
-      console.log(err);
-    });
+    // axios.get('https://www.shareatpay.com/party/5b346f48d585fb0e7d3ed3fc/6').then((response) => {
+    //   this.props.navigation.navigate('Check', {
+    //     data: response.data.orders, 
+    //     restaurantName: response.data.restaurantName,
+    //     orderTotal: response.data.orderTotal,
+    //     members: response.data.members,
+    //     partyId: response.data._id,
+    //     restaurantId: response.data.restaurantId
+    //   });
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
   
   }
 
@@ -57,30 +58,36 @@ export default class QrCodeScreen extends Component<Props> {
     });
   }
 
-  willFocus = this.props.navigation.addListener(
-    'willFocus',
-    payload => {
-      this.scanner.reactivate();
-    }
-  );
-
+  // willFocus = this.props.navigation.addListener(
+  //   'willFocus',
+  //   payload => {
+  //     //this.scanner.reactivate();
+  //   }
+  // );
 
   render() {
 
-    return (
-      <QRCodeScanner
-        ref={(node) => { this.scanner = node; }}
-        onRead={this.onSuccess.bind(this)}
-        showMarker={true}
-        markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
-        cameraProps={{captureAudio: false}}
-        cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
-        containerStyle={{backgroundColor: '#F0F0F0'}}
-        bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
-      />
-    );
+    const { isFocused } = this.props;
+    if (isFocused){
+      return (
+        <QRCodeScanner
+          ref={(node) => { this.scanner = node; }}
+          onRead={this.onSuccess.bind(this)}
+          showMarker={true}
+          markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
+          cameraProps={{captureAudio: false}}
+          cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
+          containerStyle={{backgroundColor: '#F0F0F0'}}
+          bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
+        />
+      );
+    } else {
+      return <View />;
+    }
   }
 }
+
+export default withNavigationFocus(QrCodeScreen);
 
 const styles = StyleSheet.create({
   centerText: {

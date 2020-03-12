@@ -8,7 +8,7 @@
         android:right="200dp"
         android:left="200dp">
         <bitmap
-            android:src="@drawable/ic_shareat_logo"
+            android:src="@drawable/shareat_illustrator_file"
             android:gravity="center" />
     </item>
 

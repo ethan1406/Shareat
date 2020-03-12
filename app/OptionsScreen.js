@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, ScrollView, View,
+import {StyleSheet, ScrollView,
   TouchableOpacity, Text, Image, StatusBar} from 'react-native';
 
   import AsyncStorage from '@react-native-community/async-storage';
@@ -79,7 +79,7 @@ import {Platform, StyleSheet, ScrollView, View,
       headerTitleStyle: {
         marginTop:5,
         fontSize: 18, 
-        textAlign:"center", 
+        textAlign:'center', 
         flex:1 ,
       }
     };
@@ -88,36 +88,36 @@ import {Platform, StyleSheet, ScrollView, View,
   render() {
     return (
       <ScrollView resizeMode='contain' contentContainerStyle={styles.container}>
-      <StatusBar
-      backgroundColor='#ffa91f'
-      barStyle="light-content"
-      />
-      <TouchableOpacity style={{paddingTop: 20}} onPress={()=> {this.props.navigation.navigate('EditProfile');}}>
-      <Image style={styles.profile} source={require('./img/defaultUserFemale.png')} />
-      </TouchableOpacity>
-      <Text style={styles.name}> {this.state.firstName} </Text>
-      <Text style={styles.email}> {this.state.email} </Text>
-      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
-      <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
-      <Text style={styles.optionText}> Receipts </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
-      <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
-      <Text style={styles.optionText}> Payment Methods</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
-      <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
-      <Text style={styles.optionText}> About </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
-      <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
-      <Text style={styles.optionText}> Sign Out </Text>
-      </TouchableOpacity>
-      <Dialog.Container visible={this.state.dialogVisible}>
-      <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
-      <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
-      <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
-      </Dialog.Container>
+        <StatusBar
+          backgroundColor='#ffa91f'
+          barStyle="light-content"
+        />
+        <TouchableOpacity style={{paddingTop: 20}} onPress={()=> {this.props.navigation.navigate('EditProfile');}}>
+          <Image style={styles.profile} source={require('./img/defaultUserFemale.png')} />
+        </TouchableOpacity>
+        <Text style={styles.name}> {this.state.firstName} </Text>
+        <Text style={styles.email}> {this.state.email} </Text>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('RecentOrder');}} color='#000000'>
+          <Image style={[styles.optionImage, {height: 30}]} source={require('./img/receipt.png')} />
+          <Text style={styles.optionText}> Receipts </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this.props.navigation.navigate('PaymentMethods');}} color='#000000'>
+          <Image style={[styles.optionImage, {height: 20}]} source={require('./img/stripe/card_expiry.png')} />
+          <Text style={styles.optionText}> Payment Methods</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionContainer} onPress={()=> {this._testAnalytics();}} color='#000000'>
+          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+          <Text style={styles.optionText}> About </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionContainer} onPress={this._signoutRequest} color='#000000'>
+          <Image style={[styles.optionImage, {height: 28}]} source={require('./img/about.png')} />
+          <Text style={styles.optionText}> Sign Out </Text>
+        </TouchableOpacity>
+        <Dialog.Container visible={this.state.dialogVisible}>
+          <Dialog.Description>Are you sure you want to sign out?</Dialog.Description>
+          <Dialog.Button label="Cancel" onPress={()=> { this.setState({ dialogVisible: false });}} />
+          <Dialog.Button label="Sign Out" onPress={()=> {this._signout();}} />
+        </Dialog.Container>
       </ScrollView>
       );
   }

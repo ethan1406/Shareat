@@ -3,7 +3,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity,
-  TextInput, Button} from 'react-native';
+  TextInput, StatusBar} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import SafeAreaView from 'react-native-safe-area-view';
 

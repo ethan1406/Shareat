@@ -3,7 +3,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, 
-  Image, ScrollView} from 'react-native';
+  Image, ScrollView, StatusBar} from 'react-native';
 import axios from 'axios';
 import {baseURL} from './Constants';
 import { Storage } from 'aws-amplify';
@@ -77,6 +77,7 @@ import Restaurant from './models/Restaurant';
     render() {
       return (
         <View style={styles.container}>
+          <StatusBar backgroundColor='#ffa91f' barStyle="light-content"/>
           <ScrollView  contentContainerStyle={styles.bodyContainer}>
             <Text style={styles.wallet}> Wallet </Text>
             {this.state.restaurants.map((restaurant, index) => (

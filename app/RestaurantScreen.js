@@ -17,7 +17,7 @@ export default class RestaurantScreen extends Component<Props> {
     //var params = this.props.navigation.state.params;
 
     this.state = { 
-      merchant: {rewards: {loyalty_points: []}},
+      merchant: {rewards: []},
       loyaltyPoints: [],
       pointAccumulated: 0,
       errorMessage: null
@@ -37,7 +37,7 @@ export default class RestaurantScreen extends Component<Props> {
       headerTintColor: 'white',
       headerTitleStyle: {
         fontSize: 18, 
-        textAlign:"center", 
+        textAlign:'center', 
         flex:1 ,
       } 
     };
@@ -79,11 +79,11 @@ export default class RestaurantScreen extends Component<Props> {
       <Text style={{fontWeight: 'bold', marginHorizontal: 15}}> Loyalty </Text>
       <Text style={{color: 'gray', marginVertical: 5, marginHorizontal: 15}}> Earn 1pt for every dollar spent </Text>
       <ScrollView contentContainerStyle={styles.pointsContainer} bounces={false}>
-      {this.state.merchant.rewards.loyalty_points.map((reward, index) => (
+      {this.state.merchant.rewards.map((reward, index) =>  { return (reward.pointsRequired > 0) ? (
         <View style={styles.rewardContainer} key={index}>
         <Text>{reward.reward} </Text>
         <Text style={{color:'gray', marginTop: 3, marginBottom: 10}}> 
-        {this.state.pointAccumulated} / {reward.pointsRequired} pts
+          {this.state.pointAccumulated} / {reward.pointsRequired} pts
         </Text>
         <Progress.Circle showsText={true} animated={true}
         progress={this.state.pointAccumulated/reward.pointsRequired} size={90} color='#F3A545'/>
@@ -91,7 +91,7 @@ export default class RestaurantScreen extends Component<Props> {
         {reward.pointsRequired - this.state.pointAccumulated} pts left
         </Text>
         </View>
-        ))}
+        ) : null; })}
       </ScrollView>
       <View style={styles.lineSeparator} />
       <View style={{marginHorizontal: 15}}>
