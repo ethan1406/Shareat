@@ -54,8 +54,10 @@ export default class ConfirmationScreen extends Component<Props> {
 
     static navigationOptions = ({navigation}) => {
         return{
-            headerRight: (
-                <View/>
+            headerLeft:( 
+                <TouchableOpacity onPress={() => navigation.goBack(null)}>
+                   <Image style={{height: 30, width: 30, marginLeft: 20, tintColor: 'white'}} source={require('./img/backbtn.png')} />
+                </TouchableOpacity>
             ),
             title: 'Confirmation',
             headerStyle: {
@@ -84,7 +86,6 @@ export default class ConfirmationScreen extends Component<Props> {
     try {
         const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
         const {data} = await axios.get(`${baseURL}/user/${amazonUserSub}/getCards`);
-        console.log(data);
         var selectedCard;
         data.cards.forEach(card => {
           if(card.selected) {

@@ -30,6 +30,14 @@ PODS:
   - JKBigInteger2 (0.0.5)
   - React (0.59.8):
     - React/Core (= 0.59.8)
+  - react-native-camera (3.9.0):
+    - React
+    - react-native-camera/RCT (= 3.9.0)
+    - react-native-camera/RN (= 3.9.0)
+  - react-native-camera/RCT (3.9.0):
+    - React
+  - react-native-camera/RN (3.9.0):
+    - React
   - react-native-google-maps (0.26.1):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.2.0)
@@ -95,7 +103,7 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - RNAWSCognito (3.2.0):
+  - RNAWSCognito (3.2.2):
     - JKBigInteger2 (= 0.0.5)
     - React
   - RNCAsyncStorage (1.4.1):
@@ -108,6 +116,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Google-Maps-iOS-Utils
   - GoogleMaps
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -146,6 +155,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   React:
     :path: "../node_modules/react-native"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-maps:
@@ -170,14 +181,15 @@ SPEC CHECKSUMS:
   GoogleMaps: 5046d7edfe381c1a0b20fdaf293915a375c3122b
   JKBigInteger2: e91672035c42328c48b7dd015b66812ddf40ca9b
   React: 76e6aa2b87d05eb6cccb6926d72685c9a07df152
+  react-native-camera: c529629e3ecd017dcdacfd0355576ef489d9d198
   react-native-google-maps: 2e2e697dab576abd5809d78cd74e775865b62bf7
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-netinfo: 2bb2e5094edcfecfb340a85053608526cb20f185
   react-native-webview: f3e28b48461c78db833f727feec08b13285e7b61
-  RNAWSCognito: 8cdb673873f82dc770c769b87c336eb4b67b8ae0
+  RNAWSCognito: 545b9742a23db7a6387c984c4f205264b44e737a
   RNCAsyncStorage: ee70d057f2576e8060891c98d8babddd46462682
   yoga: 92b2102c3d373d1a790db4ab761d2b0ffc634f64
 
-PODFILE CHECKSUM: b7938616b8d751b68cbfa68c4dab07c13d61aafd
+PODFILE CHECKSUM: d6d99f55f2c536134071e31cec566f82c772e16b
 
 COCOAPODS: 1.8.4

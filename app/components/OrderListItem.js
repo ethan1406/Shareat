@@ -53,7 +53,7 @@ export default class OrderListItem extends Component<Props> {
               if(index <= 2 || this.props.buyers.length <= 4) {
                 return (
                 <View style={{height: 30}} key={index}> 
-                  <View style={[styles.bubble, {backgroundColor: this.props.colorMap[buyer.userId]}]}>
+                  <View style={[styles.bubble, {backgroundColor: this.props.colorMap[buyer.amazonUserSub]}]}>
                     <Text style={{color: 'white'}}>{buyer.firstName[0]}{buyer.lastName[0]}</Text>
                   </View>
                   {buyer.finished ? 

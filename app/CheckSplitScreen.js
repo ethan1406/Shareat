@@ -57,16 +57,14 @@ export default class CheckSplitScreen extends Component<Props> {
 
     this.splittingChannel.bind('splitting', (data) => {
       if(data.add) {
-        console.log('here');
         const updatedOrders = this.state.data.slice();
         const index = updatedOrders.findIndex(order=> order._id == data.orderId);
-        console.log(index);
         updatedOrders[index].buyers.push({firstName: data.firstName, 
             lastName: data.lastName, amazonUserSub: data.amazonUserSub});
         var updatedColorMap = JSON.parse(JSON.stringify(this.state.colorMap));
 
         if(!data.isMember) {
-          updatedColorMap[data.amazonUserSub] = colors[colorIndex % 5];
+          updatedColorMap[data.amazonUserSub] = colors[colorIndex % 6];
           colorIndex++;
         }
         //var joined = this.state.members.concat(data.userId);
@@ -105,9 +103,11 @@ export default class CheckSplitScreen extends Component<Props> {
 
   static navigationOptions = ({navigation}) => {
     return{
-      headerRight: (
-        <View/>
-        ),
+      headerLeft:( 
+          <TouchableOpacity onPress={() => navigation.goBack(null)}>
+             <Image style={{height: 30, width: 30, marginLeft: 20, tintColor: 'white'}} source={require('./img/backbtn.png')} />
+          </TouchableOpacity>
+      ),
       title: 'Check',
       headerStyle: {
         backgroundColor: '#ffa91f',
@@ -115,7 +115,7 @@ export default class CheckSplitScreen extends Component<Props> {
       headerTintColor: 'white',
       headerTitleStyle: {
         fontSize: 18, 
-        textAlign:"center", 
+        textAlign:'center', 
         flex:1 ,
       } 
     };

@@ -2,7 +2,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {baseURL} from './Constants';
 import { Auth } from 'aws-amplify';
@@ -58,36 +58,55 @@ class QrCodeScreen extends Component<Props> {
     });
   }
 
-  // willFocus = this.props.navigation.addListener(
-  //   'willFocus',
-  //   payload => {
-  //     //this.scanner.reactivate();
-  //   }
-  // );
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    payload => {
+      if (Platform.OS === 'ios') {
+        this.scanner.reactivate();
+      }
+    }
+  );
 
   render() {
 
-    const { isFocused } = this.props;
-    if (isFocused){
-      return (
-        <QRCodeScanner
-          ref={(node) => { this.scanner = node; }}
-          onRead={this.onSuccess.bind(this)}
-          showMarker={true}
-          markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
-          cameraProps={{captureAudio: false}}
-          cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
-          containerStyle={{backgroundColor: '#F0F0F0'}}
-          bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
-        />
-      );
-    } else {
-      return <View />;
+    if (Platform.OS === 'android') {
+      const { isFocused } = this.props;
+      if (isFocused){
+        return (
+          <QRCodeScanner
+            ref={(node) => { this.scanner = node; }}
+            onRead={this.onSuccess.bind(this)}
+            showMarker={true}
+            markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
+            cameraProps={{captureAudio: false}}
+            cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
+            containerStyle={{backgroundColor: '#F0F0F0'}}
+            bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
+          />
+        );
+      } else {
+        return <View />;
+      }
     }
+
+    return (
+          <QRCodeScanner
+            ref={(node) => { this.scanner = node; }}
+            onRead={this.onSuccess.bind(this)}
+            showMarker={true}
+            markerStyle={{borderColor: '#ffa91f', borderRadius: 20}}
+            cameraProps={{captureAudio: false}}
+            cameraStyle={{alignSelf:'center',width: '100%', height:'100%'}}
+            containerStyle={{backgroundColor: '#F0F0F0'}}
+            bottomContent={<Text style={{position:'relative', color: 'white', paddingBottom: '95%', fontSize: 16}} > Scan Shareat QR Code </Text>}
+          />
+        );
+    
   }
 }
 
-export default withNavigationFocus(QrCodeScreen);
+
+export default Platform.OS === 'android' ? withNavigationFocus(QrCodeScreen) : QrCodeScreen;
 
 const styles = StyleSheet.create({
   centerText: {

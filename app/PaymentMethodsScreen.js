@@ -16,7 +16,8 @@ export default class PaymentMethodsScreen extends Component<Props> {
     super(props);
     this.state = { 
       cards: [],
-      errorMessage: ''
+      errorMessage: '',
+      shouldRefresh: false
     };
   }
 
@@ -39,8 +40,10 @@ export default class PaymentMethodsScreen extends Component<Props> {
 
     static navigationOptions = ({navigation}) => {
         return{
-            headerRight: (
-                <View/>
+            headerLeft:( 
+              <TouchableOpacity onPress={() => navigation.goBack(null)}>
+                 <Image style={{height: 30, width: 30, marginLeft: 20, tintColor: 'white'}} source={require('./img/backbtn.png')} />
+              </TouchableOpacity>
             ),
             title: 'Payment Method',
             headerStyle: {
@@ -49,7 +52,7 @@ export default class PaymentMethodsScreen extends Component<Props> {
             headerTintColor: 'white',
             headerTitleStyle: {
                 fontSize: 18, 
-                textAlign:"center", 
+                textAlign:'center', 
                 flex:1 ,
             } 
         };
@@ -73,14 +76,25 @@ export default class PaymentMethodsScreen extends Component<Props> {
   }
 
   _onPressItem = async (id) => {
-    try{
+    try {
+        var {cards} = this.state;
+        cards.forEach(card => {
+            card.selected = card._id == id;
+        });
+        this.setState({cards, shouldRefresh: true});
+
         const amazonUserSub = await AsyncStorage.getItem('amazonUserSub');
         const {data} = await axios.post(`${baseURL}/user/${amazonUserSub}/changeDefaultPayment`, {cardId: id});
-        this.setState({cards: data.cards});
+        this.setState({cards: data.cards, shouldRefresh : false});
      } catch (err) {
         this.setState({errorMessage: err.response.data.error});
      }
   }
+
+  shouldComponentUpdate(nextProps, nextState) { 
+    return nextState.shouldRefresh;
+  }
+
 
   _addCard = card => {
     this.setState([...this.state.cards, card]);

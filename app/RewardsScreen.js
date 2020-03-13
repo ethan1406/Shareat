@@ -59,11 +59,16 @@ import Restaurant from './models/Restaurant';
         headerStyle: {
           backgroundColor: '#ffa91f',
         },
+        headerLeft:( 
+          <TouchableOpacity onPress={() => navigation.navigate('Check')}>
+             <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
+          </TouchableOpacity>
+        ),
         headerTintColor: 'white',
         headerTitleStyle: {
           marginTop:5,
           fontSize: 18, 
-          textAlign:"center", 
+          textAlign:'center', 
           flex:1 ,
         }
       };
@@ -75,9 +80,16 @@ import Restaurant from './models/Restaurant';
       });
     }
     render() {
-      return (
-        <View style={styles.container}>
-          <StatusBar backgroundColor='#ffa91f' barStyle="light-content"/>
+      const {loyaltyPoints} = this.state;
+
+      var userRewardsView;
+      if (loyaltyPoints.length === 0) {
+        userRewardsView = 
+          <View style={styles.noRewardsView}>
+              <Text> You have no rewards so far</Text>
+          </View>;
+      } else {
+        userRewardsView = 
           <ScrollView  contentContainerStyle={styles.bodyContainer}>
             <Text style={styles.wallet}> Wallet </Text>
             {this.state.restaurants.map((restaurant, index) => (
@@ -111,7 +123,14 @@ import Restaurant from './models/Restaurant';
                 </View>
               </TouchableOpacity>
               ))}
-          </ScrollView>
+          </ScrollView>;
+      }
+
+
+      return (
+        <View style={styles.container}>
+          <StatusBar backgroundColor='#ffa91f' barStyle="light-content"/>
+          {userRewardsView}
         </View>
         );
     }
@@ -129,6 +148,9 @@ import Restaurant from './models/Restaurant';
       top: 0,
       left: 0,
       right: 0,
+    },
+    noRewardsView: {
+      alignSelf: 'center'
     },
     rewardContainer: {
       marginLeft: 15,

@@ -27,8 +27,10 @@ export default class RestaurantScreen extends Component<Props> {
 
   static navigationOptions = ({navigation}) => {
     return{
-      headerRight: (
-        <View/>
+      headerLeft:( 
+          <TouchableOpacity onPress={() => navigation.goBack(null)}>
+             <Image style={{height: 30, width: 30, marginLeft: 20, tintColor: 'white'}} source={require('./img/backbtn.png')} />
+          </TouchableOpacity>
         ),
       title: navigation.state.params.restaurantName,
       headerStyle: {
