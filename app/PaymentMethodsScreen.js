@@ -45,6 +45,9 @@ export default class PaymentMethodsScreen extends Component<Props> {
                  <Image style={{height: 30, width: 30, marginLeft: 20, tintColor: 'white'}} source={require('./img/backbtn.png')} />
               </TouchableOpacity>
             ),
+            headerRight:( 
+              <View />
+            ),
             title: 'Payment Method',
             headerStyle: {
                 backgroundColor: '#ffa91f',

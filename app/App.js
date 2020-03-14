@@ -2,6 +2,7 @@
 
 import React, {Component} from 'react';
 import { createStackNavigator, createSwitchNavigator, createAppContainer, createBottomTabNavigator, navigation } from 'react-navigation';
+import {StatusBar} from 'react-native';
 import FirstScreen from './FirstScreen';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';

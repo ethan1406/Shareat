@@ -2,7 +2,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {baseURL} from './Constants';
 import { Auth } from 'aws-amplify';
@@ -70,6 +70,7 @@ class QrCodeScreen extends Component<Props> {
   render() {
 
     if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('blue', true);
       const { isFocused } = this.props;
       if (isFocused){
         return (

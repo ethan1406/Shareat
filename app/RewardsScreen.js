@@ -21,6 +21,7 @@ import Restaurant from './models/Restaurant';
         imageUrl: '',
         restaurants: [Restaurant],
         loyaltyPoints: [],
+        isLoaded: false
       };
     }
 
@@ -41,7 +42,7 @@ import Restaurant from './models/Restaurant';
             return restaurant;
         });
 
-        this.setState({loyaltyPoints: response.data});
+        this.setState({loyaltyPoints: response.data, isLoaded: true});
 
         Promise.all(promises).then((restaurants) =>{
           this.setState({restaurants});
@@ -59,11 +60,6 @@ import Restaurant from './models/Restaurant';
         headerStyle: {
           backgroundColor: '#ffa91f',
         },
-        headerLeft:( 
-          <TouchableOpacity onPress={() => navigation.navigate('Check')}>
-             <Image style={{height: 30, width: 30, marginLeft: 20}} source={require('./img/backbtn.png')} />
-          </TouchableOpacity>
-        ),
         headerTintColor: 'white',
         headerTitleStyle: {
           marginTop:5,
@@ -82,49 +78,53 @@ import Restaurant from './models/Restaurant';
     render() {
       const {loyaltyPoints} = this.state;
 
-      var userRewardsView;
-      if (loyaltyPoints.length === 0) {
+      var userRewardsView = null;
+
+      if (this.state.isLoaded) {
+        if (loyaltyPoints.length === 0) {
         userRewardsView = 
           <View style={styles.noRewardsView}>
               <Text> You have no rewards so far</Text>
           </View>;
-      } else {
-        userRewardsView = 
-          <ScrollView  contentContainerStyle={styles.bodyContainer}>
-            <Text style={styles.wallet}> Wallet </Text>
-            {this.state.restaurants.map((restaurant, index) => (
+        } else {
+          userRewardsView = 
+            <ScrollView  contentContainerStyle={styles.bodyContainer}>
+              <Text style={styles.wallet}> Wallet </Text>
+              {this.state.restaurants.map((restaurant, index) => (
+                  <TouchableOpacity style={styles.rewardContainer} key={index} 
+                    onPress={()=>{this._lookupRestaurant(restaurant.restaurantId, restaurant.name);}}>
+                    <Image style={styles.restaurantIcon}
+                          source={{uri: restaurant.imageUrl}}/>
+                    <View style={{flexDirection: 'column', flex: 1}}>
+                      <View style={styles.restaurantInfo}>
+                      <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{restaurant.name} </Text>
+                      <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{restaurant.address} </Text>
+                      <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{restaurant.description} </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                  ))}
+              <View style={styles.checkIn}>
+                <Text style={styles.wallet}> Check-In </Text>
+              </View>
+              {this.state.restaurants.map((restaurant, index) => (
                 <TouchableOpacity style={styles.rewardContainer} key={index} 
                   onPress={()=>{this._lookupRestaurant(restaurant.restaurantId, restaurant.name);}}>
                   <Image style={styles.restaurantIcon}
                         source={{uri: restaurant.imageUrl}}/>
-                  <View style={{flexDirection: 'column', flex: 1}}>
+                    <View style={{flexDirection: 'column', flex: 1}}>
                     <View style={styles.restaurantInfo}>
                     <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{restaurant.name} </Text>
-                    <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12,  marginBottom: 3}}>{restaurant.address} </Text>
+                    <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{restaurant.address} </Text>
                     <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{restaurant.description} </Text>
                     </View>
                   </View>
                 </TouchableOpacity>
                 ))}
-            <View style={styles.checkIn}>
-              <Text style={styles.wallet}> Check-In </Text>
-            </View>
-            {this.state.restaurants.map((restaurant, index) => (
-              <TouchableOpacity style={styles.rewardContainer} key={index} 
-                onPress={()=>{this._lookupRestaurant(restaurant.restaurantId, restaurant.name);}}>
-                <Image style={styles.restaurantIcon}
-                      source={{uri: restaurant.imageUrl}}/>
-                  <View style={{flexDirection: 'column', flex: 1}}>
-                  <View style={styles.restaurantInfo}>
-                  <Text style={{color: '#A9A9A9', fontSize: 15, marginTop: 15, marginBottom: 3}}>{restaurant.name} </Text>
-                  <Text numberOfLines={2} style={{color: '#A9A9A9', fontSize: 12, marginBottom: 3}}>{restaurant.address} </Text>
-                  <Text style={{color: 'grey', fontSize: 16, marginBottom: 10}}>{restaurant.description} </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              ))}
-          </ScrollView>;
+            </ScrollView>;
+        }
       }
+      
 
 
       return (

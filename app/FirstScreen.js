@@ -1,7 +1,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground, StatusBar} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -40,7 +40,6 @@ export default class FirstScreen extends Component<Props> {
 
   
   render() {
-    
     const {isUserLoaded} = this.state;
 
     if (!isUserLoaded) {
@@ -49,6 +48,7 @@ export default class FirstScreen extends Component<Props> {
       return (
        <ImageBackground source={require('./img/background_image.jpg')} resizeMode='contain' 
           style={[styles.container, {width: '100%', height: '100%'}]}>
+          <StatusBar barStyle='light-content' translucent={false}/>
           <Image style={styles.coverImage} source={require('./img/splash_logo.png')}/>
           <View style={{marginTop: 'auto', width: '100%', marginBottom: 60}} >
               <TouchableOpacity style={styles.signupBtn} onPress={()=> this.props.navigation.navigate('Signup')} color='#000000'>
